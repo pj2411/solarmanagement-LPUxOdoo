@@ -52,9 +52,6 @@ export default function Sidebar({
           <div className="text-sm font-bold tracking-tight text-white truncate leading-none">
             SunPower Solutions
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-amber-400/90 font-medium mt-1 leading-none truncate">
-            India Rooftop Solar EPC
-          </div>
         </div>
       </div>
 
