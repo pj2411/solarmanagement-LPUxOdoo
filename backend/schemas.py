@@ -181,6 +181,8 @@ class InventoryItemOut(InventoryItemBase):
 class InventoryRestock(BaseModel):
     quantity: int
 
+RestockRequest = InventoryRestock
+
 # BOM
 class BOMItemOut(BaseModel):
     id: int
