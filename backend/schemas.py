@@ -333,18 +333,18 @@ class ServiceTicketUpdate(BaseModel):
 class ServiceTicketOut(BaseModel):
     id: int
     lead_id: int
-    serial_number: Optional[str]
-    fault_code: str
-    issue_description: str
-    is_under_warranty: bool
-    assigned_technician_id: Optional[int]
-    resolution_type: str
-    parts_cost_inr: float
-    labor_cost_inr: float
-    billed_invoice_amount_inr: float
-    status: str
-    created_at: Optional[datetime]
-    lead: Optional[LeadOut]
-    assigned_technician: Optional[UserOut]
+    serial_number: Optional[str] = None
+    fault_code: Optional[str] = "E04-GRID-LOSS"
+    issue_description: Optional[str] = "Service issue"
+    is_under_warranty: bool = True
+    assigned_technician_id: Optional[int] = None
+    resolution_type: str = "REPAIR"
+    parts_cost_inr: float = 0.0
+    labor_cost_inr: float = 0.0
+    billed_invoice_amount_inr: float = 0.0
+    status: str = "OPEN"
+    created_at: Optional[datetime] = None
+    lead: Optional[LeadOut] = None
+    assigned_technician: Optional[UserOut] = None
     class Config:
         from_attributes = True

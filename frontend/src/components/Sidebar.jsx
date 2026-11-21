@@ -47,15 +47,13 @@ export default function Sidebar({
     <aside className="w-64 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col h-screen select-none">
       {/* Brand Header */}
       <div className="p-4 border-b border-slate-800 flex items-center gap-2.5 flex-shrink-0">
-        <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shadow-md shadow-amber-500/20 flex-shrink-0">
-          <Sun className="w-4 h-4 fill-current" />
-        </div>
+        <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0" />
         <div className="min-w-0">
           <div className="text-sm font-bold tracking-tight text-white truncate leading-none">
-            SunPower ERP
+            SunPower Solutions
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-amber-400/90 font-medium mt-1 leading-none">
-            Solar Operations
+          <div className="text-[10px] uppercase tracking-wider text-amber-400/90 font-medium mt-1 leading-none truncate">
+            India Rooftop Solar EPC
           </div>
         </div>
       </div>

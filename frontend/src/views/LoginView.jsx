@@ -244,18 +244,16 @@ export default function LoginView({ onLogin, onExplorePublic }) {
       {/* Top Bar Header */}
       <header className="px-6 py-4 flex items-center justify-between border-b border-slate-800 bg-slate-900/90 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black shadow-md shadow-amber-500/20">
-            <Sun className="w-5 h-5 fill-current" />
-          </div>
+          <Sun className="w-6 h-6 text-amber-400 fill-amber-400 flex-shrink-0" />
           <div>
             <div className="text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
-              SunPower ERP
+              SunPower Solutions
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                Solar Solutions
+                Official Portal
               </span>
             </div>
             <div className="text-[11px] text-slate-400">
-              13-Module Solar Installation Enterprise System
+              India Rooftop Solar EPC
             </div>
           </div>
         </div>

@@ -34,7 +34,7 @@ export default function RoleSwitcher({ currentRole, onRoleChange }) {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-bold text-white tracking-tight flex items-center gap-1.5">
-                SunPower ERP
+                SunPower Solutions
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
                   <Sparkles className="w-2.5 h-2.5" /> Standalone Pro
                 </span>
