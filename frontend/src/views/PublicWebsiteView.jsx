@@ -142,12 +142,20 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
           <div className="flex flex-wrap gap-4 pt-4">
             <a 
               href="#calculator" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm sm:text-base transition-all shadow-lg shadow-amber-500/20"
             >
               <Calculator className="w-5 h-5" /> Calculate Solar Savings
             </a>
             <a 
-              href="#contact" 
+              href="#survey-booking" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('survey-booking')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm sm:text-base border border-slate-700 transition-all"
             >
               Book Free Roof Survey

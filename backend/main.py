@@ -262,42 +262,48 @@ def get_leads(db: Session = Depends(get_db)):
 
 @app.post("/api/leads", response_model=schemas.LeadOut)
 def create_lead(lead_in: schemas.LeadCreate, db: Session = Depends(get_db)):
-    # Auto-calculate pipeline stage
-    lead = models.CustomerLead(
-        customer_name=lead_in.customer_name,
-        phone=lead_in.phone,
-        email=lead_in.email,
-        address=lead_in.address,
-        capacity_kw=lead_in.capacity_kw,
-        system_type=lead_in.system_type,
-        subsidy_requested=lead_in.subsidy_requested,
-        monthly_bill_inr=lead_in.monthly_bill_inr,
-        grid_suitable=lead_in.grid_suitable,
-        pipeline_stage="NEW",
-        follow_up_notes=lead_in.follow_up_notes or "Inquiry captured from website."
-    )
-    db.add(lead)
-    db.commit()
-    db.refresh(lead)
+    try:
+        kw = float(lead_in.capacity_kw) if lead_in.capacity_kw is not None else 3.0
+        lead = models.CustomerLead(
+            customer_name=lead_in.customer_name or "New Customer",
+            phone=lead_in.phone or "",
+            email=lead_in.email or "",
+            address=lead_in.address or "",
+            capacity_kw=kw,
+            system_type=lead_in.system_type or "ON_GRID",
+            subsidy_requested=bool(lead_in.subsidy_requested),
+            monthly_bill_inr=float(lead_in.monthly_bill_inr or 3500.0),
+            grid_suitable=bool(lead_in.grid_suitable),
+            pipeline_stage="NEW",
+            follow_up_notes=lead_in.follow_up_notes or "Inquiry captured from website."
+        )
+        db.add(lead)
+        db.commit()
+        db.refresh(lead)
 
-    # Automatically create a pending site survey for this lead
-    # assign first technician if available
-    first_tech = db.query(models.User).filter(models.User.role == "TECHNICIAN").first()
-    survey = models.SiteSurvey(
-        lead_id=lead.id,
-        technician_id=first_tech.id if first_tech else None,
-        scheduled_date=date.today() + timedelta(days=2),
-        roof_direction="South (180° Azimuth)",
-        tilt_angle_deg=22.0,
-        shadow_free_area_sqft=lead.capacity_kw * 100.0,
-        cable_distance_m=20.0,
-        is_approved=False,
-        notes="Automated survey schedule upon web enquiry."
-    )
-    db.add(survey)
-    db.commit()
+        try:
+            first_tech = db.query(models.User).filter(models.User.role == "TECHNICIAN").first()
+            survey = models.SiteSurvey(
+                lead_id=lead.id,
+                technician_id=first_tech.id if first_tech else None,
+                scheduled_date=date.today() + timedelta(days=2),
+                roof_direction="South (180° Azimuth)",
+                tilt_angle_deg=22.0,
+                shadow_free_area_sqft=kw * 100.0,
+                cable_distance_m=20.0,
+                is_approved=False,
+                notes="Automated survey schedule upon web enquiry."
+            )
+            db.add(survey)
+            db.commit()
+        except Exception as survey_err:
+            print(f"Warning: Survey auto-creation deferred: {survey_err}")
+            db.rollback()
 
-    return lead
+        return lead
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Failed to create lead: {str(e)}")
 
 @app.put("/api/leads/{id}", response_model=schemas.LeadOut)
 def update_lead(id: int, lead_in: schemas.LeadUpdate, db: Session = Depends(get_db)):
@@ -694,12 +700,18 @@ def record_order_payment(id: int, req: schemas.OrderPaymentRequest, db: Session 
 
 @app.put("/api/orders/{id}/subsidy")
 def update_subsidy_status(id: int, status: str = Query(...), db: Session = Depends(get_db)):
-    order = db.query(models.Order).filter(models.Order.id == id).first()
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-    order.subsidy_tracking_status = status
-    db.commit()
-    return {"status": "success", "subsidy_tracking_status": order.subsidy_tracking_status}
+    try:
+        order = db.query(models.Order).filter(models.Order.id == id).first()
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        order.subsidy_tracking_status = status
+        db.commit()
+        return {"status": "success", "subsidy_tracking_status": order.subsidy_tracking_status}
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Failed to update subsidy status: {str(e)}")
 
 # ----------------- 7. MANDATORY RULE 3: DISPATCH & SERIAL WARRANTY AUTOMATION -----------------
 @app.get("/api/warehouse/serials", response_model=List[schemas.SerialUnitOut])
