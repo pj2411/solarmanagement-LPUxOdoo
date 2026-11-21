@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Package, 
   AlertTriangle, 
@@ -246,9 +247,9 @@ export default function InventoryView({ inventory = [], bomTemplates = [], onRef
         </div>
       )}
 
-      {/* Restock Modal */}
-      {restockModalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/95 animate-fadeIn">
+      {/* Restock Modal (Portaled directly to document.body to prevent any layout clipping or top gaps) */}
+      {restockModalItem && (typeof document !== 'undefined' ? createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm animate-fadeIn">
           <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl space-y-4">
             <div className="flex justify-between items-start">
               <div>
@@ -322,8 +323,9 @@ export default function InventoryView({ inventory = [], bomTemplates = [], onRef
               </div>
             </form>
           </div>
-        </div>
-      )}
+        </div>,
+        document.body
+      ) : null)}
     </div>
   );
 }

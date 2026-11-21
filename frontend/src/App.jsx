@@ -434,7 +434,7 @@ export default function App() {
         </div>
 
         {/* Public Content Container */}
-        <main className="flex-1 px-4 pb-8 sm:px-6 lg:px-8 lg:pb-12 pt-28 sm:pt-32 lg:pt-36 bg-square-grid">
+        <main className="flex-1 px-4 pb-8 sm:px-6 lg:px-8 lg:pb-12 pt-20 sm:pt-22 lg:pt-24 bg-square-grid">
           <PublicWebsiteView 
             isStandalone={true}
             onNavigate={(mod) => {

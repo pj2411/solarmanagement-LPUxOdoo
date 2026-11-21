@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   UserCheck, 
   Search, 
@@ -16,7 +17,7 @@ import {
 import { api } from '../api';
 import { DEFAULT_EMPLOYEES } from '../utils/syntheticData';
 
-export default function EmployeeView({ employees = [], onRefresh }) {
+export default function EmployeeView({ employees = [], surveys = [], installations = [], onRefresh }) {
   const activeEmployees = Array.isArray(employees) && employees.length > 0 ? employees : DEFAULT_EMPLOYEES;
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,7 +47,24 @@ export default function EmployeeView({ employees = [], onRefresh }) {
       const jobs = await api.getEmployeeJobs(emp.id);
       setEmployeeJobs(jobs);
     } catch (err) {
-      alert('Error fetching employee jobs: ' + err.message);
+      console.warn('API error fetching employee jobs, using local workload calculation:', err);
+      const empSurveys = (surveys || []).filter(s => s.technician_id === emp.id || s.technician?.name === emp.name);
+      const empInst = (installations || []).filter(i => i.technician_id === emp.id || i.technician?.name === emp.name);
+      setEmployeeJobs({
+        surveys_count: empSurveys.length,
+        installations_count: empInst.length,
+        surveys: empSurveys.map(s => ({
+          id: s.id,
+          customer: s.customer_name || s.lead?.customer_name || 'Customer',
+          approved: !!s.is_approved
+        })),
+        installations: empInst.map(i => ({
+          id: i.id,
+          customer: i.customer_name || i.order?.lead?.customer_name || 'Customer',
+          progress: i.progress_pct || 0,
+          completed: !!i.is_completed
+        }))
+      });
     } finally {
       setLoadingJobs(false);
     }
@@ -165,8 +183,8 @@ export default function EmployeeView({ employees = [], onRefresh }) {
       </div>
 
       {/* Inspect Jobs Modal */}
-      {inspectingEmployee && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/95 animate-fadeIn">
+      {inspectingEmployee && (typeof document !== 'undefined' ? createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm animate-fadeIn">
           <div className="w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl space-y-4">
             <div className="flex justify-between items-start">
               <div>
@@ -272,8 +290,9 @@ export default function EmployeeView({ employees = [], onRefresh }) {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        </div>,
+        document.body
+      ) : null)}
     </div>
   );
 }
