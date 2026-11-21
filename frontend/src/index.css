@@ -1,4 +1,4 @@
-/* Hallmark · genre: modern-minimal · theme: SunPower Red & White · posture: restrained */
+/* Hallmark · genre: modern-minimal · theme: SunPower Solar Navy & Yellow · posture: restrained */
 @import './tokens.css';
 @tailwind base;
 @tailwind components;
@@ -29,16 +29,32 @@ code, pre, .font-mono {
 }
 
 /* ========================================================
-   SUNPOWER RED & WHITE DESIGN SYSTEM
+   SUNPOWER SOLAR NAVY BLUE (20-30% OPACITY ATMOSPHERE)
    ======================================================== */
 
-/* 1. Global Page Background & Base Text */
+/* 1. Global Page Background (Deep Solar Navy Canvas, No Pitch Black) */
 html, body, #root {
   background-color: var(--bg-canvas) !important;
   color: var(--text-body) !important;
+  min-height: 100vh;
 }
 
-/* 2. Canvas & Surfaces: Crisp White & Off-White */
+/* 2. Photovoltaic Solar Atmosphere (25% Opacity Solar Blue Texture) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.25;
+  background-image: 
+    linear-gradient(to right, var(--solar-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--solar-grid-line) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px;
+  background-attachment: fixed;
+}
+
+/* 3. Deep Solar Navy Surfaces & Cards (No Black) */
 .bg-slate-950,
 main.bg-slate-950 {
   background-color: var(--bg-canvas) !important;
@@ -67,7 +83,7 @@ header.bg-slate-900 {
   background-color: var(--bg-surface) !important;
 }
 
-/* 3. Subtle Clean Red & Neutral Borders */
+/* 4. Subtle Solar Navy Blueprint Borders */
 .border-slate-950,
 .border-slate-900,
 .border-slate-850,
@@ -80,7 +96,7 @@ header.bg-slate-900 {
   border-color: var(--border-subtle) !important;
 }
 
-/* 4. High-Contrast Typography */
+/* 5. High-Contrast Solar Typography (Crisp White & Sky Slate) */
 .text-white {
   color: var(--text-heading) !important;
 }
@@ -102,16 +118,17 @@ header.bg-slate-900 {
   color: var(--text-muted) !important;
 }
 
-/* 5. Brand Accent Transformation: Amber to Vivid Solar Red */
+/* 6. Brand Accent: Vibrant Bright Solar Yellow */
 .text-amber-400,
 .text-amber-300,
 .text-amber-500 {
-  color: var(--accent-primary) !important;
+  color: var(--accent-text) !important;
 }
 
 .bg-amber-500 {
   background-color: var(--accent-primary) !important;
   color: var(--text-inverse) !important;
+  font-weight: 700 !important;
 }
 
 .bg-amber-500\/10,
@@ -143,7 +160,7 @@ header.bg-slate-900 {
   color: var(--accent-primary) !important;
 }
 
-/* 6. Form Inputs & Interactive Controls */
+/* 7. Form Inputs & Interactive Controls */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 select,
 textarea {
@@ -165,7 +182,7 @@ input[type="range"] {
   accent-color: var(--accent-primary) !important;
 }
 
-/* 7. Tables & Data Display */
+/* 8. Tables & Data Display */
 table thead {
   background-color: var(--bg-muted) !important;
   border-bottom: 1px solid var(--border-subtle) !important;
@@ -183,7 +200,7 @@ table tbody td {
   border-color: var(--border-subtle) !important;
 }
 
-/* 8. Buttons & Icons on Red Backgrounds */
+/* 9. Buttons & Icons on Bright Yellow Backgrounds */
 button.bg-amber-500,
 a.bg-amber-500 {
   color: var(--text-inverse) !important;

@@ -86,44 +86,6 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
 
   return (
     <div className="space-y-12 pb-20 max-w-6xl mx-auto">
-      {/* 1. PUBLIC WEBSITE SUB-NAVIGATION BAR */}
-      <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-2xl p-2.5 px-4 shadow-xl flex items-center justify-between overflow-x-auto scrollbar-none">
-        <div className="flex items-center gap-1 sm:gap-2">
-          {[
-            { id: 'home', label: 'Home Page' },
-            { id: 'about', label: 'About Company' },
-            { id: 'products', label: 'Solar Products' },
-            { id: 'systems', label: 'On/Off-Grid' },
-            { id: 'calculator', label: 'Solar Calculator' },
-            { id: 'subsidy', label: 'Subsidy Info' },
-            { id: 'contact', label: 'Contact & Enquiry' },
-          ].map((sec) => (
-            <a
-              key={sec.id}
-              href={`#${sec.id}`}
-              onClick={() => setActiveSection(sec.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
-                activeSection === sec.id
-                  ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              {sec.label}
-            </a>
-          ))}
-        </div>
-
-        {onSignInClick && (
-          <button
-            type="button"
-            onClick={onSignInClick}
-            className="ml-3 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 border border-amber-500/30 text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5"
-          >
-            <span>Staff / Customer Portal</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        )}
-      </div>
 
       {/* SECTION 1: HOME PAGE HERO */}
       <section id="home" className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-8 lg:p-12 shadow-2xl">

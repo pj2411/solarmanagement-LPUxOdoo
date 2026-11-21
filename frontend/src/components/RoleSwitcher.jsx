@@ -26,8 +26,8 @@ export default function RoleSwitcher({ currentRole, onRoleChange }) {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         {/* Brand identity */}
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-red-600 flex items-center justify-center shadow-sm flex-shrink-0">
-            <span className="text-white font-black text-lg tracking-wider">SP</span>
+          <div className="h-10 w-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center shadow-sm flex-shrink-0">
+            <span className="font-black text-lg tracking-wider">SP</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
