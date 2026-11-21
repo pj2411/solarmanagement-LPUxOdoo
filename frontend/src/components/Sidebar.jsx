@@ -20,21 +20,43 @@ import {
   X
 } from 'lucide-react';
 
-export const MODULES = [
-  { id: 'public-website', label: '1. Public Website', icon: Globe, badge: 'Calculator' },
-  { id: 'auth', label: '2. Authentication & Roles', icon: KeyRound },
-  { id: 'customers', label: '3. Customer Management', icon: Users, badge: 'CRM' },
-  { id: 'site-survey', label: '4. Site Surveys', icon: Compass, gatekeeper: true },
-  { id: 'quotations', label: '5. Quotations', icon: FileSpreadsheet },
-  { id: 'orders', label: '6. Orders & Payments', icon: ReceiptText },
-  { id: 'inventory', label: '7. Inventory & BoM', icon: Package },
-  { id: 'dispatch', label: '8. Dispatch & Serials', icon: QrCode },
-  { id: 'installations', label: '9. Field Installations', icon: HardHat },
-  { id: 'warranty', label: '10. Warranty Registry', icon: ShieldCheck },
-  { id: 'helpdesk', label: '11. Service Helpdesk', icon: Headphones, badge: 'Zero-Click' },
-  { id: 'employees', label: '12. Crew & Attendance', icon: UserCheck },
-  { id: 'analytics', label: '13. Admin & Dynamic P&L', icon: BarChart3, badge: 'Live P&L' },
+export const MODULE_SECTIONS = [
+  {
+    title: 'Sales & Customers',
+    modules: [
+      { id: 'public-website', label: 'Public Website', icon: Globe, badge: 'Portal' },
+      { id: 'customers', label: 'Customer Management', icon: Users, badge: 'CRM' },
+      { id: 'site-survey', label: 'Site Surveys', icon: Compass, gatekeeper: true },
+      { id: 'quotations', label: 'Quotations & Pricing', icon: FileSpreadsheet },
+    ]
+  },
+  {
+    title: 'Operations & Supply',
+    modules: [
+      { id: 'orders', label: 'Orders & Payments', icon: ReceiptText },
+      { id: 'inventory', label: 'Inventory & BoM', icon: Package },
+      { id: 'dispatch', label: 'Dispatch & Serials', icon: QrCode },
+      { id: 'installations', label: 'Field Installations', icon: HardHat },
+    ]
+  },
+  {
+    title: 'Post-Install & Care',
+    modules: [
+      { id: 'warranty', label: 'Warranty Registry', icon: ShieldCheck },
+      { id: 'helpdesk', label: 'Service Helpdesk', icon: Headphones, badge: 'Zero-Click' },
+      { id: 'employees', label: 'Crew & Attendance', icon: UserCheck },
+    ]
+  },
+  {
+    title: 'Governance & P&L',
+    modules: [
+      { id: 'analytics', label: 'Admin & Dynamic P&L', icon: BarChart3, badge: 'Live P&L' },
+      { id: 'auth', label: 'Roles & Access Control', icon: KeyRound },
+    ]
+  }
 ];
+
+export const MODULES = MODULE_SECTIONS.flatMap(s => s.modules);
 
 export default function Sidebar({ 
   currentModule, 
@@ -53,24 +75,24 @@ export default function Sidebar({
     <aside 
       className={`bg-slate-900 border-r border-slate-800 flex flex-col h-screen select-none transition-all duration-300 ease-in-out z-50 flex-shrink-0 overflow-hidden
         ${isOpen 
-          ? (isCompact ? 'w-14' : 'w-60') 
+          ? (isCompact ? 'w-16' : 'w-64') 
           : 'w-0 opacity-0 border-r-0 pointer-events-none'
         }
         max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:shadow-2xl
         ${!isOpen ? 'max-lg:-translate-x-full' : 'max-lg:translate-x-0'}
       `}
     >
-      {/* Brand Header with Single Clean Three-Yellow-Line Hamburger Menu */}
-      <div className={`h-12 border-b border-slate-800 flex items-center flex-shrink-0 ${isCompact ? 'justify-center px-1' : 'justify-between px-3'}`}>
-        <div className="flex items-center gap-2 min-w-0">
+      {/* Brand Header with Prominently Sized Hamburger Menu & Logo */}
+      <div className={`h-16 border-b border-slate-800 flex items-center flex-shrink-0 ${isCompact ? 'justify-center px-2' : 'justify-between px-4'}`}>
+        <div className="flex items-center gap-3 min-w-0">
           <button
             type="button"
             onClick={onToggle}
-            className="p-1.5 rounded-lg text-amber-400 hover:bg-slate-800/80 transition-colors flex items-center justify-center flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-amber-500/40"
+            className="w-10 h-10 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/30 transition-all flex items-center justify-center flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-amber-500/40 shadow-sm cursor-pointer"
             title={isCompact ? "Expand menu" : "Collapse menu"}
             aria-label="Toggle navigation menu"
           >
-            <Menu className="w-5 h-5 text-amber-400" />
+            <Menu className="w-5 h-5 text-amber-500" />
           </button>
 
           {!isCompact && (
@@ -80,11 +102,11 @@ export default function Sidebar({
                 if (onModuleSelect) onModuleSelect('public-website');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-2 min-w-0 cursor-pointer group hover:opacity-90 transition-all focus:outline-none text-left"
+              className="flex items-center gap-2.5 min-w-0 cursor-pointer group hover:opacity-90 transition-all focus:outline-none text-left"
               title="Go to ERP Home (Public Website)"
               aria-label="Go to ERP Home"
             >
-              <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
               <div className="text-sm font-bold tracking-tight text-slate-900 truncate leading-none group-hover:text-amber-500 transition-colors">
                 SunPower Solutions
               </div>

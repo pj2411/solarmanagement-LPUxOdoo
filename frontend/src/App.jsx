@@ -540,19 +540,19 @@ export default function App() {
 
       {/* Main Content Area Container with Top Navigation Bar */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Top Header Bar */}
-        <header className="h-12 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 flex items-center justify-between flex-shrink-0 z-30">
-          {/* Left Section: Breadcrumb & Title */}
-          <div className="flex items-center gap-3 min-w-0">
+        {/* Top Header Bar with Generous Height & Prominent Toggle Target */}
+        <header className="h-16 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-5 sm:px-6 flex items-center justify-between flex-shrink-0 z-30">
+          {/* Left Section: Toggle Button, Brand, & Active Module Breadcrumb */}
+          <div className="flex items-center gap-3.5 min-w-0">
             {!sidebarOpen && (
               <button
                 type="button"
                 onClick={() => setSidebarOpen(true)}
-                className="p-1.5 rounded-lg bg-slate-800 text-amber-400 hover:bg-slate-700 transition-all flex items-center justify-center flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                className="w-10 h-10 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/30 transition-all flex items-center justify-center flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-amber-500/40 shadow-sm cursor-pointer"
                 title="Open menu (Hamburger)"
                 aria-label="Open navigation menu"
               >
-                <Menu className="w-5 h-5 text-amber-400" />
+                <Menu className="w-5 h-5 text-amber-500" />
               </button>
             )}
 
@@ -563,21 +563,21 @@ export default function App() {
                   setCurrentModule('public-website');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="flex items-center gap-2 flex-shrink-0 cursor-pointer group hover:opacity-90 transition-all focus:outline-none text-left"
+                className="flex items-center gap-2.5 flex-shrink-0 cursor-pointer group hover:opacity-90 transition-all focus:outline-none text-left"
                 title="Go to ERP Home (Public Website)"
                 aria-label="Go to ERP Home"
               >
-                <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="font-bold text-slate-900 text-xs tracking-tight truncate hidden sm:inline group-hover:text-amber-500 transition-colors">
+                <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <span className="font-bold text-slate-900 text-sm tracking-tight truncate hidden sm:inline group-hover:text-amber-500 transition-colors">
                   SunPower Solutions
                 </span>
               </button>
             )}
 
             {/* Active Module Indicator / Breadcrumb */}
-            <div className="flex items-center gap-2 text-xs text-slate-400 truncate pl-1 sm:pl-3 sm:border-l sm:border-slate-800">
+            <div className="flex items-center gap-2 text-xs text-slate-400 truncate pl-2 sm:pl-4 sm:border-l sm:border-slate-800">
               <span className="text-slate-500 hidden md:inline">Module:</span>
-              <span className="font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20 truncate text-[11px]">
+              <span className="font-semibold text-amber-500 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/25 truncate text-xs shadow-sm">
                 {MODULES.find(m => m.id === currentModule)?.label || currentModule}
               </span>
             </div>
