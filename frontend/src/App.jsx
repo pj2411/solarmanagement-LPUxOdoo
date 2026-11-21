@@ -524,22 +524,21 @@ export default function App() {
         stats={analytics}
         isOpen={sidebarOpen}
         isCompact={sidebarCompact}
-        onToggle={() => setSidebarOpen((prev) => !prev)}
-        onToggleCompact={() => setSidebarCompact((prev) => !prev)}
+        onToggle={() => setSidebarCompact((prev) => !prev)}
         onClose={() => setSidebarOpen(false)}
       />
 
       {/* Main Content Area Container with Top Navigation Bar */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Top Header Bar with Left-Corner Hamburger Menu */}
-        <header className="h-14 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 flex items-center justify-between flex-shrink-0 z-30">
-          {/* Left Corner: Hamburger Menu Button & Breadcrumb */}
+        {/* Top Header Bar */}
+        <header className="h-12 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 flex items-center justify-between flex-shrink-0 z-30">
+          {/* Left Section: Breadcrumb & Title */}
           <div className="flex items-center gap-3 min-w-0">
-            {(!sidebarOpen || windowWidth < 1024) && (
+            {!sidebarOpen && (
               <button
                 type="button"
                 onClick={() => setSidebarOpen(true)}
-                className="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-300 hover:text-amber-400 border border-slate-700/60 hover:border-amber-500/40 transition-all flex items-center justify-center shadow-sm flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                className="p-1.5 rounded-lg bg-slate-800 text-amber-400 hover:bg-slate-700 transition-all flex items-center justify-center flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                 title="Open menu (Hamburger)"
                 aria-label="Open navigation menu"
               >
@@ -547,10 +546,10 @@ export default function App() {
               </button>
             )}
 
-            {(!sidebarOpen || sidebarCompact || windowWidth < 1024) && (
+            {(!sidebarOpen || sidebarCompact) && (
               <div className="flex items-center gap-2 flex-shrink-0">
-                <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0" />
-                <span className="font-bold text-white text-sm tracking-tight truncate hidden sm:inline">
+                <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />
+                <span className="font-bold text-white text-xs tracking-tight truncate hidden sm:inline">
                   SunPower Solutions
                 </span>
               </div>
@@ -559,7 +558,7 @@ export default function App() {
             {/* Active Module Indicator / Breadcrumb */}
             <div className="flex items-center gap-2 text-xs text-slate-400 truncate pl-1 sm:pl-3 sm:border-l sm:border-slate-800">
               <span className="text-slate-500 hidden md:inline">Module:</span>
-              <span className="font-semibold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20 truncate">
+              <span className="font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20 truncate text-[11px]">
                 {MODULES.find(m => m.id === currentModule)?.label || currentModule}
               </span>
             </div>
@@ -684,6 +683,8 @@ export default function App() {
               {currentModule === 'employees' && (
                 <EmployeeView 
                   employees={employees} 
+                  surveys={surveys}
+                  installations={installations}
                   onRefresh={refreshAllData} 
                 />
               )}
