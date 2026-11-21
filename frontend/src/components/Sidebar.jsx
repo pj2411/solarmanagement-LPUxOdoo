@@ -85,7 +85,7 @@ export default function Sidebar({
               aria-label="Go to ERP Home"
             >
               <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="text-xs font-bold tracking-tight text-white truncate leading-none group-hover:text-amber-500 transition-colors">
+              <div className="text-sm font-bold tracking-tight text-slate-900 truncate leading-none group-hover:text-amber-500 transition-colors">
                 SunPower Solutions
               </div>
             </button>

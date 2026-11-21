@@ -395,7 +395,7 @@ export default function App() {
               <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
                 <Sun className="w-4 h-4 text-amber-400 fill-amber-400" />
               </div>
-              <span className="text-xs sm:text-sm font-bold tracking-tight text-white hidden sm:inline group-hover:text-amber-400 transition-colors">
+              <span className="text-xs sm:text-sm font-bold tracking-tight text-slate-900 hidden sm:inline group-hover:text-amber-500 transition-colors">
                 SunPower Solutions
               </span>
             </button>
@@ -568,7 +568,7 @@ export default function App() {
                 aria-label="Go to ERP Home"
               >
                 <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="font-bold text-white text-xs tracking-tight truncate hidden sm:inline group-hover:text-amber-500 transition-colors">
+                <span className="font-bold text-slate-900 text-xs tracking-tight truncate hidden sm:inline group-hover:text-amber-500 transition-colors">
                   SunPower Solutions
                 </span>
               </button>

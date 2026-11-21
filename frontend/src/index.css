@@ -190,12 +190,16 @@ a.bg-purple-600 *,
   color: #ffffff !important;
 }
 
-/* Explicit text-white class on buttons and action pills */
-button.text-white,
-button .text-white,
-a.text-white,
-a .text-white {
-  color: #ffffff !important;
+.text-slate-900 {
+  color: #0f172a !important; /* Deep Navy text for crisp visibility */
+}
+
+/* Explicit text-white class on solid dark/colored buttons only */
+button.bg-slate-900,
+button.bg-slate-800,
+a.bg-slate-900,
+a.bg-slate-800 {
+  color: #0f172a !important;
 }
 
 /* Solid amber buttons have dark text for maximum WCAG contrast */
