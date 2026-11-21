@@ -235,12 +235,16 @@ a.bg-amber-400 * {
 }
 
 /* Exclude translucent / tinted badges and buttons from forced white text */
-[class*="/10"],
-[class*="/10"] *,
-[class*="/15"],
-[class*="/15"] *,
-[class*="/20"],
-[class*="/20"] * {
+span[class*="/10"],
+span[class*="/15"],
+span[class*="/20"],
+button[class*="/10"],
+button[class*="/15"],
+button[class*="/20"],
+a[class*="/10"],
+a[class*="/15"],
+a[class*="/20"],
+.badge {
   color: inherit;
 }
 

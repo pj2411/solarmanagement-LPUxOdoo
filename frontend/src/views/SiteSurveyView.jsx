@@ -7,6 +7,7 @@ import {
   Calendar, 
   ArrowRight,
   ShieldAlert,
+  ShieldCheck,
   Ruler,
   Plus,
   Search,
@@ -336,35 +337,38 @@ export default function SiteSurveyView({
       </div>
 
       {/* Survey Gatekeeper Rule Alert Box */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-amber-200/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-start gap-3.5">
-          <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 flex-shrink-0 mt-0.5">
-            <ShieldAlert className="w-5 h-5" />
+          <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-800 border border-amber-300/60 flex-shrink-0 mt-0.5 shadow-sm">
+            <ShieldCheck className="w-5 h-5 text-amber-700" />
           </div>
-          <div className="text-xs space-y-1 max-w-2xl">
-            <div className="font-bold text-amber-300 flex items-center gap-2">
-              <span>FastAPI Gatekeeper Rule #1 Enforced:</span>
-              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
+          <div className="text-xs space-y-1.5 max-w-2xl">
+            <div className="font-bold text-slate-900 flex flex-wrap items-center gap-2">
+              <span className="text-sm font-bold text-slate-900">FastAPI Gatekeeper Rule #1 Enforced:</span>
+              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300/80 font-bold font-mono">
                 Mandatory Check
               </span>
+              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300/80 font-semibold">
+                Active Protocol
+              </span>
             </div>
-            <p className="text-slate-300 leading-relaxed">
-              Backend returns <span className="text-amber-400 font-bold font-mono">HTTP 400 Bad Request</span> if a quotation is attempted for any lead without an approved survey. Click <span className="font-bold text-white underline decoration-amber-400">Approve Survey</span> below to enable quotation generation.
+            <p className="text-slate-700 leading-relaxed text-xs">
+              Backend returns <span className="text-rose-700 font-bold font-mono bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">HTTP 400 Bad Request</span> if a quotation is attempted for any lead without an approved survey. Click <span className="font-bold text-emerald-700 underline decoration-emerald-500">Approve survey for quoting</span> below to unlock quotation generation.
             </p>
           </div>
         </div>
 
         {/* Live Counters */}
-        <div className="flex items-center gap-2 self-stretch md:self-auto flex-shrink-0">
-          <div className="flex-1 md:flex-initial px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-center">
-            <div className="text-[10px] text-slate-400 font-medium">Pending Approval</div>
-            <div className={`text-base font-bold ${pendingCount > 0 ? 'text-amber-400 animate-pulse' : 'text-slate-400'}`}>
+        <div className="flex items-center gap-2.5 self-stretch md:self-auto flex-shrink-0">
+          <div className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-white border border-amber-300/80 shadow-sm text-center min-w-[115px]">
+            <div className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">Pending Approval</div>
+            <div className={`text-xl font-extrabold ${pendingCount > 0 ? 'text-amber-600 animate-pulse' : 'text-slate-400'}`}>
               {pendingCount}
             </div>
           </div>
-          <div className="flex-1 md:flex-initial px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-center">
-            <div className="text-[10px] text-slate-400 font-medium">Approved</div>
-            <div className="text-base font-bold text-emerald-400">
+          <div className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-white border border-slate-200 shadow-sm text-center min-w-[115px]">
+            <div className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">Approved</div>
+            <div className="text-xl font-extrabold text-emerald-700">
               {approvedCount}
             </div>
           </div>
@@ -555,45 +559,45 @@ export default function SiteSurveyView({
                   </div>
 
                   {/* Technical Specifications 2x2 Grid */}
-                  <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-xs">
+                  <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/90 text-xs">
                     <div>
-                      <span className="text-[10px] text-slate-500 flex items-center gap-1">
-                        <Compass className="w-3 h-3 text-amber-400" />
+                      <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1">
+                        <Compass className="w-3 h-3 text-amber-500" />
                         Roof Azimuth
                       </span>
-                      <p className="font-semibold text-white mt-0.5 truncate" title={survey.roof_direction}>
+                      <p className="font-semibold text-slate-900 mt-0.5 truncate" title={survey.roof_direction}>
                         {survey.roof_direction || 'South (180°)'}
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-500 flex items-center gap-1">
-                        <Ruler className="w-3 h-3 text-amber-400" />
+                      <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1">
+                        <Ruler className="w-3 h-3 text-amber-500" />
                         Tilt Angle
                       </span>
-                      <p className="font-semibold text-amber-400 font-mono mt-0.5">
+                      <p className="font-bold text-amber-700 font-mono mt-0.5">
                         {survey.tilt_angle_deg != null ? `${survey.tilt_angle_deg}°` : '22.0°'}
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-500">Shadow-Free Area</span>
-                      <p className="font-semibold text-white font-mono mt-0.5">
+                      <span className="text-[10px] text-slate-500 font-medium">Shadow-Free Area</span>
+                      <p className="font-bold text-slate-900 font-mono mt-0.5">
                         {survey.shadow_free_area_sqft || 350} sq.ft
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-500">DC Cable Run</span>
-                      <p className="font-semibold text-white font-mono mt-0.5">
+                      <span className="text-[10px] text-slate-500 font-medium">DC Cable Run</span>
+                      <p className="font-bold text-slate-900 font-mono mt-0.5">
                         {survey.cable_distance_m || 20} meters
                       </p>
                     </div>
                   </div>
 
                   {/* Technician Notes */}
-                  <div className="text-xs text-slate-300 bg-slate-950/60 p-3 rounded-xl border border-slate-800/60 space-y-1">
-                    <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block">
+                  <div className="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200/90 space-y-1">
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
                       Technician Field Notes:
                     </span>
                     <p className="line-clamp-2 leading-relaxed">
@@ -602,7 +606,7 @@ export default function SiteSurveyView({
                   </div>
 
                   {/* Assigned Crew */}
-                  <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
+                  <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-200">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <User className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
                       <span className="truncate">{tech?.name || 'Lead Solar Technician'}</span>
@@ -643,11 +647,11 @@ export default function SiteSurveyView({
                         type="button"
                         onClick={() => handleUnapprove(survey.id)}
                         disabled={isUnapproving}
-                        className="w-full py-1 text-[11px] text-slate-500 hover:text-amber-400 transition-colors flex items-center justify-center gap-1"
-                        title="Mark back to pending to verify Rule #1 HTTP 400 enforcement"
+                        className="w-full py-1 text-[11px] text-slate-500 hover:text-amber-500 transition-colors flex items-center justify-center gap-1"
+                        title="Mark back to pending to verify Rule #1 gatekeeper enforcement"
                       >
                         <Clock className="w-3 h-3" />
-                        <span>{isUnapproving ? 'Resetting...' : 'Mark Pending (Test Gatekeeper Rule #1)'}</span>
+                        <span>{isUnapproving ? 'Resetting...' : 'Mark Pending (Gatekeeper Verification)'}</span>
                       </button>
                     </div>
                   )}
