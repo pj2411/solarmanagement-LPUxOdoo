@@ -74,12 +74,21 @@ export default function Sidebar({
           </button>
 
           {!isCompact && (
-            <div className="flex items-center gap-2 min-w-0">
-              <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />
-              <div className="text-xs font-bold tracking-tight text-white truncate leading-none">
+            <button
+              type="button"
+              onClick={() => {
+                if (onModuleSelect) onModuleSelect('public-website');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2 min-w-0 cursor-pointer group hover:opacity-90 transition-all focus:outline-none text-left"
+              title="Go to ERP Home (Public Website)"
+              aria-label="Go to ERP Home"
+            >
+              <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <div className="text-xs font-bold tracking-tight text-white truncate leading-none group-hover:text-amber-500 transition-colors">
                 SunPower Solutions
               </div>
-            </div>
+            </button>
           )}
         </div>
 

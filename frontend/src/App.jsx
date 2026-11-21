@@ -381,14 +381,24 @@ export default function App() {
           }`}
         >
           <header className="pointer-events-auto w-full max-w-4xl px-4 py-2 sm:px-6 sm:py-2.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-slate-700/60 shadow-2xl flex items-center justify-between gap-3 sm:gap-6">
-            <a href="#home" className="flex items-center gap-2 group flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('view');
+                if (url.hash.startsWith('#/public')) url.hash = '';
+                window.location.href = url.pathname + (url.search ? url.search : '');
+              }}
+              className="flex items-center gap-2 group flex-shrink-0 cursor-pointer focus:outline-none"
+              title="Go to ERP Home"
+            >
               <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
                 <Sun className="w-4 h-4 text-amber-400 fill-amber-400" />
               </div>
               <span className="text-xs sm:text-sm font-bold tracking-tight text-white hidden sm:inline group-hover:text-amber-400 transition-colors">
-                SunPower
+                SunPower Solutions
               </span>
-            </a>
+            </button>
 
             <nav className="hidden md:flex items-center gap-5 text-xs font-medium text-slate-300">
               <a href="#home" className="hover:text-amber-400 transition-colors">Home</a>
@@ -547,12 +557,21 @@ export default function App() {
             )}
 
             {(!sidebarOpen || sidebarCompact) && (
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />
-                <span className="font-bold text-white text-xs tracking-tight truncate hidden sm:inline">
+              <button
+                type="button"
+                onClick={() => {
+                  setCurrentModule('public-website');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="flex items-center gap-2 flex-shrink-0 cursor-pointer group hover:opacity-90 transition-all focus:outline-none text-left"
+                title="Go to ERP Home (Public Website)"
+                aria-label="Go to ERP Home"
+              >
+                <Sun className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <span className="font-bold text-white text-xs tracking-tight truncate hidden sm:inline group-hover:text-amber-500 transition-colors">
                   SunPower Solutions
                 </span>
-              </div>
+              </button>
             )}
 
             {/* Active Module Indicator / Breadcrumb */}
