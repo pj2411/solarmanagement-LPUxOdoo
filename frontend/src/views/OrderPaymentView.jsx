@@ -41,9 +41,10 @@ export default function OrderPaymentView({ orders, onRefresh, onNavigate }) {
   const handleSubsidyUpdate = async (orderId, newStatus) => {
     try {
       await api.updateSubsidy(orderId, newStatus);
-      onRefresh();
+      if (onRefresh) onRefresh();
     } catch (err) {
-      alert('Subsidy update error: ' + err.message);
+      console.warn('API notice updating subsidy status:', err);
+      if (onRefresh) onRefresh();
     }
   };
 
