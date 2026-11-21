@@ -171,7 +171,7 @@ export default function Sidebar({
     <aside 
       className={`bg-slate-900 border-r border-slate-800 flex flex-col h-screen select-none transition-all duration-300 ease-in-out z-50 flex-shrink-0 overflow-hidden
         ${isOpen 
-          ? (isCompact ? 'w-16' : 'w-64') 
+          ? (isCompact ? 'w-16' : 'w-72') 
           : 'w-0 opacity-0 border-r-0 pointer-events-none'
         }
         max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:shadow-2xl
@@ -202,9 +202,14 @@ export default function Sidebar({
               title="Go to ERP Home (Public Website)"
               aria-label="Go to ERP Home"
             >
-              <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="text-sm font-bold tracking-tight text-slate-900 truncate leading-none group-hover:text-amber-500 transition-colors">
-                SunPower Solutions
+              <Sun className="w-6 h-6 text-amber-400 fill-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <div className="min-w-0">
+                <div className="text-base font-extrabold tracking-tight text-white truncate leading-tight group-hover:text-amber-400 transition-colors">
+                  SunPower Solutions
+                </div>
+                <div className="text-[11px] font-semibold text-slate-400 truncate">
+                  Solar Enterprise ERP
+                </div>
               </div>
             </button>
           )}
@@ -214,28 +219,28 @@ export default function Sidebar({
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
             title="Close menu"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         )}
       </div>
 
       {/* Role Scope Header */}
       {!isCompact && (
-        <div className="px-3 pt-2.5 pb-1 flex-shrink-0 flex items-center justify-between border-b border-slate-800/60 bg-slate-950/40">
-          <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider truncate">
+        <div className="px-4 py-2.5 flex-shrink-0 flex items-center justify-between border-b border-slate-800/80 bg-slate-950/60">
+          <div className="text-xs font-bold text-white uppercase tracking-wider truncate">
             {roleCfg.portalTitle}
           </div>
-          <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 whitespace-nowrap">
+          <span className="text-xs px-2 py-0.5 rounded font-bold bg-white text-slate-950 shadow-sm whitespace-nowrap">
             {roleCfg.badge}
           </span>
         </div>
       )}
 
       {/* Nav List - Dynamically Filtered to Authorized Role Scope */}
-      <nav className={`flex-1 py-1.5 overflow-y-auto space-y-2.5 ${isCompact ? 'px-1 space-y-1 items-center' : 'px-2'}`}>
+      <nav className={`flex-1 py-2 overflow-y-auto space-y-3 ${isCompact ? 'px-1.5 space-y-1.5 items-center' : 'px-3'}`}>
         {isCompact ? (
           // Compact Rail View: Centered Icons with Hover Tooltips
           filteredModules.map((mod) => {
@@ -243,14 +248,14 @@ export default function Sidebar({
             const isActive = currentModule === mod.id;
 
             let badgeText = mod.badge;
-            let badgeColor = 'bg-slate-800 text-slate-300';
+            let badgeColor = 'bg-slate-800 text-slate-200';
             if (mod.id === 'inventory' && stats?.low_stock_items_count > 0) {
               badgeText = `${stats.low_stock_items_count} Low`;
-              badgeColor = 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+              badgeColor = 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
             }
             if (mod.id === 'helpdesk' && stats?.tickets_summary?.open > 0) {
               badgeText = `${stats.tickets_summary.open} Open`;
-              badgeColor = 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
+              badgeColor = 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
             }
 
             return (
@@ -258,21 +263,21 @@ export default function Sidebar({
                 <button
                   type="button"
                   onClick={() => onModuleSelect(mod.id)}
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
                     isActive
-                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-sm'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/80 border border-transparent'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800 border border-transparent'
                   }`}
                   aria-label={mod.label}
                   title={mod.label}
                 >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <Icon className="w-5 h-5 flex-shrink-0" />
                 </button>
 
-                <div className="absolute left-full ml-2 px-2.5 py-1 bg-slate-900/95 backdrop-blur-md text-white text-xs font-semibold rounded-lg shadow-2xl border border-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50 flex items-center gap-1.5">
+                <div className="absolute left-full ml-2 px-3 py-1.5 bg-slate-900/95 backdrop-blur-md text-white text-xs font-bold rounded-lg shadow-2xl border border-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50 flex items-center gap-2">
                   <span>{mod.label}</span>
                   {badgeText && (
-                    <span className={`px-1 py-0.5 rounded text-[9px] font-bold ${badgeColor}`}>
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${badgeColor}`}>
                       {badgeText}
                     </span>
                   )}
@@ -283,44 +288,44 @@ export default function Sidebar({
         ) : (
           // Expanded View: Structured Business Workflow Groups for Active Role
           filteredSections.map((section) => (
-            <div key={section.title} className="space-y-0.5">
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-2 pt-1 pb-0.5 select-none">
+            <div key={section.title} className="space-y-1">
+              <div className="text-xs font-extrabold text-slate-300 uppercase tracking-wider px-2 pt-2 pb-0.5 select-none">
                 {section.title}
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 {section.modules.map((mod) => {
                   const Icon = mod.icon;
                   const isActive = currentModule === mod.id;
 
                   let badgeText = mod.badge;
-                  let badgeColor = 'bg-slate-800/80 text-slate-400 border border-slate-700/50';
+                  let badgeColor = 'bg-slate-800 text-slate-300 border border-slate-700';
 
                   if (mod.id === 'inventory' && stats?.low_stock_items_count > 0) {
                     badgeText = `${stats.low_stock_items_count} Low`;
-                    badgeColor = 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+                    badgeColor = 'bg-rose-500/20 text-rose-300 border border-rose-500/40';
                   }
                   if (mod.id === 'helpdesk' && stats?.tickets_summary?.open > 0) {
                     badgeText = `${stats.tickets_summary.open} Open`;
-                    badgeColor = 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
+                    badgeColor = 'bg-amber-500/20 text-amber-300 border border-amber-500/40';
                   }
 
                   return (
                     <button
                       key={mod.id}
                       onClick={() => onModuleSelect(mod.id)}
-                      className={`sidebar-nav-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group ${
+                      className={`sidebar-nav-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold transition-all group ${
                         isActive
-                          ? 'active bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/30 shadow-sm'
-                          : 'text-slate-300 hover:bg-slate-800/50 hover:text-white border border-transparent'
+                          ? 'active bg-amber-500/20 text-white font-bold border border-amber-500/50 shadow-sm'
+                          : 'text-slate-200 hover:bg-slate-800/80 hover:text-white border border-transparent'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <Icon className={`w-3.5 h-3.5 flex-shrink-0 transition-colors ${
-                          isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-amber-400'
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${
+                          isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-white'
                         }`} />
                         <span className="truncate">{mod.label}</span>
                       </div>
-                      <div className="flex items-center gap-1 flex-shrink-0">
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
                         {mod.id === 'public-website' && (
                           <span
                             onClick={(e) => {
@@ -328,13 +333,13 @@ export default function Sidebar({
                               window.open(`${window.location.origin}${window.location.pathname}?view=public`, '_blank');
                             }}
                             title="Open standalone public website in new tab"
-                            className="p-0.5 rounded hover:bg-slate-700/80 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                            className="p-1 rounded hover:bg-slate-700/80 text-slate-400 hover:text-white transition-colors cursor-pointer"
                           >
-                            <ExternalLink className="w-3 h-3" />
+                            <ExternalLink className="w-3.5 h-3.5" />
                           </span>
                         )}
                         {badgeText && (
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold whitespace-nowrap ${badgeColor}`}>
+                          <span className={`px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap ${badgeColor}`}>
                             {badgeText}
                           </span>
                         )}
@@ -349,33 +354,33 @@ export default function Sidebar({
       </nav>
 
       {/* User Profile & Persona Switcher at Bottom */}
-      <div className={`border-t border-slate-800 bg-slate-950/80 flex-shrink-0 ${isCompact ? 'p-1.5 flex items-center justify-center' : 'p-2.5'}`}>
+      <div className={`border-t border-slate-800 bg-slate-950/90 flex-shrink-0 ${isCompact ? 'p-2 flex items-center justify-center' : 'p-3'}`}>
         {isCompact ? (
           <div className="relative group flex items-center justify-center">
-            <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center border border-amber-500/30 cursor-pointer">
+            <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-300 font-bold text-sm flex items-center justify-center border border-amber-500/30 cursor-pointer">
               {currentUser?.name ? currentUser.name[0].toUpperCase() : 'V'}
             </div>
-            <div className="absolute left-full ml-2 bottom-0 px-2.5 py-1 bg-slate-900 text-white text-xs font-semibold rounded-lg shadow-2xl border border-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50">
+            <div className="absolute left-full ml-2 bottom-0 px-3 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-lg shadow-2xl border border-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50">
               <div>{currentUser?.name || 'Vikram Malhotra'}</div>
-              <div className="text-[10px] text-amber-400">{currentRole || 'ADMIN'}</div>
+              <div className="text-xs text-amber-400 mt-0.5">{currentRole || 'ADMIN'}</div>
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center border border-amber-500/30 flex-shrink-0">
+          <div className="flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-full bg-amber-500/20 text-amber-300 font-extrabold text-sm flex items-center justify-center border border-amber-500/40 flex-shrink-0">
                 {currentUser?.name ? currentUser.name[0].toUpperCase() : 'V'}
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-bold text-white truncate">
+                <div className="text-sm font-bold text-white truncate">
                   {currentUser?.name || 'Vikram Malhotra'}
                 </div>
-                <div className="flex items-center gap-1 mt-0.5">
+                <div className="flex items-center gap-1.5 mt-0.5">
                   {onRoleChange ? (
                     <select
                       value={currentRole || 'ADMIN'}
                       onChange={(e) => onRoleChange(e.target.value)}
-                      className="text-[9px] bg-slate-800 text-amber-400 font-semibold rounded px-1 py-0.5 border border-slate-700 cursor-pointer focus:outline-none focus:border-amber-500"
+                      className="text-xs bg-slate-800 text-white font-semibold rounded-lg px-2 py-0.5 border border-slate-700 cursor-pointer focus:outline-none focus:border-amber-500"
                       title="Switch Persona"
                     >
                       <option value="ADMIN">Admin</option>
@@ -386,7 +391,7 @@ export default function Sidebar({
                       <option value="CUSTOMER">Customer</option>
                     </select>
                   ) : (
-                    <span className="text-[9px] text-slate-400 uppercase font-semibold tracking-wider">
+                    <span className="text-xs text-slate-300 uppercase font-bold tracking-wider">
                       {currentRole || 'ADMIN'}
                     </span>
                   )}
@@ -398,10 +403,10 @@ export default function Sidebar({
               <button
                 onClick={onLogout}
                 type="button"
-                className="p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors flex-shrink-0"
+                className="p-1.5 rounded-lg text-slate-300 hover:text-rose-400 hover:bg-slate-800 transition-colors flex-shrink-0"
                 title="Sign out of ERP session"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-4 h-4" />
               </button>
             )}
           </div>

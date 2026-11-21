@@ -234,16 +234,16 @@ export default function LoginView({ onLogin, onExplorePublic }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-black text-white flex flex-col justify-between font-sans selection:bg-white selection:text-black">
       {/* Top Bar Header */}
-      <header className="px-6 py-4 flex items-center justify-between border-b border-slate-800 bg-slate-900/90 backdrop-blur-sm">
+      <header className="px-6 py-4 flex items-center justify-between border-b border-slate-800 bg-black">
         <div className="flex items-center gap-3">
-          <Sun className="w-6 h-6 text-amber-400 fill-amber-400 flex-shrink-0" />
+          <Sun className="w-6 h-6 text-white fill-white flex-shrink-0" />
           <div>
-            <div className="text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
+            <div className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
               SunPower Solutions
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                Official Portal
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-white text-black font-extrabold border border-white">
+                Official ERP Portal
               </span>
             </div>
           </div>
@@ -254,9 +254,9 @@ export default function LoginView({ onLogin, onExplorePublic }) {
             <button
               type="button"
               onClick={onExplorePublic}
-              className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-1.5 transition-colors whitespace-nowrap"
+              className="px-4 py-2 rounded-xl bg-white hover:bg-slate-200 text-black border border-white text-xs font-bold flex items-center gap-2 transition-colors whitespace-nowrap cursor-pointer shadow-sm"
             >
-              <Globe className="w-3.5 h-3.5 text-amber-400" />
+              <Globe className="w-4 h-4 text-black" />
               <span>Public Website & Solar Calculator</span>
             </button>
           </div>
@@ -265,17 +265,17 @@ export default function LoginView({ onLogin, onExplorePublic }) {
 
       {/* Main Login Workspace */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-4xl grid lg:grid-cols-12 gap-6 bg-slate-900 border border-slate-800 rounded-3xl p-6 lg:p-8 shadow-2xl relative overflow-hidden">
+        <div className="w-full max-w-5xl grid lg:grid-cols-12 gap-8 bg-black border-2 border-slate-800 rounded-3xl p-6 lg:p-8 shadow-2xl relative overflow-hidden">
 
           {/* Left Column: Form (Login / Register / Forgot) */}
           <div className="lg:col-span-7 space-y-6">
             {/* Mode Switcher Tabs */}
-            <div className="flex border-b border-slate-800 pb-3 gap-4 text-xs font-semibold">
+            <div className="flex border-b-2 border-slate-800 pb-3 gap-6 text-sm font-bold">
               <button
                 type="button"
                 onClick={() => { setActiveTab('LOGIN'); setErrorMsg(''); setSuccessMsg(''); }}
-                className={`pb-1 border-b-2 transition-colors ${
-                  activeTab === 'LOGIN' ? 'border-amber-500 text-amber-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+                className={`pb-1 border-b-2 transition-all cursor-pointer ${
+                  activeTab === 'LOGIN' ? 'border-white text-white font-extrabold' : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 Sign In
@@ -283,8 +283,8 @@ export default function LoginView({ onLogin, onExplorePublic }) {
               <button
                 type="button"
                 onClick={() => { setActiveTab('REGISTER'); setErrorMsg(''); setSuccessMsg(''); }}
-                className={`pb-1 border-b-2 transition-colors ${
-                  activeTab === 'REGISTER' ? 'border-amber-500 text-amber-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+                className={`pb-1 border-b-2 transition-all cursor-pointer ${
+                  activeTab === 'REGISTER' ? 'border-white text-white font-extrabold' : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 Create Account
@@ -292,8 +292,8 @@ export default function LoginView({ onLogin, onExplorePublic }) {
               <button
                 type="button"
                 onClick={() => { setActiveTab('FORGOT'); setErrorMsg(''); setSuccessMsg(''); setForgotStep(1); }}
-                className={`pb-1 border-b-2 transition-colors ${
-                  activeTab === 'FORGOT' ? 'border-amber-500 text-amber-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+                className={`pb-1 border-b-2 transition-all cursor-pointer ${
+                  activeTab === 'FORGOT' ? 'border-white text-white font-extrabold' : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 Password Recovery
@@ -302,88 +302,88 @@ export default function LoginView({ onLogin, onExplorePublic }) {
 
             {/* Error & Success Messages */}
             {errorMsg && (
-              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-rose-400 flex-shrink-0" />
+              <div className="p-3.5 rounded-xl bg-slate-900 border-2 border-white text-white text-xs font-bold flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-white flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
             {successMsg && (
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <div className="p-3.5 rounded-xl bg-slate-900 border-2 border-white text-white text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />
                 <span>{successMsg}</span>
               </div>
             )}
 
             {/* FORM: LOGIN */}
             {activeTab === 'LOGIN' && (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-bold text-white tracking-tight">
+                  <h2 className="text-2xl font-black text-white tracking-tight">
                     Welcome to SunPower Portal
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-sm text-slate-200 mt-1 font-medium">
                     Sign in to access your authorized role across all 13 solar modules.
                   </p>
                 </div>
 
-                <form onSubmit={handleLoginSubmit} className="space-y-4">
+                <form onSubmit={handleLoginSubmit} className="space-y-5">
                   <div>
-                    <label className="text-xs font-medium text-slate-300 block mb-1">
+                    <label className="text-sm font-bold text-white block mb-1.5">
                       Enterprise Email Address
                     </label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                      <Mail className="w-4 h-4 text-slate-300 absolute left-3.5 top-3" />
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="e.g. admin@sunpower.in"
-                        className="w-full pl-9 pr-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                        className="w-full pl-10 pr-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-white font-medium"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex justify-between items-center mb-1">
-                      <label className="text-xs font-medium text-slate-300">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="text-sm font-bold text-white">
                         Account Password
                       </label>
                       <button
                         type="button"
                         onClick={() => setActiveTab('FORGOT')}
-                        className="text-[11px] text-amber-400 hover:underline"
+                        className="text-xs font-bold text-white hover:underline cursor-pointer"
                       >
                         Forgot password?
                       </button>
                     </div>
                     <div className="relative">
-                      <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                      <Lock className="w-4 h-4 text-slate-300 absolute left-3.5 top-3" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••••••"
-                        className="w-full pl-9 pr-10 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white font-mono placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                        className="w-full pl-10 pr-10 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white font-mono placeholder-slate-400 focus:outline-none focus:border-white"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-2.5 text-slate-400 hover:text-white"
+                        className="absolute right-3.5 top-3 text-slate-300 hover:text-white cursor-pointer"
                       >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showPassword ? <EyeOff className="w-4 h-4 text-white" /> : <Eye className="w-4 h-4 text-white" />}
                       </button>
                     </div>
                   </div>
 
                   <div className="flex items-center text-xs">
-                    <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+                    <label className="flex items-center gap-2 text-white font-medium cursor-pointer">
                       <input
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="accent-amber-500 rounded"
+                        className="w-4 h-4 accent-white rounded cursor-pointer"
                       />
                       <span>Keep me signed in for 30 days</span>
                     </label>
@@ -392,10 +392,10 @@ export default function LoginView({ onLogin, onExplorePublic }) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-lg shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-sm transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {loading ? 'Authenticating session...' : 'Sign in to ERP Portal'}
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 text-black" />
                   </button>
                 </form>
               </div>
@@ -403,46 +403,46 @@ export default function LoginView({ onLogin, onExplorePublic }) {
 
             {/* FORM: REGISTER */}
             {activeTab === 'REGISTER' && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-bold text-white tracking-tight">
+                  <h2 className="text-2xl font-black text-white tracking-tight">
                     Create New Account
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-sm text-slate-200 mt-1 font-medium">
                     Register as homeowner, certified field technician, or solar ops staff.
                   </p>
                 </div>
 
-                <form onSubmit={handleRegisterSubmit} className="space-y-3">
+                <form onSubmit={handleRegisterSubmit} className="space-y-4">
                   <div>
-                    <label className="text-xs text-slate-300 font-medium block mb-1">Full Name *</label>
+                    <label className="text-sm text-white font-bold block mb-1.5">Full Name *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Jaspreet Singh"
                       value={regForm.name}
                       onChange={(e) => setRegForm({ ...regForm, name: e.target.value })}
-                      className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                      className="w-full px-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-white font-medium"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-slate-300 font-medium block mb-1">Email *</label>
+                      <label className="text-sm text-white font-bold block mb-1.5">Email *</label>
                       <input
                         type="email"
                         required
                         placeholder="name@gmail.com"
                         value={regForm.email}
                         onChange={(e) => setRegForm({ ...regForm, email: e.target.value })}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-white font-medium"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-300 font-medium block mb-1">Assigned Role *</label>
+                      <label className="text-sm text-white font-bold block mb-1.5">Assigned Role *</label>
                       <select
                         value={regForm.role}
                         onChange={(e) => setRegForm({ ...regForm, role: e.target.value })}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white focus:outline-none focus:border-white font-bold cursor-pointer"
                       >
                         <option value="CUSTOMER">Customer / Homeowner</option>
                         <option value="TECHNICIAN">Field Technician</option>
@@ -453,34 +453,34 @@ export default function LoginView({ onLogin, onExplorePublic }) {
                       </select>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-slate-300 font-medium block mb-1">Password *</label>
+                      <label className="text-sm text-white font-bold block mb-1.5">Password *</label>
                       <input
                         type="password"
                         required
                         placeholder="••••••••"
                         value={regForm.password}
                         onChange={(e) => setRegForm({ ...regForm, password: e.target.value })}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-white"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-300 font-medium block mb-1">Confirm Password *</label>
+                      <label className="text-sm text-white font-bold block mb-1.5">Confirm Password *</label>
                       <input
                         type="password"
                         required
                         placeholder="••••••••"
                         value={regForm.confirmPassword}
                         onChange={(e) => setRegForm({ ...regForm, confirmPassword: e.target.value })}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-white"
                       />
                     </div>
                   </div>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-sm disabled:opacity-50 mt-2"
+                    className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-sm transition-all shadow-xl disabled:opacity-50 mt-2 cursor-pointer"
                   >
                     {loading ? 'Creating account...' : 'Complete Registration'}
                   </button>
@@ -490,12 +490,12 @@ export default function LoginView({ onLogin, onExplorePublic }) {
 
             {/* FORM: FORGOT PASSWORD */}
             {activeTab === 'FORGOT' && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-bold text-white tracking-tight">
+                  <h2 className="text-2xl font-black text-white tracking-tight">
                     Reset Account Password
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-sm text-slate-200 mt-1 font-medium">
                     Enter your email to receive an instant 6-digit recovery code.
                   </p>
                 </div>
@@ -503,7 +503,7 @@ export default function LoginView({ onLogin, onExplorePublic }) {
                 {forgotStep === 1 && (
                   <form onSubmit={handleForgotStep1} className="space-y-4">
                     <div>
-                      <label className="text-xs font-medium text-slate-300 block mb-1">
+                      <label className="text-sm font-bold text-white block mb-1.5">
                         Registered Email Address
                       </label>
                       <input
@@ -512,13 +512,13 @@ export default function LoginView({ onLogin, onExplorePublic }) {
                         placeholder="e.g. arvind.sharma@gmail.com"
                         value={forgotEmail}
                         onChange={(e) => setForgotEmail(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-white font-medium"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-sm disabled:opacity-50"
+                      className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-sm transition-all shadow-xl disabled:opacity-50 cursor-pointer"
                     >
                       {loading ? 'Sending code...' : 'Dispatch Verification Code'}
                     </button>
@@ -527,11 +527,11 @@ export default function LoginView({ onLogin, onExplorePublic }) {
 
                 {forgotStep === 2 && (
                   <form onSubmit={handleForgotStep2} className="space-y-4">
-                    <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs">
-                      Code dispatched to {forgotEmail}. Demo OTP: <b>849201</b>
+                    <div className="p-3.5 rounded-xl bg-black border-2 border-white text-white text-xs font-bold">
+                      Code dispatched to {forgotEmail}. Demo OTP: <b className="font-mono text-sm underline">849201</b>
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-slate-300 block mb-1">
+                      <label className="text-sm font-bold text-white block mb-1.5">
                         Enter 6-digit OTP
                       </label>
                       <input
@@ -539,11 +539,11 @@ export default function LoginView({ onLogin, onExplorePublic }) {
                         required
                         value={otpCode}
                         onChange={(e) => setOtpCode(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-center tracking-widest text-base"
+                        className="w-full px-3 py-2.5 text-base bg-black border-2 border-slate-700 rounded-xl text-white font-mono text-center tracking-widest"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-slate-300 block mb-1">
+                      <label className="text-sm font-bold text-white block mb-1.5">
                         Enter New Password
                       </label>
                       <input
@@ -552,13 +552,13 @@ export default function LoginView({ onLogin, onExplorePublic }) {
                         placeholder="••••••••••••"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2.5 text-sm bg-black border-2 border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-white"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shadow-sm disabled:opacity-50"
+                      className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-sm transition-all shadow-xl disabled:opacity-50 cursor-pointer"
                     >
                       {loading ? 'Saving...' : 'Update Password & Return to Login'}
                     </button>
@@ -567,13 +567,13 @@ export default function LoginView({ onLogin, onExplorePublic }) {
 
                 {forgotStep === 3 && (
                   <div className="text-center py-4 space-y-3">
-                    <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-                    <h4 className="text-sm font-bold text-white">Password Updated</h4>
-                    <p className="text-xs text-slate-400">You may now sign in using your new password.</p>
+                    <CheckCircle2 className="w-10 h-10 text-white mx-auto" />
+                    <h4 className="text-base font-bold text-white">Password Updated</h4>
+                    <p className="text-xs text-slate-300">You may now sign in using your new password.</p>
                     <button
                       type="button"
                       onClick={() => setActiveTab('LOGIN')}
-                      className="px-5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs"
+                      className="px-6 py-2.5 rounded-xl bg-white text-black font-extrabold text-xs cursor-pointer shadow-lg"
                     >
                       Sign In Now
                     </button>
@@ -584,18 +584,18 @@ export default function LoginView({ onLogin, onExplorePublic }) {
           </div>
 
           {/* Right Column: 1-Click Fast Persona Login */}
-          <div className="lg:col-span-5 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+          <div className="lg:col-span-5 bg-black border-2 border-slate-700 rounded-2xl p-5 space-y-4 flex flex-col justify-between shadow-2xl">
             <div>
-              <div className="flex items-center gap-1.5 text-amber-400 mb-1">
-                <Sparkles className="w-4 h-4" />
-                <h3 className="text-xs font-bold text-white">1-Click Persona Quick Access</h3>
+              <div className="flex items-center gap-2 text-white mb-1.5">
+                <Sparkles className="w-4 h-4 text-white" />
+                <h3 className="text-sm font-black text-white">1-Click Persona Quick Access</h3>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-xs text-slate-300 font-medium">
                 Click any certified role below to immediately enter the ERP with authorized permissions:
               </p>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {solarDemoAccounts.map((acc) => {
                 const RoleIcon = acc.Icon;
                 return (
@@ -603,40 +603,43 @@ export default function LoginView({ onLogin, onExplorePublic }) {
                     key={acc.role}
                     type="button"
                     onClick={() => handleFastDirectLogin(acc)}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 bg-slate-900/60 hover:bg-slate-900 transition-colors text-left group"
+                    className="w-full flex items-center justify-between p-3 rounded-xl border-2 border-slate-700 hover:border-white bg-black hover:bg-slate-900 transition-all text-left group cursor-pointer shadow-md"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 flex-shrink-0 text-amber-400 group-hover:border-amber-500/40">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="p-2 rounded-lg bg-slate-900 border border-slate-700 flex-shrink-0 text-white group-hover:bg-white group-hover:text-black transition-colors">
                         <RoleIcon className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-semibold text-white group-hover:text-amber-400 flex items-center gap-1.5 truncate">
+                        <div className="text-sm font-black text-white flex items-center gap-2 truncate">
                           <span>{acc.title}</span>
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-amber-400 font-mono font-bold border border-slate-700">
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-white text-black font-mono font-black border border-white">
                             {acc.role}
                           </span>
                         </div>
-                        <div className="text-[10px] text-slate-400 truncate flex items-center gap-1 mt-0.5">
-                          <span className="text-amber-400/80 font-medium">▸ {acc.scope}</span>
+                        <div className="text-xs text-slate-200 truncate flex items-center gap-1 mt-0.5 font-medium">
+                          <span>▸ {acc.scope}</span>
                         </div>
                       </div>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-amber-400 flex-shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform flex-shrink-0" />
                   </button>
                 );
               })}
             </div>
 
-            <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-500 flex items-center justify-between">
+            <div className="pt-3 border-t-2 border-slate-800 text-xs text-slate-300 flex items-center justify-between font-medium">
               <span>SQLite Relational Engine Active</span>
-              <span className="text-emerald-400 font-medium">● Online</span>
+              <span className="text-white font-bold flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-white inline-block"></span>
+                Online
+              </span>
             </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="px-6 py-3 border-t border-slate-800/80 bg-slate-900/40 text-center text-[11px] text-slate-500">
+      <footer className="px-6 py-3 border-t border-slate-800 bg-black text-center text-xs text-slate-400 font-medium">
         SunPower Solutions Standalone ERP
       </footer>
     </div>
