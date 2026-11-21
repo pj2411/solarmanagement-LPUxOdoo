@@ -283,6 +283,32 @@ export default function App() {
     };
   }, []);
 
+  // Floating header visibility state for standalone public view
+  const [showPublicNav, setShowPublicNav] = useState(true);
+
+  useEffect(() => {
+    if (!isStandalonePublic) return;
+
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      // Reappear when scrolling up or at the very top
+      if (currentScrollY <= 30) {
+        setShowPublicNav(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 60) {
+        // Disappear smoothly when scrolling down
+        setShowPublicNav(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Reappear when scrolling up
+        setShowPublicNav(true);
+      }
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isStandalonePublic]);
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     if (typeof window !== 'undefined') {
@@ -294,51 +320,57 @@ export default function App() {
   if (isStandalonePublic) {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
-        {/* Sleek Standalone Public Header */}
-        <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 lg:px-8 py-3.5 flex items-center justify-between shadow-md">
-          <div className="flex items-center gap-2.5">
-            <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <div className="text-sm font-bold tracking-tight text-white leading-none">
-                SunPower Solutions
+        {/* Sleek Floating Centered Concise Public Toolbar */}
+        <div
+          className={`fixed top-4 inset-x-0 z-50 flex justify-center px-4 transition-all duration-300 ease-in-out pointer-events-none ${
+            showPublicNav ? 'translate-y-0 opacity-100' : '-translate-y-24 opacity-0'
+          }`}
+        >
+          <header className="pointer-events-auto w-full max-w-4xl px-4 py-2 sm:px-6 sm:py-2.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-slate-700/60 shadow-2xl flex items-center justify-between gap-3 sm:gap-6">
+            <a href="#home" className="flex items-center gap-2 group flex-shrink-0">
+              <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
+                <Sun className="w-4 h-4 text-amber-400 fill-amber-400" />
               </div>
-            </div>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
-            <a href="#home" className="hover:text-amber-400 transition-colors">Home</a>
-            <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
-            <a href="#systems" className="hover:text-amber-400 transition-colors">Packages</a>
-            <a href="#calculator" className="hover:text-amber-400 transition-colors">Solar Calculator</a>
-            <a href="#subsidy" className="hover:text-amber-400 transition-colors">DBT Subsidy</a>
-            <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a
-              href="#contact"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 text-xs font-semibold transition-colors"
-            >
-              Get Free Survey
+              <span className="text-xs sm:text-sm font-bold tracking-tight text-white hidden sm:inline group-hover:text-amber-400 transition-colors">
+                SunPower
+              </span>
             </a>
-            <button
-              type="button"
-              onClick={() => {
-                const url = new URL(window.location.href);
-                url.searchParams.delete('view');
-                if (url.hash.startsWith('#/public')) url.hash = '';
-                window.location.href = url.pathname + (url.search ? url.search : '');
-              }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all shadow-sm shadow-amber-500/20 cursor-pointer"
-              title="Return to ERP Portal"
-            >
-              Staff ERP Portal
-            </button>
-          </div>
-        </header>
+
+            <nav className="hidden md:flex items-center gap-5 text-xs font-medium text-slate-300">
+              <a href="#home" className="hover:text-amber-400 transition-colors">Home</a>
+              <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
+              <a href="#systems" className="hover:text-amber-400 transition-colors">Packages</a>
+              <a href="#calculator" className="hover:text-amber-400 transition-colors">Calculator</a>
+              <a href="#subsidy" className="hover:text-amber-400 transition-colors">Subsidy</a>
+              <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
+            </nav>
+
+            <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
+              <a
+                href="#contact"
+                className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 text-[11px] font-semibold transition-colors"
+              >
+                Free Survey
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  const url = new URL(window.location.href);
+                  url.searchParams.delete('view');
+                  if (url.hash.startsWith('#/public')) url.hash = '';
+                  window.location.href = url.pathname + (url.search ? url.search : '');
+                }}
+                className="inline-flex items-center px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-bold transition-all shadow-sm shadow-amber-500/20 cursor-pointer"
+                title="Return to ERP Portal"
+              >
+                Staff ERP
+              </button>
+            </div>
+          </header>
+        </div>
 
         {/* Public Content Container */}
-        <main className="flex-1 p-4 lg:p-8 bg-square-grid">
+        <main className="flex-1 pt-20 sm:pt-24 p-4 lg:p-8 bg-square-grid">
           <PublicWebsiteView 
             isStandalone={true}
             onNavigate={(mod) => {

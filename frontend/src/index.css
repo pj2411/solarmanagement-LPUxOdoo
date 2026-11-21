@@ -6,37 +6,192 @@
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
   /* ========================================================
-     SQUARE GRID OPACITY & COLOR CONTROLS
-     Change the values below to adjust across the entire website:
+     SQUARE GRID & LIGHT THEME COLOR TOKENS
+     Deep Navy & Slate Light Palette with Solar Amber Accents
      ======================================================== */
-  --grid-bg-color: rgba(2, 6, 23, 0.02); /* Solid background color at minimum opacity (2%) */
-  --grid-color: 255, 255, 255;    /* Grid line RGB color (default: white) */
-  --grid-opacity: 0.0425;         /* Grid line opacity kept intact at 4.25% */
-  --grid-glow-opacity: 0.04;      /* Solar top ambient glow opacity */
+  --grid-bg-color: #f8fafc;        /* Crisp Light Slate canvas */
+  --grid-color: 15, 23, 42;        /* Deep Slate (#0f172a) grid lines */
+  --grid-opacity: 0.045;           /* Clean subtle grid opacity (4.5%) */
+  --grid-glow-opacity: 0.055;      /* Warm solar amber ambient top glow */
   --grid-size: 40px;               /* Square cell size: 40px */
 }
 
-/* Lighten and soften root canvas so the website is not overwhelmingly pitch dark */
+/* Base Light Canvas: Clean Slate with Soft Solar Top Ambient Glow */
 html, body, #root {
-  background-color: #0d1527;
-  background-image: radial-gradient(circle at 50% -10%, #1a2b4c 0%, #0e172a 60%, #0a101d 100%);
+  background-color: #f8fafc;
+  background-image: radial-gradient(circle at 50% -8%, #fef3c7 0%, #f1f5f9 48%, #e2e8f0 100%);
+  color: #0f172a;
   min-height: 100vh;
 }
 
-/* Soften Deep Solar Slate surfaces with breathable opacity */
+/* ========================================================
+   LIGHT PALETTE SURFACE MAPPINGS (Deep Navy & Slate Theme)
+   ======================================================== */
 .bg-slate-950 {
-  background-color: rgba(10, 16, 30, 0.45);
+  background-color: #f1f5f9 !important; /* Soft light slate background */
 }
 .bg-slate-900 {
-  background-color: rgba(15, 25, 46, 0.55);
+  background-color: #ffffff !important; /* Pure white crisp card surface */
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
 }
 .bg-slate-850 {
-  background-color: rgba(20, 33, 60, 0.60);
+  background-color: #f8fafc !important; /* Elevated card surface */
 }
-.border-slate-800 {
-  border-color: rgba(51, 65, 85, 0.35);
+.bg-slate-800 {
+  background-color: #e2e8f0 !important; /* Inner panel / secondary surface */
+}
+.bg-slate-700 {
+  background-color: #cbd5e1 !important;
 }
 
+/* Translucent surfaces for floating headers, toolbars, and backdrops */
+[class*="bg-slate-900\/"] {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+[class*="bg-slate-950\/"] {
+  background-color: rgba(241, 245, 249, 0.88) !important;
+}
+[class*="bg-slate-850\/"] {
+  background-color: rgba(248, 250, 252, 0.90) !important;
+}
+[class*="bg-slate-800\/"] {
+  background-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+/* Borders in Light Theme */
+.border-slate-800,
+[class*="border-slate-800"] {
+  border-color: #e2e8f0 !important; /* Crisp light divider */
+}
+.border-slate-700,
+[class*="border-slate-700"] {
+  border-color: #cbd5e1 !important; /* Subtle input and container border */
+}
+.border-slate-600 {
+  border-color: #94a3b8 !important;
+}
+
+/* ========================================================
+   TYPOGRAPHY CONTRAST & LEGIBILITY (Deep Navy & Slate)
+   ======================================================== */
+.text-slate-100 {
+  color: #0f172a !important; /* Primary text: Deep Navy */
+}
+.text-slate-200 {
+  color: #1e293b !important; /* Deep Slate */
+}
+.text-slate-300 {
+  color: #334155 !important; /* Medium Slate */
+}
+.text-slate-400 {
+  color: #64748b !important; /* Muted Slate */
+}
+.text-slate-500 {
+  color: #64748b !important;
+}
+.text-slate-950 {
+  color: #080d1a !important; /* High-contrast text on amber CTAs */
+}
+
+/* Text white on light surfaces becomes Deep Navy */
+.text-white {
+  color: #0f172a !important;
+}
+
+/* Solar Amber in Light Theme: warm & rich amber for high legibility */
+.text-amber-400 {
+  color: #d97706 !important; /* Amber-600 for high contrast on light canvas */
+}
+.fill-amber-400 {
+  fill: #f59e0b !important;
+}
+
+/* ========================================================
+   PRESERVE WHITE TEXT ON SOLID COLORED BUTTONS & BADGES
+   ======================================================== */
+[class*="bg-emerald-600"] *,
+[class*="bg-emerald-500"] *,
+[class*="bg-blue-600"] *,
+[class*="bg-blue-500"] *,
+[class*="bg-rose-600"] *,
+[class*="bg-rose-500"] *,
+[class*="bg-red-600"] *,
+[class*="bg-red-500"] *,
+[class*="bg-indigo-600"] *,
+[class*="bg-indigo-500"] *,
+[class*="bg-purple-600"] *,
+[class*="bg-gradient-to"] *,
+[class*="bg-emerald-600"],
+[class*="bg-emerald-500"],
+[class*="bg-blue-600"],
+[class*="bg-blue-500"],
+[class*="bg-rose-600"],
+[class*="bg-rose-500"],
+[class*="bg-red-600"],
+[class*="bg-red-500"],
+[class*="bg-indigo-600"],
+[class*="bg-indigo-500"],
+[class*="bg-purple-600"],
+[class*="bg-gradient-to"] {
+  color: #ffffff !important;
+}
+
+/* Solid amber buttons have dark text for maximum WCAG contrast */
+button.bg-amber-500,
+button.bg-amber-400,
+a.bg-amber-500,
+a.bg-amber-400 {
+  color: #080d1a !important;
+}
+
+/* ========================================================
+   FORM CONTROLS (Inputs, Selects, Textareas)
+   ======================================================== */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #f59e0b !important;
+  outline: 2px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+/* Tables in Light Theme */
+thead {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+tr:hover {
+  background-color: rgba(248, 250, 252, 0.9) !important;
+}
+
+/* Hover States for Interactive Elements */
+.hover\:bg-slate-800:hover {
+  background-color: #e2e8f0 !important;
+}
+.hover\:bg-slate-700:hover {
+  background-color: #cbd5e1 !important;
+}
+.hover\:text-white:hover {
+  color: #0f172a !important;
+}
+.hover\:text-amber-400:hover {
+  color: #b45309 !important;
+}
+
+/* Code & Monospace */
 code, pre, .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }
@@ -47,19 +202,19 @@ code, pre, .font-mono {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #cbd5e1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #f59e0b;
 }
 
-/* Technical Square Grid Background (Driven by CSS variables above) */
+/* Technical Square Grid Background */
 .bg-square-grid {
-  background-color: var(--grid-bg-color, rgba(2, 6, 23, 0.6));
+  background-color: var(--grid-bg-color, #f8fafc);
   background-image: 
     radial-gradient(circle at 50% 0%, rgba(245, 158, 11, var(--grid-glow-opacity)) 0%, transparent 65%),
     linear-gradient(to right, rgba(var(--grid-color), var(--grid-opacity)) 1px, transparent 1px),
