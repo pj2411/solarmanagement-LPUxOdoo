@@ -399,3 +399,47 @@ def v1_get_installation(id: int, db: Session = Depends(get_db)):
     return make_envelope(
         data=schemas.InstallationOut.model_validate(inst).model_dump()
     )
+
+@router.get("/employees/{id}/jobs")
+def v1_get_employee_jobs(id: int, db: Session = Depends(get_db)):
+    try:
+        surveys = db.query(models.SiteSurvey).filter(models.SiteSurvey.technician_id == id).all()
+        installations = db.query(models.Installation).filter(models.Installation.technician_id == id).all()
+        
+        survey_list = []
+        for s in surveys:
+            cust = "Unknown"
+            if s.lead and getattr(s.lead, "customer_name", None):
+                cust = s.lead.customer_name
+            survey_list.append({
+                "id": s.id,
+                "customer": cust,
+                "approved": bool(getattr(s, "is_approved", False))
+            })
+
+        inst_list = []
+        for i in installations:
+            cust = "Unknown"
+            if i.order and i.order.lead and getattr(i.order.lead, "customer_name", None):
+                cust = i.order.lead.customer_name
+            inst_list.append({
+                "id": i.id,
+                "customer": cust,
+                "progress": getattr(i, "progress_pct", 0) or 0,
+                "completed": bool(getattr(i, "is_completed", False))
+            })
+
+        data = {
+            "surveys_count": len(survey_list),
+            "installations_count": len(inst_list),
+            "surveys": survey_list,
+            "installations": inst_list
+        }
+        return make_envelope(data=data)
+    except Exception as e:
+        return make_envelope(data={
+            "surveys_count": 0,
+            "installations_count": 0,
+            "surveys": [],
+            "installations": []
+        })

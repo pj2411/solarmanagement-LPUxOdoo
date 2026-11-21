@@ -873,14 +873,47 @@ def update_attendance(id: int, attendance_status: str = Query(...), db: Session 
 
 @app.get("/api/employees/{id}/jobs")
 def get_employee_jobs(id: int, db: Session = Depends(get_db)):
-    surveys = db.query(models.SiteSurvey).filter(models.SiteSurvey.technician_id == id).all()
-    installations = db.query(models.Installation).filter(models.Installation.technician_id == id).all()
-    return {
-        "surveys_count": len(surveys),
-        "installations_count": len(installations),
-        "surveys": [{"id": s.id, "customer": s.lead.customer_name if s.lead else "Unknown", "approved": s.is_approved} for s in surveys],
-        "installations": [{"id": i.id, "customer": i.order.lead.customer_name if i.order and i.order.lead else "Unknown", "progress": i.progress_pct, "completed": i.is_completed} for i in installations]
-    }
+    try:
+        surveys = db.query(models.SiteSurvey).filter(models.SiteSurvey.technician_id == id).all()
+        installations = db.query(models.Installation).filter(models.Installation.technician_id == id).all()
+        
+        survey_list = []
+        for s in surveys:
+            cust = "Unknown"
+            if s.lead and getattr(s.lead, "customer_name", None):
+                cust = s.lead.customer_name
+            survey_list.append({
+                "id": s.id,
+                "customer": cust,
+                "approved": bool(getattr(s, "is_approved", False))
+            })
+
+        inst_list = []
+        for i in installations:
+            cust = "Unknown"
+            if i.order and i.order.lead and getattr(i.order.lead, "customer_name", None):
+                cust = i.order.lead.customer_name
+            inst_list.append({
+                "id": i.id,
+                "customer": cust,
+                "progress": getattr(i, "progress_pct", 0) or 0,
+                "completed": bool(getattr(i, "is_completed", False))
+            })
+
+        return {
+            "surveys_count": len(survey_list),
+            "installations_count": len(inst_list),
+            "surveys": survey_list,
+            "installations": inst_list
+        }
+    except Exception as e:
+        print(f"Error fetching jobs for employee {id}: {e}")
+        return {
+            "surveys_count": 0,
+            "installations_count": 0,
+            "surveys": [],
+            "installations": []
+        }
 
 # ----------------- 11. MANDATORY RULE 5: DYNAMIC PROJECT-WISE P&L & ANALYTICS -----------------
 @app.get("/api/analytics")
