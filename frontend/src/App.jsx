@@ -401,19 +401,94 @@ export default function App() {
             </button>
 
             <nav className="hidden md:flex items-center gap-3.5 lg:gap-5 text-xs lg:text-sm font-medium text-slate-300">
-              <a href="#home" className="hover:text-amber-500 transition-colors">Home</a>
-              <a href="#about" className="hover:text-amber-500 transition-colors">About</a>
-              <a href="#products" className="hover:text-amber-500 transition-colors">Products</a>
-              <a href="#systems" className="hover:text-amber-500 transition-colors">Packages</a>
-              <a href="#calculator" className="hover:text-amber-500 transition-colors">Calculator</a>
-              <a href="#subsidy" className="hover:text-amber-500 transition-colors">Subsidy</a>
-              <a href="#contact" className="hover:text-amber-500 transition-colors">Contact</a>
+              <a 
+                href="#home" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#home');
+                }}
+                className="hover:text-amber-500 transition-colors cursor-pointer"
+              >
+                Home
+              </a>
+              <a 
+                href="#about" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#about');
+                }}
+                className="hover:text-amber-500 transition-colors cursor-pointer"
+              >
+                About
+              </a>
+              <a 
+                href="#products" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#products');
+                }}
+                className="hover:text-amber-500 transition-colors cursor-pointer"
+              >
+                Products
+              </a>
+              <a 
+                href="#systems" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('systems')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#systems');
+                }}
+                className="hover:text-amber-500 transition-colors cursor-pointer"
+              >
+                Packages
+              </a>
+              <a 
+                href="#calculator" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#calculator');
+                }}
+                className="hover:text-amber-500 transition-colors cursor-pointer"
+              >
+                Calculator
+              </a>
+              <a 
+                href="#subsidy" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('subsidy')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#subsidy');
+                }}
+                className="hover:text-amber-500 transition-colors cursor-pointer"
+              >
+                Subsidy
+              </a>
+              <a 
+                href="#contact" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#contact');
+                }}
+                className="hover:text-amber-500 transition-colors cursor-pointer"
+              >
+                Contact
+              </a>
             </nav>
 
             <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
               <a
-                href="#contact"
-                className="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-500 border border-amber-500/30 text-xs font-semibold transition-colors"
+                href="#survey-booking"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('survey-booking')?.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', '#survey-booking');
+                }}
+                className="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-500 border border-amber-500/30 text-xs font-semibold transition-colors cursor-pointer"
               >
                 Free Survey
               </a>

@@ -16,6 +16,10 @@
   --grid-size: 40px;               /* Square cell size: 40px */
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Base Light Canvas: Clean Slate with Soft Solar Top Ambient Glow */
 html, body, #root {
   background-color: #f8fafc;

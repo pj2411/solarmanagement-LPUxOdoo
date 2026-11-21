@@ -501,7 +501,7 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
         </div>
 
         {/* SECTION 8: CONTACT & ENQUIRY BOOKING */}
-        <div id="contact" className="lg:col-span-5 bg-slate-950 p-7 sm:p-9 lg:p-10 rounded-3xl border border-slate-800 space-y-6">
+        <div id="survey-booking" className="lg:col-span-5 bg-slate-950 p-7 sm:p-9 lg:p-10 rounded-3xl border border-slate-800 space-y-6 scroll-mt-28">
           <div className="space-y-1.5">
             <h3 className="font-extrabold text-xl sm:text-2xl text-white">Book Free Roof Survey</h3>
             <p className="text-sm text-slate-400">A certified technician measures shadow angles and structural roof stability.</p>
@@ -614,21 +614,32 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
       </section>
 
       {/* FOOTER & DIRECT CONTACT INFO */}
-      <footer className="pt-12 border-t border-slate-800 grid sm:grid-cols-3 gap-8 text-sm sm:text-base text-slate-400">
-        <div className="space-y-3">
-          <div className="font-bold text-white text-base sm:text-lg">SunPower Solutions India</div>
-          <p>Turnkey Solar EPC & Smart Asset Management.</p>
-          <p>Completing ~40 rooftop installations monthly.</p>
+      <footer id="contact" className="pt-12 border-t border-slate-800 space-y-8 scroll-mt-28">
+        <div className="grid sm:grid-cols-3 gap-8 text-sm sm:text-base text-slate-400">
+          <div className="space-y-3">
+            <div className="font-bold text-white text-base sm:text-lg">SunPower Solutions India</div>
+            <p>Turnkey Solar EPC & Smart Asset Management.</p>
+            <p>Completing ~40 rooftop installations monthly.</p>
+          </div>
+          <div className="space-y-3">
+            <div className="font-bold text-white text-base sm:text-lg">Service Hubs</div>
+            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400 flex-shrink-0" /> Jalandhar, Punjab (Main Depot)</div>
+            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400 flex-shrink-0" /> Delhi NCR (Sales & Engineering)</div>
+          </div>
+          <div className="space-y-3">
+            <div className="font-bold text-white text-base sm:text-lg">Get in Touch</div>
+            <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-amber-400 flex-shrink-0" /> +91 181 405 8890 / +91 98765 43210</div>
+            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-400 flex-shrink-0" /> contact@sunpower.in</div>
+          </div>
         </div>
-        <div className="space-y-3">
-          <div className="font-bold text-white text-base sm:text-lg">Service Hubs</div>
-          <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400 flex-shrink-0" /> Jalandhar, Punjab (Main Depot)</div>
-          <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400 flex-shrink-0" /> Delhi NCR (Sales & Engineering)</div>
-        </div>
-        <div className="space-y-3">
-          <div className="font-bold text-white text-base sm:text-lg">Get in Touch</div>
-          <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-amber-400 flex-shrink-0" /> +91 181 405 8890 / +91 98765 43210</div>
-          <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-400 flex-shrink-0" /> contact@sunpower.in</div>
+
+        <div className="pt-6 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div>© {new Date().getFullYear()} SunPower Solutions. All rights reserved.</div>
+          <div className="flex items-center gap-4">
+            <span>ISO 9001:2015 Certified EPC</span>
+            <span>•</span>
+            <span>MNRE Empaneled Channel Partner</span>
+          </div>
         </div>
       </footer>
     </div>
