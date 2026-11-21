@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Sun } from 'lucide-react';
-import Sidebar from './components/Sidebar';
+import { Sun, Menu } from 'lucide-react';
+import Sidebar, { MODULES } from './components/Sidebar';
 import { api } from './api';
 
 // Views
@@ -316,6 +316,60 @@ export default function App() {
     }
   };
 
+  // Sidebar responsive state
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sunpower_sidebar_open');
+      if (saved !== null) return saved === 'true';
+      return window.innerWidth >= 1024;
+    }
+    return true;
+  });
+
+  const [sidebarCompact, setSidebarCompact] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sunpower_sidebar_compact') === 'true';
+    }
+    return false;
+  });
+
+  const [windowWidth, setWindowWidth] = useState(() => {
+    if (typeof window !== 'undefined') return window.innerWidth;
+    return 1200;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sunpower_sidebar_open', sidebarOpen ? 'true' : 'false');
+    }
+  }, [sidebarOpen]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sunpower_sidebar_compact', sidebarCompact ? 'true' : 'false');
+    }
+  }, [sidebarCompact]);
+
+  // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        setSidebarOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Standalone Public Website View (Completely isolated without ERP sidebar)
   if (isStandalonePublic) {
     return (
@@ -444,20 +498,98 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen bg-slate-950 text-slate-100 flex overflow-hidden font-sans">
+    <div className="h-screen bg-slate-950 text-slate-100 flex overflow-hidden font-sans relative">
+      {/* Mobile Drawer Overlay Backdrop */}
+      {sidebarOpen && windowWidth < 1024 && (
+        <div 
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 transition-opacity"
+          aria-hidden="true"
+        />
+      )}
+
       {/* Left Sidebar */}
       <Sidebar 
         currentModule={currentModule}
-        onModuleSelect={setCurrentModule}
+        onModuleSelect={(modId) => {
+          setCurrentModule(modId);
+          if (window.innerWidth < 1024) {
+            setSidebarOpen(false);
+          }
+        }}
         currentRole={currentRole}
         currentUser={currentUser}
         onRoleChange={handleRoleChange}
         onLogout={handleLogout}
         stats={analytics}
+        isOpen={sidebarOpen}
+        isCompact={sidebarCompact}
+        onToggle={() => setSidebarOpen((prev) => !prev)}
+        onToggleCompact={() => setSidebarCompact((prev) => !prev)}
+        onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-square-grid">
+      {/* Main Content Area Container with Top Navigation Bar */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Top Header Bar with Left-Corner Hamburger Menu */}
+        <header className="h-14 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 flex items-center justify-between flex-shrink-0 z-30">
+          {/* Left Corner: Hamburger Menu Button & Breadcrumb */}
+          <div className="flex items-center gap-3 min-w-0">
+            {(!sidebarOpen || windowWidth < 1024) && (
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(true)}
+                className="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-300 hover:text-amber-400 border border-slate-700/60 hover:border-amber-500/40 transition-all flex items-center justify-center shadow-sm flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                title="Open menu (Hamburger)"
+                aria-label="Open navigation menu"
+              >
+                <Menu className="w-5 h-5 text-amber-400" />
+              </button>
+            )}
+
+            {(!sidebarOpen || sidebarCompact || windowWidth < 1024) && (
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0" />
+                <span className="font-bold text-white text-sm tracking-tight truncate hidden sm:inline">
+                  SunPower Solutions
+                </span>
+              </div>
+            )}
+
+            {/* Active Module Indicator / Breadcrumb */}
+            <div className="flex items-center gap-2 text-xs text-slate-400 truncate pl-1 sm:pl-3 sm:border-l sm:border-slate-800">
+              <span className="text-slate-500 hidden md:inline">Module:</span>
+              <span className="font-semibold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20 truncate">
+                {MODULES.find(m => m.id === currentModule)?.label || currentModule}
+              </span>
+            </div>
+          </div>
+
+          {/* Right Section: Persona Selector, DB Status */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="hidden sm:flex items-center gap-2 text-xs">
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-slate-400 font-mono text-[11px]">Relational SQLite Active</span>
+            </div>
+
+            <div className="flex items-center gap-2 bg-slate-950/60 border border-slate-800 rounded-xl px-2.5 py-1">
+              <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center border border-amber-500/30">
+                {currentUser?.name ? currentUser.name[0].toUpperCase() : 'V'}
+              </div>
+              <div className="hidden md:block text-left">
+                <div className="text-[11px] font-bold text-white leading-tight truncate max-w-[120px]">
+                  {currentUser?.name || 'Vikram Malhotra'}
+                </div>
+                <div className="text-[9px] text-amber-400 font-semibold uppercase tracking-wider">
+                  {currentRole}
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-square-grid">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-slate-400 text-xs">
               <div className="flex items-center gap-2">
@@ -563,6 +695,7 @@ export default function App() {
             </>
           )}
         </main>
+      </div>
     </div>
   );
 }
