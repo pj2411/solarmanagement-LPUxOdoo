@@ -519,7 +519,7 @@ export default function SiteSurveyView({
                 className={`rounded-2xl bg-slate-900 border transition-all duration-200 p-5 space-y-4 shadow-lg flex flex-col justify-between ${
                   isApproved 
                     ? 'border-emerald-500/30 hover:border-emerald-500/50 shadow-emerald-500/5' 
-                    : 'border-amber-500/40 hover:border-amber-500/60 bg-gradient-to-b from-slate-900 via-slate-900 to-amber-950/10 shadow-amber-500/5'
+                    : 'border-amber-500/40 hover:border-amber-500/60 shadow-amber-500/5'
                 }`}
               >
                 <div className="space-y-4">
