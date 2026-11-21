@@ -123,7 +123,8 @@ export const api = {
   // Employees
   getEmployees: () => fetchJson('/employees'),
   getEmployeeJobs: (id) => fetchJson(`/employees/${id}/jobs`),
-  updateAttendance: (id, status) => fetchJson(`/employees/${id}/attendance?attendance_status=${status}`, { method: 'PUT' }),
+  updateAttendance: (id, status) => fetchJson(`/employees/${id}/attendance?attendance_status=${encodeURIComponent(status)}`, { method: 'PUT', body: JSON.stringify({ attendance_status: status }) }),
+  updateAttendanceV1: (id, status) => fetchJson(`/v1/employees/${id}/attendance?attendance_status=${encodeURIComponent(status)}`, { method: 'PUT', body: JSON.stringify({ attendance_status: status }) }),
 
   // Analytics
   getAnalytics: () => fetchJson('/analytics'),
