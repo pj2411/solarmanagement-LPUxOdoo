@@ -1,1 +1,0 @@
-"""Authentication Endpoints Test Suite."""
