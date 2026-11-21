@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import { api } from './api';
 
 // Views
+import LoginView from './views/LoginView';
 import PublicWebsiteView from './views/PublicWebsiteView';
 import AuthView from './views/AuthView';
 import CustomerManagementView from './views/CustomerManagementView';
@@ -18,7 +19,18 @@ import EmployeeView from './views/EmployeeView';
 import AnalyticsView from './views/AnalyticsView';
 
 export default function App() {
-  const [currentRole, setCurrentRole] = useState('ADMIN');
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sunpower_auth') === 'true';
+    }
+    return false;
+  });
+  const [currentRole, setCurrentRole] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sunpower_role') || 'ADMIN';
+    }
+    return 'ADMIN';
+  });
   const [currentUser, setCurrentUser] = useState({
     name: 'Vikram Malhotra',
     email: 'admin@sunpower.in',
@@ -140,8 +152,66 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    setCurrentModule('auth');
+    setIsAuthenticated(false);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('sunpower_auth');
+    }
   };
+
+  // Dedicated Separate Login Page - Completely isolated from main portal
+  if (!isAuthenticated) {
+    return (
+      <LoginView 
+        onLogin={(userData) => {
+          const role = userData.role || 'ADMIN';
+          setCurrentRole(role);
+          setCurrentUser({
+            name: userData.name || (role === 'ADMIN' ? 'Vikram Malhotra' : 'Authorized User'),
+            email: userData.email || 'admin@sunpower.in',
+            role
+          });
+          setIsAuthenticated(true);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('sunpower_auth', 'true');
+            localStorage.setItem('sunpower_role', role);
+          }
+
+          // Route to relevant initial view based on role
+          switch (role) {
+            case 'CUSTOMER':
+              setCurrentModule('public-website');
+              break;
+            case 'SALES':
+              setCurrentModule('site-survey');
+              break;
+            case 'WAREHOUSE':
+              setCurrentModule('dispatch');
+              break;
+            case 'TECHNICIAN':
+              setCurrentModule('installations');
+              break;
+            case 'SUPPORT':
+              setCurrentModule('helpdesk');
+              break;
+            case 'ADMIN':
+            default:
+              setCurrentModule('analytics');
+              break;
+          }
+        }}
+        onExplorePublic={() => {
+          setCurrentRole('CUSTOMER');
+          setCurrentUser({
+            name: 'Arvind Sharma',
+            email: 'arvind.sharma@gmail.com',
+            role: 'CUSTOMER'
+          });
+          setCurrentModule('public-website');
+          setIsAuthenticated(true);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="h-screen bg-slate-950 text-slate-100 flex overflow-hidden font-sans">
