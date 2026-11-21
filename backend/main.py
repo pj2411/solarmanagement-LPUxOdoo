@@ -6,7 +6,7 @@ _BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 if _BACKEND_DIR not in sys.path:
     sys.path.insert(0, _BACKEND_DIR)
 
-from fastapi import FastAPI, Depends, HTTPException, status, Query, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Query, Request, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +17,20 @@ from typing import List, Optional
 
 from database import engine, Base, get_db
 import models, schemas
-from v1_routes import router as v1_router
+from fastapi.staticfiles import StaticFiles
+from v1_routes import (
+    router as v1_router,
+    v1_request_otp,
+    v1_verify_otp,
+    v1_refresh_token,
+    v1_installation_sync,
+    v1_installation_handover,
+    v1_media_upload,
+    v1_public_enquiry,
+    v1_calculator_evaluate,
+    v1_subsidy_info,
+    v1_products_showcase
+)
 
 # Initialize DB tables
 Base.metadata.create_all(bind=engine)
@@ -186,6 +199,61 @@ def reset_password(payload: schemas.ResetPasswordRequest, db: Session = Depends(
         "status": "success",
         "message": "Password successfully updated. You can now sign in with your new credentials."
     }
+
+# Forward unversioned auth helpers for mobile / OTP clients
+@app.post("/api/auth/request-otp")
+def auth_request_otp(payload: schemas.OTPRequest):
+    return v1_request_otp(payload)
+
+@app.post("/api/auth/verify-otp")
+def auth_verify_otp(payload: schemas.OTPVerifyRequest, db: Session = Depends(get_db)):
+    return v1_verify_otp(payload, db)
+
+@app.post("/api/auth/refresh")
+def auth_refresh_token(payload: schemas.TokenRefreshRequest, db: Session = Depends(get_db)):
+    return v1_refresh_token(payload, db)
+
+# Forward installation sync & handover
+@app.post("/api/installations/{id}/sync")
+def installation_sync(id: int, payload: schemas.OfflineSyncRequest, db: Session = Depends(get_db)):
+    return v1_installation_sync(id, payload, db)
+
+@app.post("/api/installations/{id}/handover")
+def installation_handover(id: int, payload: schemas.HandoverRequest, db: Session = Depends(get_db)):
+    return v1_installation_handover(id, payload, db)
+
+# Media upload & static uploads mount
+upload_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+os.makedirs(upload_dir, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=upload_dir), name="uploads")
+
+@app.post("/api/media/upload")
+async def media_upload(
+    file: UploadFile = File(...),
+    latitude: Optional[float] = Form(None),
+    longitude: Optional[float] = Form(None),
+    installation_id: Optional[int] = Form(None),
+    survey_id: Optional[int] = Form(None),
+    db: Session = Depends(get_db)
+):
+    return await v1_media_upload(file, latitude, longitude, installation_id, survey_id, db)
+
+# Public enquiry & calculator endpoints
+@app.post("/api/public/enquiry")
+def public_enquiry(enquiry: schemas.PublicEnquirySchema, db: Session = Depends(get_db)):
+    return v1_public_enquiry(enquiry, db)
+
+@app.post("/api/public/calculator/evaluate")
+def public_calculator_evaluate(inputs: schemas.CalculatorEvaluateSchema):
+    return v1_calculator_evaluate(inputs)
+
+@app.get("/api/public/subsidy-info")
+def public_subsidy_info():
+    return v1_subsidy_info()
+
+@app.get("/api/public/products-showcase")
+def public_products_showcase():
+    return v1_products_showcase()
 
 # ----------------- 2. CUSTOMERS & LEADS -----------------
 @app.get("/api/leads", response_model=List[schemas.LeadOut])
