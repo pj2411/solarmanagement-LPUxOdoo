@@ -93,7 +93,7 @@ TAGS_METADATA = [
 API_DESCRIPTION = "Production-grade standalone Solar Installation Management System REST API."
 
 app = FastAPI(
-    title="SOLAR INSTALLATION MANAGEMENT SYSTEM",
+    title="SunPower Solar ERP",
     description=API_DESCRIPTION,
     version="1.0.0",
     openapi_tags=TAGS_METADATA

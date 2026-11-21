@@ -578,7 +578,6 @@ export default function App() {
         }}
         currentRole={currentRole}
         currentUser={currentUser}
-        onRoleChange={handleRoleChange}
         onLogout={handleLogout}
         stats={analytics}
         isOpen={sidebarOpen}

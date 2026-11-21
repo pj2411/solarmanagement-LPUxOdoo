@@ -376,25 +376,9 @@ export default function Sidebar({
                   {currentUser?.name || 'Vikram Malhotra'}
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  {onRoleChange ? (
-                    <select
-                      value={currentRole || 'ADMIN'}
-                      onChange={(e) => onRoleChange(e.target.value)}
-                      className="text-xs bg-slate-800 text-white font-semibold rounded-lg px-2 py-0.5 border border-slate-700 cursor-pointer focus:outline-none focus:border-amber-500"
-                      title="Switch Persona"
-                    >
-                      <option value="ADMIN">Admin</option>
-                      <option value="SALES">Sales</option>
-                      <option value="WAREHOUSE">Warehouse</option>
-                      <option value="TECHNICIAN">Technician</option>
-                      <option value="SUPPORT">Support</option>
-                      <option value="CUSTOMER">Customer</option>
-                    </select>
-                  ) : (
-                    <span className="text-xs text-slate-300 uppercase font-bold tracking-wider">
-                      {currentRole || 'ADMIN'}
-                    </span>
-                  )}
+                  <span className="text-xs text-slate-400 font-medium truncate">
+                    {roleCfg.roleLabel || currentRole || 'Customer'}
+                  </span>
                 </div>
               </div>
             </div>
