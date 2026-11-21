@@ -184,20 +184,7 @@ input[type="range"] {
 
 /* 8. Tables & Data Display */
 table thead {
-  background-color: var(--bg-muted) !important;
-  border-bottom: 1px solid var(--border-subtle) !important;
-}
-
-table thead th {
-  color: var(--text-subtle) !important;
-}
-
-table tbody tr:hover {
-  background-color: var(--accent-surface) !important;
-}
-
-table tbody td {
-  border-color: var(--border-subtle) !important;
+  background-color: transparent;
 }
 
 /* 9. Buttons & Icons on Bright Yellow Backgrounds */

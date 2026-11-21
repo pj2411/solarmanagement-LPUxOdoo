@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('StockSense Warehouse Control - Clean UI Suite (No Top Bars / No Accordions)', () => {
+test.describe('SunPower ERP - Clean UI Suite (No Top Bars / No Accordions)', () => {
 
   test('01. Clean Layout: Top Bars Removed, Direct Sidebar Navigation', async ({ page }) => {
     await page.goto('/');
@@ -10,7 +10,7 @@ test.describe('StockSense Warehouse Control - Clean UI Suite (No Top Bars / No A
     await expect(page.locator('text=SunPower ERP Standalone Pro')).not.toBeVisible();
 
     // 2. Verify clean minimal header bar (Breadcrumb + Actions only)
-    await expect(page.getByText('STOCKSENSE', { exact: true })).toBeVisible();
+    await expect(page.getByText('SUNPOWER ERP', { exact: true })).toBeVisible();
     await expect(page.getByText('DASHBOARD', { exact: true })).toBeVisible();
 
     // 3. Verify direct sidebar navigation (All groups directly visible, no hamburger/accordions)

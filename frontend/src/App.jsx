@@ -23,8 +23,8 @@ import AnalyticsView from './views/AnalyticsView';
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [currentUser, setCurrentUser] = useState({
-    name: 'StockSense Admin',
-    email: 'admin@stocksense.local',
+    name: 'Vikram Malhotra',
+    email: 'admin@sunpower.in',
     role: 'ADMIN'
   });
   const [currentModule, setCurrentModule] = useState('dashboard');
@@ -120,7 +120,7 @@ export default function App() {
     setCurrentUser(prev => ({
       ...prev,
       role: newRole,
-      name: newRole === 'ADMIN' ? 'StockSense Admin' :
+      name: newRole === 'ADMIN' ? 'Vikram Malhotra' :
             newRole === 'SALES' ? 'Pooja Sharma' :
             newRole === 'TECHNICIAN' ? 'Ramesh Sharma' :
             newRole === 'WAREHOUSE' ? 'Gaurav Singhal' :
@@ -128,7 +128,7 @@ export default function App() {
     }));
   };
 
-  // If user is not authenticated, display the exact StockSense Login Page
+  // If user is not authenticated, display the Login Page
   if (!isAuthenticated) {
     return (
       <LoginView 
@@ -179,7 +179,7 @@ export default function App() {
           <header className="h-14 px-6 border-b border-[#E8E8E5] dark:border-[#272A34] bg-white dark:bg-[#15171C] flex items-center justify-between flex-shrink-0">
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#71717A] dark:text-[#A1A1AA]">
-              <span>STOCKSENSE</span>
+              <span>SUNPOWER ERP</span>
               <span className="text-[#A1A1AA]">/</span>
               <span className="font-bold text-[#18181B] dark:text-[#FAFAFA]">
                 {moduleLabelMap[currentModule] || currentModule.toUpperCase()}

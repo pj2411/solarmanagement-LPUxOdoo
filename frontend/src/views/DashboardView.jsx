@@ -314,14 +314,14 @@ export default function DashboardView({
 
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
-            <thead>
-              <tr className="border-b border-[#E8E8E5] dark:border-[#272A34] text-[10px] font-semibold uppercase tracking-wider text-[#71717A] dark:text-[#A1A1AA]">
-                <th className="pb-3 font-semibold">Movement</th>
-                <th className="pb-3 font-semibold">Product</th>
-                <th className="pb-3 font-semibold">Location</th>
-                <th className="pb-3 font-semibold">Quantity</th>
-                <th className="pb-3 font-semibold">Balance</th>
-                <th className="pb-3 font-semibold text-right">When</th>
+            <thead className="bg-transparent">
+              <tr className="border-b border-[#E8E8E5] dark:border-[#272A34] text-[10px] font-semibold uppercase tracking-wider text-[#71717A] dark:text-[#A1A1AA] bg-transparent">
+                <th className="pb-3 font-semibold bg-transparent">Movement</th>
+                <th className="pb-3 font-semibold bg-transparent">Product</th>
+                <th className="pb-3 font-semibold bg-transparent">Location</th>
+                <th className="pb-3 font-semibold bg-transparent">Quantity</th>
+                <th className="pb-3 font-semibold bg-transparent">Balance</th>
+                <th className="pb-3 font-semibold text-right bg-transparent">When</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F4F4F5] dark:divide-[#272A34]">

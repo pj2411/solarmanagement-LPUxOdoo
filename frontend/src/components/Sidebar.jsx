@@ -16,7 +16,8 @@ import {
   ShieldCheck,
   Headphones,
   BarChart3,
-  Globe
+  Globe,
+  Sun
 } from 'lucide-react';
 
 export const NAVIGATION_GROUPS = [
@@ -70,15 +71,15 @@ export default function Sidebar({
     <aside className="w-60 flex-shrink-0 bg-[#FBFBFA] dark:bg-[#15171C] border-r border-[#E8E8E5] dark:border-[#272A34] flex flex-col h-screen select-none">
       {/* Brand Header */}
       <div className="p-4 border-b border-[#E8E8E5] dark:border-[#272A34] flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-lg bg-[#C53B3B] text-white flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0">
-          s
+        <div className="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0">
+          <Sun className="w-4 h-4 fill-current" />
         </div>
         <div className="min-w-0">
-          <div className="text-sm font-bold tracking-tight text-[#18181B] dark:text-[#FAFAFA] lowercase truncate leading-none">
-            stocksense
+          <div className="text-sm font-bold tracking-tight text-[#18181B] dark:text-[#FAFAFA] truncate leading-none">
+            SunPower ERP
           </div>
           <div className="text-[9px] uppercase tracking-wider text-[#71717A] dark:text-[#A1A1AA] font-semibold mt-1 leading-none">
-            WAREHOUSE CONTROL
+            SOLAR OPERATIONS
           </div>
         </div>
       </div>
@@ -135,12 +136,12 @@ export default function Sidebar({
       <div className="p-3 border-t border-[#E8E8E5] dark:border-[#272A34] bg-white dark:bg-[#1C1E24]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-full bg-[#FEE2E2] dark:bg-[#3D1E1E] text-[#C53B3B] font-bold text-xs flex items-center justify-center flex-shrink-0">
-              {currentUser?.name ? currentUser.name[0].toUpperCase() : 'S'}
+            <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-500 dark:bg-amber-500/20 dark:text-amber-400 font-bold text-xs flex items-center justify-center flex-shrink-0">
+              {currentUser?.name ? currentUser.name[0].toUpperCase() : 'V'}
             </div>
             <div className="min-w-0">
               <div className="text-xs font-bold text-[#18181B] dark:text-[#FAFAFA] truncate">
-                {currentUser?.name || 'StockSense Admin'}
+                {currentUser?.name || 'Vikram Malhotra'}
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-[#71717A] dark:text-[#A1A1AA] uppercase font-semibold tracking-wider">
@@ -169,7 +170,7 @@ export default function Sidebar({
             onClick={onLogout}
             type="button"
             className="p-1.5 rounded-lg text-[#71717A] dark:text-[#A1A1AA] hover:text-[#C53B3B] hover:bg-[#FEE2E2]/50 dark:hover:bg-[#3D1E1E]/50 transition-colors"
-            title="Sign out of StockSense"
+            title="Sign out of SunPower ERP"
           >
             <LogOut className="w-4 h-4" />
           </button>
