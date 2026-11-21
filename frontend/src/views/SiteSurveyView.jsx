@@ -297,15 +297,15 @@ export default function SiteSurveyView({
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-5">
         <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
-              <Compass className="w-5 h-5" />
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-white text-black border border-white shadow-md">
+              <Compass className="w-5 h-5 text-black" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">
+              <h2 className="text-xl font-black text-white tracking-tight">
                 Rooftop Site Survey Management
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-300 mt-0.5 font-medium">
                 Mandatory Gatekeeper: Quotations are strictly locked until a technician verifies and approves the site survey.
               </p>
             </div>
@@ -318,42 +318,42 @@ export default function SiteSurveyView({
             type="button"
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-2 transition-colors disabled:opacity-50"
+            className="p-2.5 rounded-xl bg-black border-2 border-slate-700 hover:border-white text-white text-xs font-bold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer"
             title="Refresh surveys"
           >
-            <RefreshCw className={`w-4 h-4 text-amber-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 text-white ${isRefreshing ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">Refresh</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 transition-colors"
+            className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-xs flex items-center justify-center gap-2 shadow-xl border border-white transition-colors cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-black" />
             <span>Schedule New Survey</span>
           </button>
         </div>
       </div>
 
       {/* Survey Gatekeeper Rule Alert Box */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-slate-900/95 to-slate-900 border border-amber-500/35 shadow-xl shadow-amber-500/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+      <div className="p-5 rounded-2xl bg-black border-2 border-white shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex-shrink-0 mt-0.5 shadow-md shadow-amber-500/10">
-            <ShieldAlert className="w-6 h-6 text-amber-400" />
+          <div className="p-3 rounded-2xl bg-white text-black border border-white flex-shrink-0 mt-0.5 shadow-lg">
+            <ShieldAlert className="w-6 h-6 text-black" />
           </div>
           <div className="space-y-2 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-extrabold text-amber-300 tracking-tight">FastAPI Gatekeeper Rule #1 Enforced:</span>
-              <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono font-bold">
+              <span className="text-sm font-black text-white tracking-tight">FastAPI Gatekeeper Rule #1 Enforced:</span>
+              <span className="text-xs uppercase tracking-wider px-3 py-0.5 rounded-full bg-white text-black border border-white font-mono font-black">
                 Mandatory Check
               </span>
-              <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-semibold">
+              <span className="text-xs uppercase tracking-wider px-3 py-0.5 rounded-full bg-emerald-600 text-white font-bold border border-emerald-500">
                 Active Protocol
               </span>
             </div>
-            <p className="text-slate-300 leading-relaxed text-xs sm:text-sm">
-              Backend returns <span className="text-rose-400 font-bold font-mono bg-rose-500/15 px-2 py-0.5 rounded border border-rose-500/30">HTTP 400 Bad Request</span> if a quotation is attempted for any lead without an approved survey. Click <button type="button" onClick={() => { const pending = effectiveSurveys.find(s => !s.is_approved); if (pending) handleApprove(pending.id); }} className="font-bold text-amber-400 underline decoration-amber-400/80 hover:text-white transition-colors cursor-pointer">Approve survey for quoting</button> below to unlock quotation generation.
+            <p className="text-white leading-relaxed text-xs sm:text-sm font-medium">
+              Backend returns <span className="text-white font-black font-mono bg-rose-600 px-2 py-0.5 rounded border border-rose-400">HTTP 400 Bad Request</span> if a quotation is attempted for any lead without an approved survey. Click <button type="button" onClick={() => { const pending = effectiveSurveys.find(s => !s.is_approved); if (pending) handleApprove(pending.id); }} className="font-black text-white underline decoration-white hover:text-slate-300 transition-colors cursor-pointer">Approve survey for quoting</button> below to unlock quotation generation.
             </p>
             {pendingCount > 0 ? (
               <div className="pt-1 flex items-center gap-3">
@@ -364,17 +364,17 @@ export default function SiteSurveyView({
                     if (pending) handleApprove(pending.id);
                   }}
                   disabled={approvingId !== null}
-                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-xs flex items-center gap-2 shadow-lg transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="w-4 h-4 text-black" />
                   <span>{approvingId ? 'Verifying & Approving...' : 'Approve Survey for Quoting'}</span>
                 </button>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-300 font-medium">
                   Click to unlock quote generation immediately
                 </span>
               </div>
             ) : (
-              <div className="pt-1 flex items-center gap-2 text-xs text-emerald-400 font-semibold">
+              <div className="pt-1 flex items-center gap-2 text-xs text-white font-bold">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span>All site surveys are approved! Gatekeeper Rule #1 unlocked — formal quotations can be generated.</span>
               </div>
@@ -384,15 +384,15 @@ export default function SiteSurveyView({
 
         {/* Live Counters */}
         <div className="flex items-center gap-3 self-stretch md:self-auto flex-shrink-0">
-          <div className="flex-1 md:flex-initial px-5 py-3 rounded-2xl bg-slate-950 border border-amber-500/30 text-center min-w-[125px] shadow-inner">
-            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Pending Approval</div>
-            <div className={`text-2xl font-black font-mono mt-0.5 ${pendingCount > 0 ? 'text-amber-400 animate-pulse' : 'text-slate-500'}`}>
+          <div className="flex-1 md:flex-initial px-5 py-3 rounded-2xl bg-black border-2 border-white text-center min-w-[130px] shadow-lg">
+            <div className="text-xs text-slate-300 font-bold uppercase tracking-wider">Pending Approval</div>
+            <div className="text-3xl font-black font-mono mt-0.5 text-white">
               {pendingCount}
             </div>
           </div>
-          <div className="flex-1 md:flex-initial px-5 py-3 rounded-2xl bg-slate-950 border border-emerald-500/30 text-center min-w-[125px] shadow-inner">
-            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Approved</div>
-            <div className="text-2xl font-black font-mono text-emerald-400 mt-0.5">
+          <div className="flex-1 md:flex-initial px-5 py-3 rounded-2xl bg-black border-2 border-slate-700 text-center min-w-[130px] shadow-lg">
+            <div className="text-xs text-slate-300 font-bold uppercase tracking-wider">Approved</div>
+            <div className="text-3xl font-black font-mono text-emerald-400 mt-0.5">
               {approvedCount}
             </div>
           </div>
@@ -401,19 +401,19 @@ export default function SiteSurveyView({
 
       {/* Temporary Feedback Notification */}
       {feedback && (
-        <div className={`p-4 rounded-xl text-xs flex items-center justify-between gap-3 border transition-all ${
+        <div className={`p-4 rounded-xl text-xs font-bold flex items-center justify-between gap-3 border-2 transition-all ${
           feedback.type === 'success' 
-            ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' 
-            : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+            ? 'bg-black text-white border-white' 
+            : 'bg-black text-white border-white'
         }`}>
           <div className="flex items-center gap-2">
-            {feedback.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <AlertTriangle className="w-4 h-4 text-amber-400" />}
+            {feedback.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-white" /> : <AlertTriangle className="w-4 h-4 text-white" />}
             <span>{feedback.message}</span>
           </div>
           <button 
             type="button" 
             onClick={() => setFeedback(null)} 
-            className="text-slate-400 hover:text-white text-xs px-2 py-0.5"
+            className="text-white hover:text-slate-300 text-xs px-2 py-0.5 cursor-pointer"
           >
             ✕
           </button>
@@ -423,18 +423,20 @@ export default function SiteSurveyView({
       {/* Filter Tabs & Search Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
         {/* Status Filter Tabs */}
-        <div className="flex bg-slate-900 border border-slate-800 rounded-xl p-1">
+        <div className="flex bg-black border-2 border-slate-800 rounded-xl p-1">
           <button
             type="button"
             onClick={() => setFilterStatus('ALL')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               filterStatus === 'ALL' 
-                ? 'bg-amber-500 text-slate-950 shadow' 
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white text-black shadow border border-white' 
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <span>All Surveys</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-950/40 font-mono">
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+              filterStatus === 'ALL' ? 'bg-black text-white' : 'bg-slate-800 text-white'
+            }`}>
               {effectiveSurveys.length}
             </span>
           </button>
@@ -442,16 +444,16 @@ export default function SiteSurveyView({
           <button
             type="button"
             onClick={() => setFilterStatus('PENDING')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               filterStatus === 'PENDING' 
-                ? 'bg-amber-500 text-slate-950 shadow' 
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white text-black shadow border border-white' 
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <span>Pending Approval</span>
             {pendingCount > 0 && (
               <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                filterStatus === 'PENDING' ? 'bg-slate-950 text-amber-400' : 'bg-amber-500/20 text-amber-400'
+                filterStatus === 'PENDING' ? 'bg-black text-white' : 'bg-white text-black'
               }`}>
                 {pendingCount}
               </span>
@@ -461,14 +463,14 @@ export default function SiteSurveyView({
           <button
             type="button"
             onClick={() => setFilterStatus('APPROVED')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               filterStatus === 'APPROVED' 
-                ? 'bg-emerald-600 text-white shadow' 
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-emerald-600 text-white shadow border border-emerald-500' 
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <span>Approved</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-950/40 font-mono">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/40 font-mono font-bold text-white">
               {approvedCount}
             </span>
           </button>
@@ -476,19 +478,19 @@ export default function SiteSurveyView({
 
         {/* Search Input */}
         <div className="relative flex-1 sm:max-w-xs">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500" />
+          <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search customer, tech, azimuth..."
-            className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60"
+            className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-black border-2 border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-white font-medium"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-300 text-xs"
+              className="absolute right-2.5 top-3 text-slate-400 hover:text-white text-xs cursor-pointer"
             >
               ✕
             </button>
@@ -498,13 +500,13 @@ export default function SiteSurveyView({
 
       {/* Survey Cards Grid or Empty State */}
       {filteredSurveys.length === 0 ? (
-        <div className="p-12 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-slate-800/80 border border-slate-700 mx-auto flex items-center justify-center text-slate-400">
+        <div className="p-12 rounded-2xl bg-black border-2 border-slate-800 text-center space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700 mx-auto flex items-center justify-center text-white">
             <Compass className="w-7 h-7" />
           </div>
           <div className="max-w-md mx-auto space-y-1">
             <h3 className="text-base font-bold text-white">No Site Surveys Found</h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-300 font-medium">
               {searchQuery 
                 ? `No survey records match the query "${searchQuery}".` 
                 : filterStatus !== 'ALL' 
@@ -517,7 +519,7 @@ export default function SiteSurveyView({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-semibold"
+                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs text-white font-bold border border-slate-700 cursor-pointer"
               >
                 Clear Search
               </button>
@@ -525,9 +527,9 @@ export default function SiteSurveyView({
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs text-slate-950 font-bold flex items-center gap-2"
+              className="px-4 py-2 rounded-xl bg-white hover:bg-slate-200 text-xs text-black font-black flex items-center gap-2 cursor-pointer"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-black" />
               Schedule New Survey
             </button>
           </div>
@@ -544,10 +546,10 @@ export default function SiteSurveyView({
             return (
               <div 
                 key={survey.id} 
-                className={`rounded-2xl bg-slate-900 border transition-all duration-200 p-5 space-y-4 shadow-lg flex flex-col justify-between ${
+                className={`rounded-2xl bg-black border-2 transition-all duration-200 p-5 space-y-4 shadow-xl flex flex-col justify-between ${
                   isApproved 
-                    ? 'border-emerald-500/30 hover:border-emerald-500/50 shadow-emerald-500/5' 
-                    : 'border-amber-500/40 hover:border-amber-500/60 shadow-amber-500/5'
+                    ? 'border-emerald-600/60 hover:border-emerald-500 shadow-emerald-500/5' 
+                    : 'border-white hover:border-slate-200 shadow-white/5'
                 }`}
               >
                 <div className="space-y-4">
@@ -555,103 +557,103 @@ export default function SiteSurveyView({
                   <div className="flex justify-between items-start gap-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400/90 font-bold">
+                        <span className="text-xs font-mono uppercase tracking-wider text-black font-black bg-white px-2 py-0.5 rounded border border-white">
                           Survey #{survey.id}
                         </span>
                         {lead?.capacity_kw && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
+                          <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-white font-mono font-bold">
                             {lead.capacity_kw} kW {lead.system_type || 'Solar'}
                           </span>
                         )}
                       </div>
-                      <h3 className="font-bold text-base text-white mt-1 leading-snug">
+                      <h3 className="font-black text-lg text-white mt-1.5 leading-snug">
                         {lead?.customer_name || 'Customer Lead'}
                       </h3>
-                      <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">
+                      <p className="text-xs text-slate-300 line-clamp-1 mt-0.5 font-medium">
                         {lead?.address || 'Site location pending verification'}
                       </p>
                     </div>
 
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 border flex-shrink-0 ${
+                    <span className={`px-3 py-1 rounded-full text-xs font-black flex items-center gap-1.5 border-2 flex-shrink-0 ${
                       isApproved 
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
-                        : 'bg-amber-500/15 text-amber-400 border-amber-500/40 motion-safe:animate-pulse'
+                        ? 'bg-emerald-600 text-white border-emerald-500' 
+                        : 'bg-white text-black border-white shadow-md'
                     }`}>
-                      {isApproved ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+                      {isApproved ? <CheckCircle2 className="w-3.5 h-3.5 text-white" /> : <Clock className="w-3.5 h-3.5 text-black" />}
                       <span>{isApproved ? 'Survey Approved' : 'Pending Approval'}</span>
                     </span>
                   </div>
 
-                  {/* Technical Specifications 2x2 Grid */}
-                  <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                  {/* Technical Specifications 2x2 Grid - Crisp Black & White Solid Styling */}
+                  <div className="grid grid-cols-2 gap-2.5 p-3.5 rounded-xl bg-white border-2 border-black text-black shadow-inner">
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                        <Compass className="w-3 h-3 text-amber-500" />
+                      <span className="text-xs text-black font-bold flex items-center gap-1">
+                        <Compass className="w-3.5 h-3.5 text-black" />
                         Roof Azimuth
                       </span>
-                      <p className="font-semibold text-slate-200 mt-0.5 truncate" title={survey.roof_direction}>
+                      <p className="font-black text-black text-sm mt-0.5 truncate" title={survey.roof_direction}>
                         {survey.roof_direction || 'South (180°)'}
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                        <Ruler className="w-3 h-3 text-amber-500" />
+                      <span className="text-xs text-black font-bold flex items-center gap-1">
+                        <Ruler className="w-3.5 h-3.5 text-black" />
                         Tilt Angle
                       </span>
-                      <p className="font-bold text-amber-400 font-mono mt-0.5">
+                      <p className="font-black text-black font-mono text-sm mt-0.5">
                         {survey.tilt_angle_deg != null ? `${survey.tilt_angle_deg}°` : '22.0°'}
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium">Shadow-Free Area</span>
-                      <p className="font-bold text-slate-200 font-mono mt-0.5">
+                      <span className="text-xs text-black font-bold block">Shadow-Free Area</span>
+                      <p className="font-black text-black font-mono text-sm mt-0.5">
                         {survey.shadow_free_area_sqft || 350} sq.ft
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] text-slate-400 font-medium">DC Cable Run</span>
-                      <p className="font-bold text-slate-200 font-mono mt-0.5">
+                      <span className="text-xs text-black font-bold block">DC Cable Run</span>
+                      <p className="font-black text-black font-mono text-sm mt-0.5">
                         {survey.cable_distance_m || 20} meters
                       </p>
                     </div>
                   </div>
 
-                  {/* Technician Notes */}
-                  <div className="text-xs text-slate-300 bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                  {/* Technician Notes - Crisp Solid Black Text */}
+                  <div className="text-xs text-black bg-slate-100 p-3 rounded-xl border-2 border-black space-y-1">
+                    <span className="text-[11px] text-black font-black uppercase tracking-wider block">
                       Technician Field Notes:
                     </span>
-                    <p className="line-clamp-2 leading-relaxed">
+                    <p className="line-clamp-2 leading-relaxed font-bold text-black">
                       {survey.notes || 'RCC Terrace verified. Structural anchor points stable.'}
                     </p>
                   </div>
 
                   {/* Assigned Crew */}
-                  <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
+                  <div className="flex items-center justify-between text-xs text-slate-300 pt-2 border-t border-slate-800 font-semibold">
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <User className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                      <span className="truncate">{tech?.name || 'Lead Solar Technician'}</span>
+                      <User className="w-4 h-4 text-white flex-shrink-0" />
+                      <span className="truncate text-white">{tech?.name || 'Lead Solar Technician'}</span>
                     </div>
-                    <div className="flex items-center gap-1 font-mono text-[11px] text-slate-400 flex-shrink-0">
-                      <Calendar className="w-3 h-3" />
+                    <div className="flex items-center gap-1 font-mono text-xs text-slate-300 flex-shrink-0">
+                      <Calendar className="w-3.5 h-3.5" />
                       <span>{survey.scheduled_date || 'Today'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Card Action Buttons */}
-                <div className="pt-4 border-t border-slate-800/80 space-y-2">
+                <div className="pt-4 border-t border-slate-800 space-y-2">
                   {!isApproved ? (
                     <button
                       type="button"
                       onClick={() => handleApprove(survey.id)}
                       disabled={isApproving}
-                      className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20 disabled:opacity-50"
+                      className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer disabled:opacity-50"
                     >
-                      <CheckCircle2 className="w-4 h-4" />
+                      <CheckCircle2 className="w-4 h-4 text-black" />
                       <span>{isApproving ? 'Verifying & Approving...' : 'Approve survey for quoting'}</span>
                     </button>
                   ) : (
@@ -659,11 +661,11 @@ export default function SiteSurveyView({
                       <button
                         type="button"
                         onClick={() => onNavigate && onNavigate('quotations')}
-                        className="w-full py-2.5 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/30 flex items-center justify-center gap-1.5 transition-colors"
+                        className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-200 text-black font-black text-xs border border-white flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md"
                       >
-                        <FileText className="w-4 h-4 text-amber-400" />
+                        <FileText className="w-4 h-4 text-black" />
                         <span>Create formal quote</span>
-                        <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                        <ArrowRight className="w-3.5 h-3.5 ml-1 text-black" />
                       </button>
 
                       {/* Reset to Pending button to test Gatekeeper Rule #1 */}
@@ -671,10 +673,10 @@ export default function SiteSurveyView({
                         type="button"
                         onClick={() => handleUnapprove(survey.id)}
                         disabled={isUnapproving}
-                        className="w-full py-1 text-[11px] text-slate-500 hover:text-amber-500 transition-colors flex items-center justify-center gap-1"
+                        className="w-full py-1 text-xs text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer font-medium"
                         title="Mark back to pending to verify Rule #1 gatekeeper enforcement"
                       >
-                        <Clock className="w-3 h-3" />
+                        <Clock className="w-3.5 h-3.5" />
                         <span>{isUnapproving ? 'Resetting...' : 'Mark Pending (Gatekeeper Verification)'}</span>
                       </button>
                     </div>
@@ -688,19 +690,19 @@ export default function SiteSurveyView({
 
       {/* Schedule New Survey Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-black border-2 border-slate-700 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl">
             <div className="flex justify-between items-center border-b border-slate-800 pb-4">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
-                  <Compass className="w-5 h-5" />
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-lg bg-white text-black">
+                  <Compass className="w-5 h-5 text-black" />
                 </div>
-                <h3 className="font-bold text-base text-white">Schedule Rooftop Site Survey</h3>
+                <h3 className="font-black text-lg text-white">Schedule Rooftop Site Survey</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white text-sm"
+                className="text-white hover:text-slate-300 text-sm cursor-pointer p-1"
               >
                 ✕
               </button>
@@ -709,13 +711,13 @@ export default function SiteSurveyView({
             <form onSubmit={handleCreateSurvey} className="space-y-4 text-xs">
               {/* Select Lead */}
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">
+                <label className="block text-white font-bold mb-1.5 text-xs">
                   Customer Lead *
                 </label>
                 <select
                   value={formData.lead_id}
                   onChange={(e) => setFormData({ ...formData, lead_id: e.target.value })}
-                  className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full p-2.5 rounded-xl bg-black border-2 border-slate-700 text-white focus:outline-none focus:border-white font-medium"
                   required
                 >
                   {leads.map((lead) => (
@@ -731,13 +733,13 @@ export default function SiteSurveyView({
 
               {/* Assign Certified Technician */}
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">
+                <label className="block text-white font-bold mb-1.5 text-xs">
                   Assign Field Technician *
                 </label>
                 <select
                   value={formData.technician_id}
                   onChange={(e) => setFormData({ ...formData, technician_id: e.target.value })}
-                  className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full p-2.5 rounded-xl bg-black border-2 border-slate-700 text-white focus:outline-none focus:border-white font-medium"
                   required
                 >
                   {employees.filter(e => e.role === 'TECHNICIAN' || !e.role).map((emp) => (
@@ -754,13 +756,13 @@ export default function SiteSurveyView({
               {/* Roof Direction & Tilt Angle */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">
+                  <label className="block text-white font-bold mb-1.5 text-xs">
                     Roof Direction / Azimuth
                   </label>
                   <select
                     value={formData.roof_direction}
                     onChange={(e) => setFormData({ ...formData, roof_direction: e.target.value })}
-                    className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-500"
+                    className="w-full p-2.5 rounded-xl bg-black border-2 border-slate-700 text-white focus:outline-none focus:border-white font-medium"
                   >
                     <option value="South (180° Azimuth)">South (180° Azimuth)</option>
                     <option value="South-West (210° Azimuth)">South-West (210° Azimuth)</option>
@@ -771,7 +773,7 @@ export default function SiteSurveyView({
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">
+                  <label className="block text-white font-bold mb-1.5 text-xs">
                     Tilt Angle (Degrees)
                   </label>
                   <input
@@ -781,7 +783,7 @@ export default function SiteSurveyView({
                     max="45"
                     value={formData.tilt_angle_deg}
                     onChange={(e) => setFormData({ ...formData, tilt_angle_deg: e.target.value })}
-                    className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full p-2.5 rounded-xl bg-black border-2 border-slate-700 text-white focus:outline-none focus:border-white font-mono"
                     required
                   />
                 </div>
@@ -790,7 +792,7 @@ export default function SiteSurveyView({
               {/* Shadow-Free Area & Cable Run */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">
+                  <label className="block text-white font-bold mb-1.5 text-xs">
                     Shadow-Free Area (sq.ft)
                   </label>
                   <input
@@ -799,13 +801,13 @@ export default function SiteSurveyView({
                     step="10"
                     value={formData.shadow_free_area_sqft}
                     onChange={(e) => setFormData({ ...formData, shadow_free_area_sqft: e.target.value })}
-                    className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full p-2.5 rounded-xl bg-black border-2 border-slate-700 text-white focus:outline-none focus:border-white font-mono"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">
+                  <label className="block text-white font-bold mb-1.5 text-xs">
                     DC Cable Run (Meters)
                   </label>
                   <input
@@ -814,7 +816,7 @@ export default function SiteSurveyView({
                     step="1"
                     value={formData.cable_distance_m}
                     onChange={(e) => setFormData({ ...formData, cable_distance_m: e.target.value })}
-                    className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full p-2.5 rounded-xl bg-black border-2 border-slate-700 text-white focus:outline-none focus:border-white font-mono"
                     required
                   />
                 </div>
@@ -822,7 +824,7 @@ export default function SiteSurveyView({
 
               {/* Notes */}
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">
+                <label className="block text-white font-bold mb-1.5 text-xs">
                   Technician Inspection Notes
                 </label>
                 <textarea
@@ -830,7 +832,7 @@ export default function SiteSurveyView({
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="Structural condition, parapet wall height, parapet shadow risks..."
-                  className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-500 placeholder-slate-600"
+                  className="w-full p-2.5 rounded-xl bg-black border-2 border-slate-700 text-white focus:outline-none focus:border-white placeholder-slate-400 font-medium"
                 />
               </div>
 
@@ -839,15 +841,15 @@ export default function SiteSurveyView({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold"
+                  className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold border border-slate-700 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center gap-1.5 shadow-lg shadow-amber-500/10"
+                  className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-200 text-black font-black flex items-center gap-1.5 shadow-lg cursor-pointer"
                 >
-                  <Check className="w-4 h-4" />
+                  <Check className="w-4 h-4 text-black" />
                   Schedule Survey
                 </button>
               </div>
