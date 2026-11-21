@@ -376,8 +376,8 @@ export default function App() {
       <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
         {/* Sleek Floating Centered Concise Public Toolbar */}
         <div
-          className={`fixed top-4 inset-x-0 z-50 flex justify-center px-4 transition-all duration-300 ease-in-out pointer-events-none ${
-            showPublicNav ? 'translate-y-0 opacity-100' : '-translate-y-24 opacity-0'
+          className={`fixed top-5 inset-x-0 z-50 flex justify-center px-4 transition-all duration-300 ease-in-out pointer-events-none ${
+            showPublicNav ? 'translate-y-0 opacity-100' : '-translate-y-28 opacity-0'
           }`}
         >
           <header className="pointer-events-auto w-full max-w-4xl px-4 py-2 sm:px-6 sm:py-2.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-slate-700/60 shadow-2xl flex items-center justify-between gap-3 sm:gap-6">
@@ -424,7 +424,7 @@ export default function App() {
         </div>
 
         {/* Public Content Container */}
-        <main className="flex-1 pt-20 sm:pt-24 p-4 lg:p-8 bg-square-grid">
+        <main className="flex-1 px-4 pb-8 sm:px-6 lg:px-8 lg:pb-12 pt-28 sm:pt-32 lg:pt-36 bg-square-grid">
           <PublicWebsiteView 
             isStandalone={true}
             onNavigate={(mod) => {
