@@ -436,16 +436,17 @@ def v1_get_leads(
 
 @router.post("/leads")
 def v1_create_lead(lead_in: schemas.LeadCreate, db: Session = Depends(get_db)):
+    kw = float(lead_in.capacity_kw) if lead_in.capacity_kw is not None else 3.0
     lead = models.CustomerLead(
-        customer_name=lead_in.customer_name,
-        phone=lead_in.phone,
-        email=lead_in.email,
-        address=lead_in.address,
-        capacity_kw=lead_in.capacity_kw,
-        system_type=lead_in.system_type,
-        subsidy_requested=lead_in.subsidy_requested,
-        monthly_bill_inr=lead_in.monthly_bill_inr,
-        grid_suitable=lead_in.grid_suitable,
+        customer_name=lead_in.customer_name or "New Customer",
+        phone=lead_in.phone or "",
+        email=lead_in.email or "",
+        address=lead_in.address or "",
+        capacity_kw=kw,
+        system_type=lead_in.system_type or "ON_GRID",
+        subsidy_requested=bool(lead_in.subsidy_requested if lead_in.subsidy_requested is not None else True),
+        monthly_bill_inr=float(lead_in.monthly_bill_inr or 3500.0),
+        grid_suitable=bool(lead_in.grid_suitable if lead_in.grid_suitable is not None else True),
         pipeline_stage="NEW",
         follow_up_notes=lead_in.follow_up_notes or "Inquiry captured from website calculator."
     )
@@ -453,20 +454,24 @@ def v1_create_lead(lead_in: schemas.LeadCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(lead)
 
-    first_tech = db.query(models.User).filter(models.User.role == "TECHNICIAN").first()
-    survey = models.SiteSurvey(
-        lead_id=lead.id,
-        technician_id=first_tech.id if first_tech else None,
-        scheduled_date=date.today() + timedelta(days=2),
-        roof_direction="South (180° Azimuth)",
-        tilt_angle_deg=22.0,
-        shadow_free_area_sqft=lead.capacity_kw * 100.0,
-        cable_distance_m=20.0,
-        is_approved=False,
-        notes="Automated survey schedule upon web enquiry."
-    )
-    db.add(survey)
-    db.commit()
+    try:
+        first_tech = db.query(models.User).filter(models.User.role == "TECHNICIAN").first()
+        survey = models.SiteSurvey(
+            lead_id=lead.id,
+            technician_id=first_tech.id if first_tech else None,
+            scheduled_date=date.today() + timedelta(days=2),
+            roof_direction="South (180° Azimuth)",
+            tilt_angle_deg=22.0,
+            shadow_free_area_sqft=kw * 100.0,
+            cable_distance_m=20.0,
+            is_approved=False,
+            notes="Automated survey schedule upon web enquiry."
+        )
+        db.add(survey)
+        db.commit()
+    except Exception as survey_err:
+        print(f"Warning: Survey auto-creation deferred: {survey_err}")
+        db.rollback()
 
     return make_envelope(
         data=schemas.LeadOut.model_validate(lead).model_dump(),

@@ -85,13 +85,13 @@ class HandoverRequest(BaseModel):
 class LeadCreate(BaseModel):
     customer_name: str
     phone: str
-    email: str
-    address: str
-    capacity_kw: float = 3.0
-    system_type: str = "ON_GRID"
-    subsidy_requested: bool = True
-    monthly_bill_inr: float = 3500.0
-    grid_suitable: bool = True
+    email: Optional[str] = ""
+    address: Optional[str] = ""
+    capacity_kw: Optional[float] = 3.0
+    system_type: Optional[str] = "ON_GRID"
+    subsidy_requested: Optional[bool] = True
+    monthly_bill_inr: Optional[float] = 3500.0
+    grid_suitable: Optional[bool] = True
     follow_up_notes: Optional[str] = ""
 
 class LeadUpdate(BaseModel):
@@ -109,18 +109,18 @@ class LeadUpdate(BaseModel):
 
 class LeadOut(BaseModel):
     id: int
-    customer_name: str
-    phone: str
-    email: str
-    address: str
-    capacity_kw: float
-    system_type: str
-    subsidy_requested: bool
-    monthly_bill_inr: float
-    grid_suitable: bool
-    pipeline_stage: str
-    follow_up_notes: Optional[str]
-    created_at: Optional[datetime]
+    customer_name: Optional[str] = "Customer"
+    phone: Optional[str] = ""
+    email: Optional[str] = ""
+    address: Optional[str] = ""
+    capacity_kw: Optional[float] = 3.0
+    system_type: Optional[str] = "ON_GRID"
+    subsidy_requested: Optional[bool] = True
+    monthly_bill_inr: Optional[float] = 3500.0
+    grid_suitable: Optional[bool] = True
+    pipeline_stage: Optional[str] = "NEW"
+    follow_up_notes: Optional[str] = ""
+    created_at: Optional[datetime] = None
     class Config:
         from_attributes = True
 
