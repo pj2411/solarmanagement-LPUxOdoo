@@ -35,10 +35,193 @@ from v1_routes import (
 # Initialize DB tables
 Base.metadata.create_all(bind=engine)
 
+TAGS_METADATA = [
+    {
+        "name": "1. PUBLIC WEBSITE",
+        "description": "Public Portal: Home Page, About Company, Solar Products, On-Grid Systems, Off-Grid Systems, Solar Savings Calculator, Subsidy Information, and Contact & Enquiry.",
+    },
+    {
+        "name": "2. AUTHENTICATION",
+        "description": "Enterprise Authentication: Login, Registration, Forgot Password, Reset Password, Phone OTP, and Role-Based Authentication.",
+    },
+    {
+        "name": "3. CUSTOMER MANAGEMENT",
+        "description": "Customer CRM: Customer Registration, Customer Profile, Customer Enquiries, Enquiry Follow-up, Customer History, and Customer Portal.",
+    },
+    {
+        "name": "4. SITE SURVEY MANAGEMENT",
+        "description": "Rooftop Engineering: Survey Scheduling, Technician Assignment, Roof Inspection, Roof Direction & Tilt, Shadow-Free Area, Cable Distance, Survey Photographs, and Survey Approval (Gatekeeper Rule #1).",
+    },
+    {
+        "name": "5. QUOTATION MANAGEMENT",
+        "description": "Turnkey Pricing Engine: Solar System Selection (1 kW - 5 kW), On-Grid Quotation, Off-Grid Quotation, Component Price Calculation, Installation Charges, Quotation PDF, and Customer Approval.",
+    },
+    {
+        "name": "6. ORDER & PAYMENT MANAGEMENT",
+        "description": "Sales & Billing: Order Creation, Order Confirmation, Advance Payment, Full Payment, Payment Tracking, and Invoice Generation.",
+    },
+    {
+        "name": "7. INVENTORY MANAGEMENT",
+        "description": "Warehouse Stock: Solar Panels, Inverters, Batteries, Mounting Structures, Wires & Connectors, Safety Equipment, Stock Management, Automatic BOM Generation, and Low Stock Alerts.",
+    },
+    {
+        "name": "8. DISPATCH & SERIAL NUMBER TRACKING",
+        "description": "Fulfillment: Material Packing, Product Dispatch, QR / Barcode Scanning, Serial Number Registration, Customer-Product Mapping, and Delivery Confirmation.",
+    },
+    {
+        "name": "9. INSTALLATION MANAGEMENT",
+        "description": "Field Deployment: Installation Scheduling, Technician Assignment, Installation Progress, Start & Finish Time, Installation Photographs, System Testing, Customer Digital Signature, and Installation Completion.",
+    },
+    {
+        "name": "10. WARRANTY MANAGEMENT",
+        "description": "Hardware Protection: Warranty Registration, Product Serial Number, Warranty Start Date, Warranty Expiry Date, Warranty Status, and Warranty Notifications.",
+    },
+    {
+        "name": "11. SERVICE & MAINTENANCE",
+        "description": "Helpdesk & Field Triage: Customer Complaints, Service Ticket Generation, Fault Code Management, Warranty Verification, Technician Assignment, Repair Management, Replacement Management, and Ticket Closure.",
+    },
+    {
+        "name": "12. EMPLOYEE MANAGEMENT",
+        "description": "Workforce & Crew: Employee Registration, Technician Profiles, Attendance, Work Scheduling, Leave Management, and Salary Management.",
+    },
+    {
+        "name": "13. ADMIN & FINANCIAL ANALYTICS",
+        "description": "Executive Intelligence: Admin Dashboard, Total Revenue, Total Expenses, Profit & Loss, Project-Wise Profit, Pending Payments, Inventory Valuation, Government Subsidy Tracking, Employee Payments, and Monthly Reports.",
+    },
+]
+
+API_DESCRIPTION = """
+## SOLAR INSTALLATION MANAGEMENT SYSTEM
+Production-Grade Standalone Solar Installation Management System with 13 Core Functional Modules:
+
+```
+SOLAR INSTALLATION MANAGEMENT SYSTEM
+│
+├── 1. PUBLIC WEBSITE
+│   ├── Home Page
+│   ├── About Company
+│   ├── Solar Products
+│   ├── On-Grid Systems
+│   ├── Off-Grid Systems
+│   ├── Solar Savings Calculator
+│   ├── Subsidy Information
+│   └── Contact & Enquiry
+│
+├── 2. AUTHENTICATION
+│   ├── Login
+│   ├── Registration
+│   ├── Forgot Password
+│   └── Role-Based Authentication
+│
+├── 3. CUSTOMER MANAGEMENT
+│   ├── Customer Registration
+│   ├── Customer Profile
+│   ├── Customer Enquiries
+│   ├── Enquiry Follow-up
+│   ├── Customer History
+│   └── Customer Portal
+│
+├── 4. SITE SURVEY MANAGEMENT
+│   ├── Survey Scheduling
+│   ├── Technician Assignment
+│   ├── Roof Inspection
+│   ├── Roof Direction & Tilt
+│   ├── Shadow-Free Area
+│   ├── Cable Distance
+│   ├── Survey Photographs
+│   └── Survey Approval
+│
+├── 5. QUOTATION MANAGEMENT
+│   ├── Solar System Selection (1 kW to 5 kW)
+│   ├── On-Grid Quotation
+│   ├── Off-Grid Quotation
+│   ├── Component Price Calculation
+│   ├── Installation Charges
+│   ├── Quotation PDF
+│   └── Customer Approval
+│
+├── 6. ORDER & PAYMENT MANAGEMENT
+│   ├── Order Creation
+│   ├── Order Confirmation
+│   ├── Advance Payment
+│   ├── Full Payment
+│   ├── Payment Tracking
+│   └── Invoice Generation
+│
+├── 7. INVENTORY MANAGEMENT
+│   ├── Solar Panels
+│   ├── Inverters
+│   ├── Batteries
+│   ├── Mounting Structures
+│   ├── Wires & Connectors
+│   ├── Safety Equipment
+│   ├── Stock Management
+│   ├── Automatic BOM Generation
+│   └── Low Stock Alerts
+│
+├── 8. DISPATCH & SERIAL NUMBER TRACKING
+│   ├── Material Packing
+│   ├── Product Dispatch
+│   ├── QR / Barcode Scanning
+│   ├── Serial Number Registration
+│   ├── Customer-Product Mapping
+│   └── Delivery Confirmation
+│
+├── 9. INSTALLATION MANAGEMENT
+│   ├── Installation Scheduling
+│   ├── Technician Assignment
+│   ├── Installation Progress
+│   ├── Start & Finish Time
+│   ├── Installation Photographs
+│   ├── System Testing
+│   ├── Customer Digital Signature
+│   └── Installation Completion
+│
+├── 10. WARRANTY MANAGEMENT
+│   ├── Warranty Registration
+│   ├── Product Serial Number
+│   ├── Warranty Start Date
+│   ├── Warranty Expiry Date
+│   ├── Warranty Status
+│   └── Warranty Notifications
+│
+├── 11. SERVICE & MAINTENANCE
+│   ├── Customer Complaints
+│   ├── Service Ticket Generation
+│   ├── Fault Code Management
+│   ├── Warranty Verification
+│   ├── Technician Assignment
+│   ├── Repair Management
+│   ├── Replacement Management
+│   └── Ticket Closure
+│
+├── 12. EMPLOYEE MANAGEMENT
+│   ├── Employee Registration
+│   ├── Technician Profiles
+│   ├── Attendance
+│   ├── Work Scheduling
+│   ├── Leave Management
+│   └── Salary Management
+│
+└── 13. ADMIN & FINANCIAL ANALYTICS
+    ├── Admin Dashboard
+    ├── Total Revenue
+    ├── Total Expenses
+    ├── Profit & Loss
+    ├── Project-Wise Profit
+    ├── Pending Payments
+    ├── Inventory Valuation
+    ├── Government Subsidy Tracking
+    ├── Employee Payments
+    └── Monthly Reports
+```
+"""
+
 app = FastAPI(
-    title="SunPower Solar ERP API",
-    description="Production-Grade Standalone Solar Installation Management System",
-    version="1.0.0"
+    title="SOLAR INSTALLATION MANAGEMENT SYSTEM",
+    description=API_DESCRIPTION,
+    version="1.0.0",
+    openapi_tags=TAGS_METADATA
 )
 
 app.add_middleware(
@@ -524,10 +707,16 @@ def create_quotation(q_in: schemas.QuotationCreate, db: Session = Depends(get_db
     POST /api/quotations MUST return HTTP 400 if site_surveys.is_approved is False for that lead.
     Quotes can only be generated after a technician completes and approves the roof survey.
     """
-    survey = db.query(models.SiteSurvey).filter(
-        models.SiteSurvey.id == q_in.survey_id,
-        models.SiteSurvey.lead_id == q_in.lead_id
-    ).first()
+    survey = None
+    if q_in.survey_id:
+        survey = db.query(models.SiteSurvey).filter(
+            models.SiteSurvey.id == q_in.survey_id,
+            models.SiteSurvey.lead_id == q_in.lead_id
+        ).first()
+        if not survey:
+            survey = db.query(models.SiteSurvey).filter(models.SiteSurvey.id == q_in.survey_id).first()
+    if not survey and q_in.lead_id:
+        survey = db.query(models.SiteSurvey).filter(models.SiteSurvey.lead_id == q_in.lead_id).first()
 
     if not survey:
         raise HTTPException(status_code=404, detail="Site survey not found for this lead")
