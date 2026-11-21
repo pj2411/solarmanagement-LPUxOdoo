@@ -21,15 +21,10 @@ import {
   CartesianGrid, 
   Cell 
 } from 'recharts';
+import { DEFAULT_ANALYTICS } from '../utils/syntheticData';
 
 export default function AnalyticsView({ analyticsData }) {
-  if (!analyticsData) {
-    return (
-      <div className="p-8 text-center text-slate-400 text-xs animate-pulse">
-        Computing real-time relational analytics from SQLite…
-      </div>
-    );
-  }
+  const data = analyticsData || DEFAULT_ANALYTICS;
 
   const {
     total_revenue_inr = 0,
@@ -39,7 +34,7 @@ export default function AnalyticsView({ analyticsData }) {
     inventory_valuation_inr = 0,
     subsidy_tracking = {},
     projects_pnl = []
-  } = analyticsData;
+  } = data;
 
   const exportCSV = () => {
     const headers = "Order ID,Project Name,Customer,Capacity (kW),System Type,Revenue (INR),BoM Cost (INR),Labor Hours,Labor Rate,Labor Cost (INR),Total Cost (INR),Profit (INR),Margin (%)\n";

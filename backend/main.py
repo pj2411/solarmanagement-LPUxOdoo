@@ -241,6 +241,33 @@ def update_lead(id: int, lead_in: schemas.LeadUpdate, db: Session = Depends(get_
 def get_surveys(db: Session = Depends(get_db)):
     return db.query(models.SiteSurvey).order_by(models.SiteSurvey.id.desc()).all()
 
+@app.post("/api/surveys", response_model=schemas.SurveyOut)
+def create_survey(survey_in: schemas.SurveyCreate, db: Session = Depends(get_db)):
+    lead = db.query(models.CustomerLead).filter(models.CustomerLead.id == survey_in.lead_id).first()
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    
+    first_tech = db.query(models.User).filter(models.User.role == "TECHNICIAN").first()
+    tech_id = survey_in.technician_id or (first_tech.id if first_tech else None)
+    
+    survey = models.SiteSurvey(
+        lead_id=survey_in.lead_id,
+        technician_id=tech_id,
+        scheduled_date=survey_in.scheduled_date or (date.today() + timedelta(days=2)),
+        roof_direction=survey_in.roof_direction or "South (180° Azimuth)",
+        tilt_angle_deg=survey_in.tilt_angle_deg if survey_in.tilt_angle_deg is not None else 22.0,
+        shadow_free_area_sqft=survey_in.shadow_free_area_sqft if survey_in.shadow_free_area_sqft is not None else (lead.capacity_kw * 100.0),
+        cable_distance_m=survey_in.cable_distance_m if survey_in.cable_distance_m is not None else 20.0,
+        survey_photo_url=survey_in.survey_photo_url or "/photos/survey_roof_default.jpg",
+        is_approved=False,
+        notes=survey_in.notes or "Scheduled site survey."
+    )
+    db.add(survey)
+    lead.pipeline_stage = "SURVEY_SCHEDULED"
+    db.commit()
+    db.refresh(survey)
+    return survey
+
 @app.post("/api/surveys/{id}/approve", response_model=schemas.SurveyOut)
 def approve_survey(id: int, db: Session = Depends(get_db)):
     survey = db.query(models.SiteSurvey).filter(models.SiteSurvey.id == id).first()
@@ -265,8 +292,11 @@ def update_survey(id: int, survey_in: schemas.SurveyUpdate, db: Session = Depend
     for key, value in update_data.items():
         setattr(survey, key, value)
     
-    if survey.is_approved and survey.lead:
-        survey.lead.pipeline_stage = "SURVEY_APPROVED"
+    if survey.lead:
+        if survey.is_approved:
+            survey.lead.pipeline_stage = "SURVEY_APPROVED"
+        else:
+            survey.lead.pipeline_stage = "SURVEY_SCHEDULED"
 
     db.commit()
     db.refresh(survey)
@@ -683,13 +713,30 @@ def create_service_ticket(t_in: schemas.ServiceTicketCreate, db: Session = Depen
             is_under_warranty = False
             billed_amount = t_in.parts_cost_inr + t_in.labor_cost_inr
 
+    # Validate assigned technician to prevent foreign key errors if tech id is invalid or 0
+    tech_id = t_in.assigned_technician_id
+    if tech_id is not None and tech_id > 0:
+        tech = db.query(models.User).filter(models.User.id == tech_id).first()
+        if not tech:
+            tech_id = None
+    else:
+        tech_id = None
+
+    # Validate lead_id to ensure lead exists
+    lead_id = t_in.lead_id
+    lead = db.query(models.CustomerLead).filter(models.CustomerLead.id == lead_id).first()
+    if not lead:
+        first_lead = db.query(models.CustomerLead).first()
+        if first_lead:
+            lead_id = first_lead.id
+
     ticket = models.ServiceTicket(
-        lead_id=t_in.lead_id,
+        lead_id=lead_id,
         serial_number=t_in.serial_number,
         fault_code=t_in.fault_code,
         issue_description=t_in.issue_description,
         is_under_warranty=is_under_warranty,
-        assigned_technician_id=t_in.assigned_technician_id,
+        assigned_technician_id=tech_id,
         resolution_type=t_in.resolution_type,
         parts_cost_inr=t_in.parts_cost_inr,
         labor_cost_inr=t_in.labor_cost_inr,

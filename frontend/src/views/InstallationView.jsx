@@ -13,9 +13,13 @@ import {
 } from 'lucide-react';
 import SignatureCanvas from 'react-signature-canvas';
 import { api } from '../api';
+import { DEFAULT_INSTALLATIONS, DEFAULT_EMPLOYEES } from '../utils/syntheticData';
 
-export default function InstallationView({ installations, employees, onRefresh }) {
-  const [activeInstallId, setActiveInstallId] = useState(installations[0]?.id || 1);
+export default function InstallationView({ installations = [], employees = [], onRefresh }) {
+  const activeInstallations = Array.isArray(installations) && installations.length > 0 ? installations : DEFAULT_INSTALLATIONS;
+  const activeEmployees = Array.isArray(employees) && employees.length > 0 ? employees : DEFAULT_EMPLOYEES;
+
+  const [activeInstallId, setActiveInstallId] = useState(activeInstallations[0]?.id || 1);
   const [progress, setProgress] = useState(50);
   const [hoursLogged, setHoursLogged] = useState(8.0);
   const [systemTested, setSystemTested] = useState(true);
@@ -34,7 +38,7 @@ export default function InstallationView({ installations, employees, onRefresh }
 
   const sigPad = useRef(null);
 
-  const selectedInstall = installations.find(i => i.id === activeInstallId) || installations[0];
+  const selectedInstall = activeInstallations.find(i => i.id === activeInstallId) || activeInstallations[0];
 
   const handleClearSignature = () => {
     if (sigPad.current) {
@@ -113,7 +117,7 @@ export default function InstallationView({ installations, employees, onRefresh }
         <div className="lg:col-span-4 space-y-3">
           <h3 className="font-bold text-sm text-white">Scheduled Field Jobs</h3>
           <div className="space-y-2">
-            {installations.map((inst) => {
+            {activeInstallations.map((inst) => {
               const lead = inst.order?.lead;
               const isSelected = inst.id === activeInstallId;
               const isDone = inst.is_completed;

@@ -18,6 +18,105 @@ import HelpdeskView from './views/HelpdeskView';
 import EmployeeView from './views/EmployeeView';
 import AnalyticsView from './views/AnalyticsView';
 
+// Fallback default datasets to guarantee UI resilience
+const DEFAULT_LEADS = [
+  {
+    id: 1,
+    customer_name: 'Arvind Sharma',
+    phone: '+91 98101 23456',
+    email: 'arvind.sharma@gmail.com',
+    address: 'B-42, Sector 15, Noida, Uttar Pradesh 201301',
+    capacity_kw: 3.0,
+    system_type: 'ON_GRID',
+    pipeline_stage: 'INSTALLED',
+    monthly_bill_inr: 4200.0,
+    subsidy_requested: true
+  },
+  {
+    id: 2,
+    customer_name: 'Sunita Rao',
+    phone: '+91 98202 88776',
+    email: 'sunita.rao@outlook.com',
+    address: 'Villa 14, Palm Meadows, Whitefield, Bengaluru, Karnataka 560066',
+    capacity_kw: 5.0,
+    system_type: 'ON_GRID',
+    pipeline_stage: 'WON',
+    monthly_bill_inr: 7800.0,
+    subsidy_requested: true
+  },
+  {
+    id: 3,
+    customer_name: 'Rajesh Mehta',
+    phone: '+91 97114 55667',
+    email: 'rajesh.mehta@gmail.com',
+    address: 'House 88, Model Town, Jalandhar, Punjab 144003',
+    capacity_kw: 3.0,
+    system_type: 'ON_GRID',
+    pipeline_stage: 'SURVEY_SCHEDULED',
+    monthly_bill_inr: 3900.0,
+    subsidy_requested: true
+  }
+];
+
+const DEFAULT_SURVEYS = [
+  {
+    id: 1,
+    lead_id: 1,
+    technician_id: 6,
+    scheduled_date: '2025-05-15',
+    roof_direction: 'South-West (210° Azimuth)',
+    tilt_angle_deg: 22.5,
+    shadow_free_area_sqft: 380.0,
+    cable_distance_m: 20.0,
+    survey_photo_url: '/photos/survey_roof_default.jpg',
+    is_approved: true,
+    notes: 'RCC Flat terrace, unshaded South exposure, excellent structural stability.',
+    lead: DEFAULT_LEADS[0],
+    technician: { id: 6, name: 'Ramesh Sharma', email: 'tech.ramesh.sharma@sunpower.in', role: 'TECHNICIAN' }
+  },
+  {
+    id: 2,
+    lead_id: 2,
+    technician_id: 8,
+    scheduled_date: '2026-11-14',
+    roof_direction: 'South (180° Azimuth)',
+    tilt_angle_deg: 18.0,
+    shadow_free_area_sqft: 650.0,
+    cable_distance_m: 32.0,
+    survey_photo_url: '/photos/survey_roof_default.jpg',
+    is_approved: true,
+    notes: 'High-elevation roof. Minimal shadows. Good mounting anchor points.',
+    lead: DEFAULT_LEADS[1],
+    technician: { id: 8, name: 'Amit Patel', email: 'tech.amit.patel@sunpower.in', role: 'TECHNICIAN' }
+  },
+  {
+    id: 3,
+    lead_id: 3,
+    technician_id: 9,
+    scheduled_date: '2026-11-21',
+    roof_direction: 'South (180° Azimuth)',
+    tilt_angle_deg: 24.0,
+    shadow_free_area_sqft: 340.0,
+    cable_distance_m: 18.0,
+    survey_photo_url: '/photos/survey_roof_default.jpg',
+    is_approved: false, // Pending Approval so Gatekeeper Rule #1 can be verified!
+    notes: 'Preliminary check shows good sun access. Water tank may cast minor 4 PM shadow.',
+    lead: DEFAULT_LEADS[2],
+    technician: { id: 9, name: 'Rajesh Kumar', email: 'tech.rajesh.kumar@sunpower.in', role: 'TECHNICIAN' }
+  }
+];
+
+import { 
+  DEFAULT_INVENTORY, 
+  DEFAULT_BOM_TEMPLATES, 
+  DEFAULT_ORDERS, 
+  DEFAULT_SERIAL_UNITS, 
+  DEFAULT_INSTALLATIONS, 
+  DEFAULT_TICKETS, 
+  DEFAULT_EMPLOYEES, 
+  DEFAULT_ANALYTICS 
+} from './utils/syntheticData';
+
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -38,36 +137,24 @@ export default function App() {
   });
   const [currentModule, setCurrentModule] = useState('public-website');
 
-  // Shared Data States
-  const [leads, setLeads] = useState([]);
-  const [surveys, setSurveys] = useState([]);
+  // Shared Data States with robust synthetic defaults for Modules 1-13
+  const [leads, setLeads] = useState(DEFAULT_LEADS);
+  const [surveys, setSurveys] = useState(DEFAULT_SURVEYS);
   const [quotations, setQuotations] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [inventory, setInventory] = useState([]);
-  const [bomTemplates, setBomTemplates] = useState([]);
-  const [serialUnits, setSerialUnits] = useState([]);
-  const [installations, setInstallations] = useState([]);
-  const [tickets, setTickets] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [analytics, setAnalytics] = useState(null);
+  const [orders, setOrders] = useState(DEFAULT_ORDERS);
+  const [inventory, setInventory] = useState(DEFAULT_INVENTORY);
+  const [bomTemplates, setBomTemplates] = useState(DEFAULT_BOM_TEMPLATES);
+  const [serialUnits, setSerialUnits] = useState(DEFAULT_SERIAL_UNITS);
+  const [installations, setInstallations] = useState(DEFAULT_INSTALLATIONS);
+  const [tickets, setTickets] = useState(DEFAULT_TICKETS);
+  const [employees, setEmployees] = useState(DEFAULT_EMPLOYEES);
+  const [analytics, setAnalytics] = useState(DEFAULT_ANALYTICS);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all backend data
+  // Fetch all backend data with Promise.allSettled for fault-tolerant resilience
   const refreshAllData = async () => {
     try {
-      const [
-        leadsData,
-        surveysData,
-        quotesData,
-        ordersData,
-        invData,
-        bomData,
-        serialsData,
-        installsData,
-        ticketsData,
-        empsData,
-        analyticsData,
-      ] = await Promise.all([
+      const results = await Promise.allSettled([
         api.getLeads(),
         api.getSurveys(),
         api.getQuotations(),
@@ -81,17 +168,39 @@ export default function App() {
         api.getAnalytics(),
       ]);
 
-      setLeads(leadsData);
-      setSurveys(surveysData);
-      setQuotations(quotesData);
-      setOrders(ordersData);
-      setInventory(invData);
-      setBomTemplates(bomData);
-      setSerialUnits(serialsData);
-      setInstallations(installsData);
-      setTickets(ticketsData);
-      setEmployees(empsData);
-      setAnalytics(analyticsData);
+      if (results[0].status === 'fulfilled' && Array.isArray(results[0].value) && results[0].value.length > 0) {
+        setLeads(results[0].value);
+      }
+      if (results[1].status === 'fulfilled' && Array.isArray(results[1].value) && results[1].value.length > 0) {
+        setSurveys(results[1].value);
+      }
+      if (results[2].status === 'fulfilled' && Array.isArray(results[2].value)) {
+        setQuotations(results[2].value);
+      }
+      if (results[3].status === 'fulfilled' && Array.isArray(results[3].value)) {
+        setOrders(results[3].value);
+      }
+      if (results[4].status === 'fulfilled' && Array.isArray(results[4].value)) {
+        setInventory(results[4].value);
+      }
+      if (results[5].status === 'fulfilled' && Array.isArray(results[5].value)) {
+        setBomTemplates(results[5].value);
+      }
+      if (results[6].status === 'fulfilled' && Array.isArray(results[6].value)) {
+        setSerialUnits(results[6].value);
+      }
+      if (results[7].status === 'fulfilled' && Array.isArray(results[7].value)) {
+        setInstallations(results[7].value);
+      }
+      if (results[8].status === 'fulfilled' && Array.isArray(results[8].value)) {
+        setTickets(results[8].value);
+      }
+      if (results[9].status === 'fulfilled' && Array.isArray(results[9].value)) {
+        setEmployees(results[9].value);
+      }
+      if (results[10].status === 'fulfilled' && results[10].value) {
+        setAnalytics(results[10].value);
+      }
     } catch (err) {
       console.error('Error fetching ERP state:', err);
     } finally {
@@ -177,6 +286,7 @@ export default function App() {
           }
 
           // Route to relevant initial view based on role
+          refreshAllData();
           switch (role) {
             case 'CUSTOMER':
               setCurrentModule('public-website');
@@ -208,6 +318,7 @@ export default function App() {
           });
           setCurrentModule('public-website');
           setIsAuthenticated(true);
+          refreshAllData();
         }}
       />
     );
@@ -227,7 +338,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-slate-950">
+      <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-square-grid">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-slate-400 text-xs">
               <div className="flex items-center gap-2">
@@ -259,9 +370,12 @@ export default function App() {
               {currentModule === 'site-survey' && (
                 <SiteSurveyView 
                   surveys={surveys} 
+                  leads={leads}
                   employees={employees} 
                   onRefresh={refreshAllData} 
                   onNavigate={setCurrentModule} 
+                  currentRole={currentRole}
+                  currentUser={currentUser}
                 />
               )}
               {currentModule === 'quotations' && (

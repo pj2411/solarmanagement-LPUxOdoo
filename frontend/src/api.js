@@ -20,32 +20,41 @@ export async function fetchJson(endpoint, options = {}) {
     headers,
   });
 
-  if (!response.ok) {
-    let errorDetail = 'API Request Failed';
+  const responseText = await response.text();
+  let responseData = null;
+  if (responseText) {
     try {
-      const errData = await response.json();
-      if (errData && errData.error && errData.error.message) {
-        errorDetail = errData.error.message;
-      } else if (errData && errData.detail) {
-        errorDetail = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);
-      } else {
-        errorDetail = JSON.stringify(errData);
-      }
+      responseData = JSON.parse(responseText);
     } catch {
-      errorDetail = await response.text();
+      responseData = responseText;
+    }
+  }
+
+  if (!response.ok) {
+    let errorDetail = `API Request Failed (HTTP ${response.status})`;
+    if (responseData && typeof responseData === 'object') {
+      if (responseData.error && responseData.error.message) {
+        errorDetail = responseData.error.message;
+      } else if (responseData.detail) {
+        errorDetail = typeof responseData.detail === 'string' ? responseData.detail : JSON.stringify(responseData.detail);
+      } else if (responseData.message) {
+        errorDetail = responseData.message;
+      } else {
+        errorDetail = JSON.stringify(responseData);
+      }
+    } else if (typeof responseData === 'string' && responseData.trim()) {
+      errorDetail = responseData;
     }
     throw new Error(errorDetail);
   }
 
-  const result = await response.json();
-
   // If response is wrapped in standard API envelope: { success: true, data: ... }
   // unwrap data for views that expect raw array/object, while preserving access if needed
-  if (result && typeof result === 'object' && result.success === true && 'data' in result) {
-    return result.data;
+  if (responseData && typeof responseData === 'object' && responseData.success === true && 'data' in responseData) {
+    return responseData.data;
   }
 
-  return result;
+  return responseData;
 }
 
 export const api = {
@@ -69,7 +78,9 @@ export const api = {
 
   // Surveys
   getSurveys: () => fetchJson('/surveys'),
+  createSurvey: (data) => fetchJson('/surveys', { method: 'POST', body: JSON.stringify(data) }),
   approveSurvey: (id) => fetchJson(`/surveys/${id}/approve`, { method: 'POST' }),
+  unapproveSurvey: (id) => fetchJson(`/surveys/${id}`, { method: 'PUT', body: JSON.stringify({ is_approved: false }) }),
   updateSurvey: (id, data) => fetchJson(`/surveys/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
 
   // Inventory & BoM

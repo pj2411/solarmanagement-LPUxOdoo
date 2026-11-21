@@ -13,13 +13,18 @@ import {
 } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { api } from '../api';
+import { DEFAULT_SERIAL_UNITS, DEFAULT_ORDERS, DEFAULT_INVENTORY } from '../utils/syntheticData';
 
-export default function DispatchView({ serialUnits, orders, inventory, onRefresh }) {
+export default function DispatchView({ serialUnits = [], orders = [], inventory = [], onRefresh }) {
+  const activeSerialUnits = Array.isArray(serialUnits) && serialUnits.length > 0 ? serialUnits : DEFAULT_SERIAL_UNITS;
+  const activeOrders = Array.isArray(orders) && orders.length > 0 ? orders : DEFAULT_ORDERS;
+  const activeInventory = Array.isArray(inventory) && inventory.length > 0 ? inventory : DEFAULT_INVENTORY;
+
   const [showScanner, setShowScanner] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(orders[0]?.id || 1);
+  const [selectedOrderId, setSelectedOrderId] = useState(activeOrders[0]?.id || 1);
   const [componentType, setComponentType] = useState('INVERTER');
   const [serialNumber, setSerialNumber] = useState('');
-  const [selectedItemId, setSelectedItemId] = useState(inventory[0]?.id || 1);
+  const [selectedItemId, setSelectedItemId] = useState(activeInventory[0]?.id || 1);
   const [dispatching, setDispatching] = useState(false);
   const [confirmingSerial, setConfirmingSerial] = useState(null);
 
@@ -114,7 +119,7 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
               onChange={(e) => setSelectedOrderId(Number(e.target.value))}
               className="w-full mt-1 px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-lg text-white"
             >
-              {orders.map(o => (
+              {activeOrders.map(o => (
                 <option key={o.id} value={o.id}>
                   #ORD-{o.id}: {o.lead?.customer_name || 'Customer'}
                 </option>
@@ -143,7 +148,7 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
               onChange={(e) => setSelectedItemId(Number(e.target.value))}
               className="w-full mt-1 px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-lg text-white"
             >
-              {inventory.map(i => (
+              {activeInventory.map(i => (
                 <option key={i.id} value={i.id}>{i.sku} - {i.name}</option>
               ))}
             </select>
@@ -210,7 +215,7 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {serialUnits.map((u) => {
+            {activeSerialUnits.map((u) => {
               const isDelivered = u.delivery_confirmed;
               return (
                 <tr key={u.serial_number} className="hover:bg-slate-850/50">

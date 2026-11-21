@@ -13,8 +13,12 @@ import {
   X
 } from 'lucide-react';
 import { api } from '../api';
+import { DEFAULT_INVENTORY, DEFAULT_BOM_TEMPLATES } from '../utils/syntheticData';
 
-export default function InventoryView({ inventory, bomTemplates, onRefresh }) {
+export default function InventoryView({ inventory = [], bomTemplates = [], onRefresh }) {
+  const activeInventory = Array.isArray(inventory) && inventory.length > 0 ? inventory : DEFAULT_INVENTORY;
+  const activeBomTemplates = Array.isArray(bomTemplates) && bomTemplates.length > 0 ? bomTemplates : DEFAULT_BOM_TEMPLATES;
+
   const [activeTab, setActiveTab] = useState('STOCK'); // 'STOCK' or 'BOM_TEMPLATES'
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,14 +37,14 @@ export default function InventoryView({ inventory, bomTemplates, onRefresh }) {
     'SAFETY_EQUIPMENT'
   ];
 
-  const filteredItems = inventory.filter(item => {
+  const filteredItems = activeInventory.filter(item => {
     const matchesCat = selectedCategory === 'ALL' || item.category === selectedCategory;
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           item.sku.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCat && matchesSearch;
   });
 
-  const lowStockCount = inventory.filter(i => i.stock_qty <= i.reorder_threshold).length;
+  const lowStockCount = activeInventory.filter(i => i.stock_qty <= i.reorder_threshold).length;
 
   const handleRestockSubmit = async (e) => {
     e.preventDefault();
@@ -216,7 +220,7 @@ export default function InventoryView({ inventory, bomTemplates, onRefresh }) {
       ) : (
         /* Pre-Configured BOM Kits */
         <div className="grid md:grid-cols-2 gap-6">
-          {bomTemplates.map((template) => (
+          {activeBomTemplates.map((template) => (
             <div key={template.id} className="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
               <div className="flex justify-between items-start">
                 <div>

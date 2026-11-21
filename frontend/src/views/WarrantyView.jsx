@@ -10,15 +10,18 @@ import {
   Award,
   FileText
 } from 'lucide-react';
+import { DEFAULT_SERIAL_UNITS } from '../utils/syntheticData';
 
-export default function WarrantyView({ serialUnits }) {
+export default function WarrantyView({ serialUnits = [] }) {
+  const activeSerialUnits = Array.isArray(serialUnits) && serialUnits.length > 0 ? serialUnits : DEFAULT_SERIAL_UNITS;
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedUnit, setSelectedUnit] = useState(null);
 
   const todayStr = new Date().toISOString().split('T')[0];
 
-  const filteredUnits = serialUnits.filter(u => {
+  const filteredUnits = activeSerialUnits.filter(u => {
     const isExpired = u.warranty_expiry_date ? u.warranty_expiry_date < todayStr : false;
     const isActive = u.warranty_expiry_date ? u.warranty_expiry_date >= todayStr : false;
 

@@ -4,6 +4,37 @@
 
 :root {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  /* ========================================================
+     SQUARE GRID OPACITY & COLOR CONTROLS
+     Change the values below to adjust across the entire website:
+     ======================================================== */
+  --grid-bg-color: rgba(2, 6, 23, 0.02); /* Solid background color at minimum opacity (2%) */
+  --grid-color: 255, 255, 255;    /* Grid line RGB color (default: white) */
+  --grid-opacity: 0.0425;         /* Grid line opacity kept intact at 4.25% */
+  --grid-glow-opacity: 0.04;      /* Solar top ambient glow opacity */
+  --grid-size: 40px;               /* Square cell size: 40px */
+}
+
+/* Lighten and soften root canvas so the website is not overwhelmingly pitch dark */
+html, body, #root {
+  background-color: #0d1527;
+  background-image: radial-gradient(circle at 50% -10%, #1a2b4c 0%, #0e172a 60%, #0a101d 100%);
+  min-height: 100vh;
+}
+
+/* Soften Deep Solar Slate surfaces with breathable opacity */
+.bg-slate-950 {
+  background-color: rgba(10, 16, 30, 0.45);
+}
+.bg-slate-900 {
+  background-color: rgba(15, 25, 46, 0.55);
+}
+.bg-slate-850 {
+  background-color: rgba(20, 33, 60, 0.60);
+}
+.border-slate-800 {
+  border-color: rgba(51, 65, 85, 0.35);
 }
 
 code, pre, .font-mono {
@@ -24,4 +55,22 @@ code, pre, .font-mono {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #f59e0b;
+}
+
+/* Technical Square Grid Background (Driven by CSS variables above) */
+.bg-square-grid {
+  background-color: var(--grid-bg-color, rgba(2, 6, 23, 0.6));
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(245, 158, 11, var(--grid-glow-opacity)) 0%, transparent 65%),
+    linear-gradient(to right, rgba(var(--grid-color), var(--grid-opacity)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-color), var(--grid-opacity)) 1px, transparent 1px);
+  background-size: 100% 700px, var(--grid-size) var(--grid-size), var(--grid-size) var(--grid-size);
+  background-repeat: no-repeat, repeat, repeat;
+}
+
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(var(--grid-color), var(--grid-opacity)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-color), var(--grid-opacity)) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
 }

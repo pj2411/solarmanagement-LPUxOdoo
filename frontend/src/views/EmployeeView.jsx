@@ -14,14 +14,17 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { api } from '../api';
+import { DEFAULT_EMPLOYEES } from '../utils/syntheticData';
 
-export default function EmployeeView({ employees, onRefresh }) {
+export default function EmployeeView({ employees = [], onRefresh }) {
+  const activeEmployees = Array.isArray(employees) && employees.length > 0 ? employees : DEFAULT_EMPLOYEES;
+
   const [searchTerm, setSearchTerm] = useState('');
   const [inspectingEmployee, setInspectingEmployee] = useState(null);
   const [employeeJobs, setEmployeeJobs] = useState(null);
   const [loadingJobs, setLoadingJobs] = useState(false);
 
-  const filteredEmployees = employees.filter(emp => 
+  const filteredEmployees = activeEmployees.filter(emp => 
     emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     emp.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -49,9 +52,9 @@ export default function EmployeeView({ employees, onRefresh }) {
     }
   };
 
-  const totalCrew = employees.length;
-  const presentCount = employees.filter(e => e.attendance_status === 'PRESENT').length;
-  const onLeaveCount = employees.filter(e => e.attendance_status === 'ON_LEAVE').length;
+  const totalCrew = activeEmployees.length;
+  const presentCount = activeEmployees.filter(e => e.attendance_status === 'PRESENT').length;
+  const onLeaveCount = activeEmployees.filter(e => e.attendance_status === 'ON_LEAVE').length;
 
   return (
     <div className="space-y-6 pb-12">

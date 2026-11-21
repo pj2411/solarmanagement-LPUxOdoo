@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Sun, 
   Zap, 
   BatteryCharging, 
   CheckCircle2, 
@@ -90,11 +89,6 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
       {/* SECTION 1: HOME PAGE HERO */}
       <section id="home" className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-8 lg:p-12 shadow-2xl">
         <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold">
-            <Sun className="w-3.5 h-3.5 motion-safe:animate-spin motion-reduce:opacity-100" style={{ animationDuration: '10s' }} />
-            PM Surya Ghar: Muft Bijli Yojana Approved Turnkey Installer
-          </div>
-
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
             Certified Rooftop Solar Systems for Clean Home Energy
           </h1>

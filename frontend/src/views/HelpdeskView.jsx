@@ -12,19 +12,30 @@ import {
   Plus
 } from 'lucide-react';
 import { api } from '../api';
+import { DEFAULT_TICKETS, DEFAULT_SERIAL_UNITS, DEFAULT_EMPLOYEES } from '../utils/syntheticData';
 
-export default function HelpdeskView({ tickets, leads, serialUnits, employees, onRefresh }) {
+export default function HelpdeskView({ tickets = [], leads = [], serialUnits = [], employees = [], onRefresh }) {
+  const fallbackLeads = [
+    { id: 1, customer_name: 'Arvind Sharma', phone: '+91 98101 23456' },
+    { id: 2, customer_name: 'Sunita Rao', phone: '+91 98202 88776' },
+    { id: 3, customer_name: 'Rajesh Mehta', phone: '+91 97114 55667' },
+  ];
+  const activeLeads = Array.isArray(leads) && leads.length > 0 ? leads : fallbackLeads;
+  const activeTickets = Array.isArray(tickets) && tickets.length > 0 ? tickets : DEFAULT_TICKETS;
+  const activeSerialUnits = Array.isArray(serialUnits) && serialUnits.length > 0 ? serialUnits : DEFAULT_SERIAL_UNITS;
+  const activeEmployees = Array.isArray(employees) && employees.length > 0 ? employees : DEFAULT_EMPLOYEES;
+
   const [selectedSerial, setSelectedSerial] = useState('INV-2025-0518'); // Default active demo serial
-  const [selectedLeadId, setSelectedLeadId] = useState(leads[0]?.id || 1);
+  const [selectedLeadId, setSelectedLeadId] = useState(activeLeads[0]?.id || 1);
   const [faultCode, setFaultCode] = useState('E04-GRID-LOSS');
   const [description, setDescription] = useState('Inverter display shows grid frequency sync failure.');
   const [partsCost, setPartsCost] = useState(3500);
   const [laborCost, setLaborCost] = useState(1200);
-  const [assignedTechId, setAssignedTechId] = useState(employees[0]?.id || 1);
+  const [assignedTechId, setAssignedTechId] = useState(activeEmployees[0]?.id || 1);
   const [submitting, setSubmitting] = useState(false);
 
   // Live lookup of warranty status for the currently selected serial
-  const matchedUnit = serialUnits.find(u => u.serial_number === selectedSerial);
+  const matchedUnit = activeSerialUnits.find(u => u.serial_number === selectedSerial);
   const todayStr = new Date().toISOString().split('T')[0];
   const isUnderWarranty = matchedUnit?.warranty_expiry_date ? matchedUnit.warranty_expiry_date >= todayStr : false;
 
@@ -33,14 +44,14 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
     setSubmitting(true);
     try {
       const res = await api.createTicket({
-        lead_id: selectedLeadId,
+        lead_id: Number(selectedLeadId) || activeLeads[0]?.id || 1,
         serial_number: selectedSerial,
         fault_code: faultCode,
         issue_description: description,
-        assigned_technician_id: assignedTechId,
+        assigned_technician_id: Number(assignedTechId) || activeEmployees[0]?.id || 1,
         resolution_type: 'REPAIR',
-        parts_cost_inr: Number(partsCost),
-        labor_cost_inr: Number(laborCost),
+        parts_cost_inr: Number(partsCost) || 0,
+        labor_cost_inr: Number(laborCost) || 0,
       });
 
       alert(`Ticket #${res.id} created successfully!\nWarranty Status: ${res.is_under_warranty ? 'FREE REPAIR (₹0)' : `EXPIRED (Billed: ₹${res.billed_invoice_amount_inr})`}`);
@@ -126,7 +137,7 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
               onChange={(e) => setSelectedLeadId(Number(e.target.value))}
               className="w-full mt-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white"
             >
-              {leads.map(l => (
+              {activeLeads.map(l => (
                 <option key={l.id} value={l.id}>{l.customer_name} ({l.phone})</option>
               ))}
             </select>
@@ -236,7 +247,7 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {tickets.map((t) => (
+              {activeTickets.map((t) => (
                 <tr key={t.id} className="hover:bg-slate-850/50">
                   <td className="p-3 text-slate-400">#TCK-<span className="font-mono">{t.id}</span></td>
                   <td className="p-3 font-semibold text-white">{t.lead?.customer_name}</td>

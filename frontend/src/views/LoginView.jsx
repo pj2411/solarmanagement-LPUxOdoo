@@ -614,7 +614,7 @@ export default function LoginView({ onLogin, onExplorePublic }) {
 
       {/* Footer */}
       <footer className="px-6 py-3 border-t border-slate-800/80 bg-slate-900/40 text-center text-[11px] text-slate-500">
-        SunPower Solutions Standalone ERP • Certified Rooftop Solar EPC Enterprise (15 Technicians, 40 Projects/Month)
+        SunPower Solutions Standalone ERP
       </footer>
     </div>
   );
