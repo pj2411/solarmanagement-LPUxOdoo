@@ -380,7 +380,7 @@ export default function App() {
             showPublicNav ? 'translate-y-0 opacity-100' : '-translate-y-28 opacity-0'
           }`}
         >
-          <header className="pointer-events-auto w-full max-w-5xl px-6 py-3 rounded-full bg-slate-900/90 backdrop-blur-md border border-slate-700/60 shadow-2xl flex items-center justify-between gap-4 sm:gap-8">
+          <header className="pointer-events-auto w-full max-w-6xl px-5 sm:px-6 py-2.5 rounded-full bg-slate-900/90 backdrop-blur-md border border-slate-700/60 shadow-2xl flex items-center justify-between gap-3 lg:gap-6">
             <button
               type="button"
               onClick={() => {
@@ -389,31 +389,31 @@ export default function App() {
                 if (url.hash.startsWith('#/public')) url.hash = '';
                 window.location.href = url.pathname + (url.search ? url.search : '');
               }}
-              className="flex items-center gap-2.5 group flex-shrink-0 cursor-pointer focus:outline-none"
+              className="flex items-center gap-2 group flex-shrink-0 cursor-pointer focus:outline-none"
               title="Go to ERP Home"
             >
-              <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
-                <Sun className="w-5 h-5 text-amber-400 fill-amber-400" />
+              <div className="w-7 h-7 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
+                <Sun className="w-4 h-4 text-amber-400 fill-amber-400" />
               </div>
-              <span className="text-sm sm:text-base font-extrabold tracking-tight text-white hidden sm:inline group-hover:text-amber-400 transition-colors">
+              <span className="text-xs sm:text-sm font-bold tracking-tight text-slate-900 hidden sm:inline group-hover:text-amber-500 transition-colors">
                 SunPower Solutions
               </span>
             </button>
 
-            <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
-              <a href="#home" className="hover:text-amber-400 transition-colors">Home</a>
-              <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
-              <a href="#products" className="hover:text-amber-400 transition-colors">Products</a>
-              <a href="#systems" className="hover:text-amber-400 transition-colors">Packages</a>
-              <a href="#calculator" className="hover:text-amber-400 transition-colors">Calculator</a>
-              <a href="#subsidy" className="hover:text-amber-400 transition-colors">Subsidy</a>
-              <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
+            <nav className="hidden md:flex items-center gap-3.5 lg:gap-5 text-xs lg:text-sm font-medium text-slate-300">
+              <a href="#home" className="hover:text-amber-500 transition-colors">Home</a>
+              <a href="#about" className="hover:text-amber-500 transition-colors">About</a>
+              <a href="#products" className="hover:text-amber-500 transition-colors">Products</a>
+              <a href="#systems" className="hover:text-amber-500 transition-colors">Packages</a>
+              <a href="#calculator" className="hover:text-amber-500 transition-colors">Calculator</a>
+              <a href="#subsidy" className="hover:text-amber-500 transition-colors">Subsidy</a>
+              <a href="#contact" className="hover:text-amber-500 transition-colors">Contact</a>
             </nav>
 
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
               <a
                 href="#contact"
-                className="hidden sm:inline-flex items-center px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 text-xs sm:text-sm font-bold transition-colors"
+                className="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-500 border border-amber-500/30 text-xs font-semibold transition-colors"
               >
                 Free Survey
               </a>
@@ -425,7 +425,7 @@ export default function App() {
                   if (url.hash.startsWith('#/public')) url.hash = '';
                   window.location.href = url.pathname + (url.search ? url.search : '');
                 }}
-                className="inline-flex items-center px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs sm:text-sm font-extrabold transition-all shadow-md shadow-amber-500/20 cursor-pointer"
+                className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all shadow-sm shadow-amber-500/20 cursor-pointer"
                 title="Return to ERP Portal"
               >
                 Staff ERP
