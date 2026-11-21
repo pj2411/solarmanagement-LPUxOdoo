@@ -171,22 +171,22 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
           </div>
 
           {/* Quick Metrics Bar */}
-          <div className="pt-8 sm:pt-10 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-slate-800">
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white font-mono">40+</div>
-              <div className="text-xs sm:text-sm text-slate-400">Projects per month</div>
+          <div className="pt-8 sm:pt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 border-t border-slate-800">
+            <div className="space-y-1 min-w-0">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-sans tracking-tight truncate">40+</div>
+              <div className="text-xs sm:text-sm text-slate-400 truncate">Projects per month</div>
             </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-amber-400 font-mono">15</div>
-              <div className="text-xs sm:text-sm text-slate-400">Certified technicians</div>
+            <div className="space-y-1 min-w-0">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-400 font-sans tracking-tight truncate">15</div>
+              <div className="text-xs sm:text-sm text-slate-400 truncate">Certified technicians</div>
             </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-emerald-400 font-mono">₹78,000</div>
-              <div className="text-xs sm:text-sm text-slate-400">Direct DBT subsidy</div>
+            <div className="space-y-1 min-w-0">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-emerald-400 font-sans tracking-tight truncate">₹78,000</div>
+              <div className="text-xs sm:text-sm text-slate-400 truncate">Direct DBT subsidy</div>
             </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-sky-400 font-mono">20 Years</div>
-              <div className="text-xs sm:text-sm text-slate-400">Panel output guarantee</div>
+            <div className="space-y-1 min-w-0">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-sky-400 font-sans tracking-tight truncate">20 Years</div>
+              <div className="text-xs sm:text-sm text-slate-400 truncate">Panel output guarantee</div>
             </div>
           </div>
         </div>
@@ -393,10 +393,10 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
           </div>
 
           {/* Bill Slider */}
-          <div className="space-y-4 p-6 sm:p-7 rounded-2xl bg-slate-950 border border-slate-800">
-            <div className="flex justify-between items-center">
+          <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800">
+            <div className="flex flex-wrap justify-between items-center gap-2">
               <span className="text-sm sm:text-base text-slate-200 font-semibold">Average Monthly Electricity Bill:</span>
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-amber-400 font-mono">₹{billAmount.toLocaleString('en-IN')}</span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-400 tracking-tight font-sans">₹{billAmount.toLocaleString('en-IN')}</span>
             </div>
             <input 
               type="range" 
@@ -415,10 +415,10 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
           </div>
 
           {/* Roof Area Slider */}
-          <div className="space-y-4 p-6 sm:p-7 rounded-2xl bg-slate-950 border border-slate-800">
-            <div className="flex justify-between items-center">
+          <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800">
+            <div className="flex flex-wrap justify-between items-center gap-2">
               <span className="text-sm sm:text-base text-slate-200 font-semibold">Usable Roof Area (Shadow-Free):</span>
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-amber-400 font-mono">{roofArea} sq.ft</span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-400 tracking-tight font-sans">{roofArea} sq.ft</span>
             </div>
             <input 
               type="range" 
@@ -462,32 +462,32 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
             </button>
           </div>
 
-          {/* Dynamic Metrics Output */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-            <div className="p-4 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <p className="text-xs sm:text-sm text-slate-400 font-medium">Recommended</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-mono">{recommendedKw} kW</p>
-              <p className="text-xs text-slate-500">~{recommendedKw * 80} sq.ft</p>
+          {/* Dynamic Metrics Output - Perfectly Proportioned To Never Overflow Boxes */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+            <div className="p-3 sm:p-3.5 rounded-xl bg-slate-950 border border-slate-800 min-w-0 overflow-hidden flex flex-col justify-between space-y-1">
+              <p className="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Recommended</p>
+              <p className="text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white font-sans truncate">{recommendedKw} kW</p>
+              <p className="text-[10px] sm:text-xs text-slate-500 truncate">~{recommendedKw * 80} sq.ft</p>
             </div>
-            <div className="p-4 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <p className="text-xs sm:text-sm text-slate-400 font-medium">Monthly Savings</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-emerald-400 font-mono">₹{estimatedMonthlySavings.toLocaleString('en-IN')}</p>
-              <p className="text-xs text-slate-500">₹{annualSavings.toLocaleString('en-IN')}/yr</p>
+            <div className="p-3 sm:p-3.5 rounded-xl bg-slate-950 border border-slate-800 min-w-0 overflow-hidden flex flex-col justify-between space-y-1">
+              <p className="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Monthly Savings</p>
+              <p className="text-base sm:text-lg lg:text-xl font-bold tracking-tight text-emerald-400 font-sans truncate">₹{estimatedMonthlySavings.toLocaleString('en-IN')}</p>
+              <p className="text-[10px] sm:text-xs text-slate-500 truncate">₹{annualSavings.toLocaleString('en-IN')}/yr</p>
             </div>
-            <div className="p-4 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <p className="text-xs sm:text-sm text-slate-400 font-medium">Govt Subsidy</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-400 font-mono">₹{subsidy.toLocaleString('en-IN')}</p>
-              <p className="text-xs text-slate-500">Direct DBT</p>
+            <div className="p-3 sm:p-3.5 rounded-xl bg-slate-950 border border-slate-800 min-w-0 overflow-hidden flex flex-col justify-between space-y-1">
+              <p className="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Govt Subsidy</p>
+              <p className="text-base sm:text-lg lg:text-xl font-bold tracking-tight text-amber-400 font-sans truncate">₹{subsidy.toLocaleString('en-IN')}</p>
+              <p className="text-[10px] sm:text-xs text-slate-500 truncate">Direct DBT</p>
             </div>
-            <div className="p-4 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <p className="text-xs sm:text-sm text-slate-400 font-medium">Payback</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-200 font-mono">{paybackYears} yrs</p>
-              <p className="text-xs text-slate-500">Free power after</p>
+            <div className="p-3 sm:p-3.5 rounded-xl bg-slate-950 border border-slate-800 min-w-0 overflow-hidden flex flex-col justify-between space-y-1">
+              <p className="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Payback</p>
+              <p className="text-base sm:text-lg lg:text-xl font-bold tracking-tight text-slate-200 font-sans truncate">{paybackYears} yrs</p>
+              <p className="text-[10px] sm:text-xs text-slate-500 truncate">Free power after</p>
             </div>
-            <div className="col-span-2 sm:col-span-1 p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1.5">
-              <p className="text-xs sm:text-sm text-amber-400 font-bold">25-Yr Savings</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-amber-400 font-mono">₹{(twentyFiveYearSavings / 100000).toFixed(2)} L</p>
-              <p className="text-xs text-slate-400">Net lifetime gain</p>
+            <div className="col-span-2 sm:col-span-1 p-3 sm:p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 min-w-0 overflow-hidden flex flex-col justify-between space-y-1">
+              <p className="text-[11px] sm:text-xs text-amber-400 font-bold truncate">25-Yr Savings</p>
+              <p className="text-base sm:text-lg lg:text-xl font-extrabold tracking-tight text-amber-400 font-sans truncate">₹{(twentyFiveYearSavings / 100000).toFixed(2)} L</p>
+              <p className="text-[10px] sm:text-xs text-slate-400 truncate">Net lifetime gain</p>
             </div>
           </div>
         </div>
