@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import { api } from './api';
 
@@ -260,12 +261,103 @@ export default function App() {
     }
   };
 
+  // Detect if standalone public website mode is requested via URL search or hash
+  const [isStandalonePublic, setIsStandalonePublic] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('view') === 'public' || window.location.hash.startsWith('#/public');
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      setIsStandalonePublic(params.get('view') === 'public' || window.location.hash.startsWith('#/public'));
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     if (typeof window !== 'undefined') {
       localStorage.removeItem('sunpower_auth');
     }
   };
+
+  // Standalone Public Website View (Completely isolated without ERP sidebar)
+  if (isStandalonePublic) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+        {/* Sleek Standalone Public Header */}
+        <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 lg:px-8 py-3.5 flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shadow-md shadow-amber-500/20 flex-shrink-0">
+              <Sun className="w-5 h-5 fill-current" />
+            </div>
+            <div>
+              <div className="text-sm font-bold tracking-tight text-white leading-none">
+                SunPower Solutions
+              </div>
+              <div className="text-[10px] uppercase tracking-wider text-amber-400 font-medium mt-1 leading-none">
+                India Rooftop Solar EPC
+              </div>
+            </div>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+            <a href="#home" className="hover:text-amber-400 transition-colors">Home</a>
+            <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
+            <a href="#systems" className="hover:text-amber-400 transition-colors">Packages</a>
+            <a href="#calculator" className="hover:text-amber-400 transition-colors">Solar Calculator</a>
+            <a href="#subsidy" className="hover:text-amber-400 transition-colors">DBT Subsidy</a>
+            <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <a
+              href="#contact"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 text-xs font-semibold transition-colors"
+            >
+              Get Free Survey
+            </a>
+            <button
+              type="button"
+              onClick={() => {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('view');
+                if (url.hash.startsWith('#/public')) url.hash = '';
+                window.location.href = url.pathname + (url.search ? url.search : '');
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all shadow-sm shadow-amber-500/20 cursor-pointer"
+              title="Return to ERP Portal"
+            >
+              Staff ERP Portal
+            </button>
+          </div>
+        </header>
+
+        {/* Public Content Container */}
+        <main className="flex-1 p-4 lg:p-8 bg-square-grid">
+          <PublicWebsiteView 
+            isStandalone={true}
+            onNavigate={(mod) => {
+              if (mod === 'quotations') {
+                const el = document.getElementById('systems');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }} 
+            onLeadCreated={refreshAllData} 
+          />
+        </main>
+      </div>
+    );
+  }
 
   // Dedicated Separate Login Page - Completely isolated from main portal
   if (!isAuthenticated) {

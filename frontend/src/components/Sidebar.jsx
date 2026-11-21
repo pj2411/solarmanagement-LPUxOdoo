@@ -14,7 +14,8 @@ import {
   UserCheck,
   BarChart3,
   Sun,
-  LogOut
+  LogOut,
+  ExternalLink
 } from 'lucide-react';
 
 export const MODULES = [
@@ -98,11 +99,25 @@ export default function Sidebar({
                 <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span className="truncate">{mod.label}</span>
               </div>
-              {badgeText && (
-                <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap ${badgeColor}`}>
-                  {badgeText}
-                </span>
-              )}
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                {mod.id === 'public-website' && (
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(`${window.location.origin}${window.location.pathname}?view=public`, '_blank');
+                    }}
+                    title="Open standalone public website in new tab"
+                    className="p-1 rounded hover:bg-slate-700/80 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                  </span>
+                )}
+                {badgeText && (
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap ${badgeColor}`}>
+                    {badgeText}
+                  </span>
+                )}
+              </div>
             </button>
           );
         })}

@@ -14,17 +14,24 @@ import {
   Layers,
   HelpCircle,
   Clock,
-  Sparkles
+  Sparkles,
+  ExternalLink,
+  Globe
 } from 'lucide-react';
 import { api } from '../api';
 
-export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInClick }) {
+export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInClick, isStandalone = false }) {
   const [billAmount, setBillAmount] = useState(3800);
   const [roofArea, setRoofArea] = useState(350);
   const [systemType, setSystemType] = useState('ON_GRID');
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [activeSection, setActiveSection] = useState('home');
+
+  const handleOpenStandalone = () => {
+    const url = `${window.location.origin}${window.location.pathname}?view=public`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   // Form states
   const [form, setForm] = useState({
@@ -84,7 +91,35 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
   };
 
   return (
-    <div className="space-y-12 pb-20 max-w-6xl mx-auto">
+    <div className="space-y-10 pb-20 max-w-6xl mx-auto">
+
+      {/* Top Standalone Launcher Bar (Shown inside ERP) */}
+      {!isStandalone && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/30 flex-shrink-0">
+              <Globe className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-white flex items-center gap-2">
+                Public Customer Website
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Module 1</span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Customer-facing portal with solar savings calculator and PM Surya Ghar subsidy estimator.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenStandalone}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all flex-shrink-0 cursor-pointer"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Open in New Page
+          </button>
+        </div>
+      )}
 
       {/* SECTION 1: HOME PAGE HERO */}
       <section id="home" className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-8 lg:p-12 shadow-2xl">
@@ -112,11 +147,20 @@ export default function PublicWebsiteView({ onNavigate, onLeadCreated, onSignInC
             </a>
             <button
               type="button"
-              onClick={() => onNavigate('quotations')}
+              onClick={() => onNavigate ? onNavigate('quotations') : (document.getElementById('systems')?.scrollIntoView({ behavior: 'smooth' }))}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 font-semibold text-xs border border-amber-500/30 transition-colors"
             >
               View formal packages
             </button>
+            {!isStandalone && (
+              <button
+                type="button"
+                onClick={handleOpenStandalone}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-semibold text-xs border border-amber-500/40 transition-colors shadow-sm"
+              >
+                <ExternalLink className="w-4 h-4" /> Open in New Page
+              </button>
+            )}
           </div>
 
           {/* Quick Metrics Bar */}
