@@ -44,18 +44,32 @@ html, body, #root {
   background-color: #cbd5e1 !important;
 }
 
-/* Translucent surfaces for floating headers, toolbars, and backdrops */
-[class*="bg-slate-900\/"] {
+/* Translucent surfaces for floating headers, toolbars, and backdrops (excluding hover states) */
+:not([class*="hover\:bg-slate-900\/"])[class*="bg-slate-900\/"] {
   background-color: rgba(255, 255, 255, 0.92) !important;
 }
-[class*="bg-slate-950\/"] {
+:not([class*="hover\:bg-slate-950\/"])[class*="bg-slate-950\/"] {
   background-color: rgba(241, 245, 249, 0.88) !important;
 }
-[class*="bg-slate-850\/"] {
+:not([class*="hover\:bg-slate-850\/"])[class*="bg-slate-850\/"] {
   background-color: rgba(248, 250, 252, 0.90) !important;
 }
-[class*="bg-slate-800\/"] {
+:not([class*="hover\:bg-slate-800\/"])[class*="bg-slate-800\/"] {
   background-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+/* Sidebar navigation buttons: always clean, flat and transparent when inactive */
+.sidebar-nav-btn {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+.sidebar-nav-btn:hover {
+  background-color: rgba(226, 232, 240, 0.7) !important;
+}
+.sidebar-nav-btn.active {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  color: #b45309 !important;
 }
 
 /* Borders in Light Theme */

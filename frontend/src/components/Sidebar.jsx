@@ -126,35 +126,25 @@ export default function Sidebar({
         )}
       </div>
 
-      {/* Module Navigation List Header */}
-      {!isCompact && (
-        <div className="px-3 pt-2 pb-0.5 flex-shrink-0">
-          <div className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider px-1">
-            13 Modules
-          </div>
-        </div>
-      )}
+      {/* Nav List - Elegantly Grouped Modules, No Ugly Numbered Clutter */}
+      <nav className={`flex-1 py-1.5 overflow-y-auto space-y-2.5 ${isCompact ? 'px-1 space-y-1 items-center' : 'px-2'}`}>
+        {isCompact ? (
+          // Compact Rail View: Centered Icons with Hover Tooltips
+          MODULES.map((mod) => {
+            const Icon = mod.icon;
+            const isActive = currentModule === mod.id;
 
-      {/* Nav List - No Scroll, Perfectly Sized */}
-      <nav className={`flex-1 py-1 space-y-0.5 overflow-hidden flex flex-col justify-between ${isCompact ? 'px-1 items-center' : 'px-2'}`}>
-        {MODULES.map((mod) => {
-          const Icon = mod.icon;
-          const isActive = currentModule === mod.id;
+            let badgeText = mod.badge;
+            let badgeColor = 'bg-slate-800 text-slate-300';
+            if (mod.id === 'inventory' && stats?.low_stock_items_count > 0) {
+              badgeText = `${stats.low_stock_items_count} Low`;
+              badgeColor = 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+            }
+            if (mod.id === 'helpdesk' && stats?.tickets_summary?.open > 0) {
+              badgeText = `${stats.tickets_summary.open} Open`;
+              badgeColor = 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
+            }
 
-          // Contextual notifications
-          let badgeText = mod.badge;
-          let badgeColor = 'bg-slate-800 text-slate-300';
-
-          if (mod.id === 'inventory' && stats?.low_stock_items_count > 0) {
-            badgeText = `${stats.low_stock_items_count} Low`;
-            badgeColor = 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
-          }
-          if (mod.id === 'helpdesk' && stats?.tickets_summary?.open > 0) {
-            badgeText = `${stats.tickets_summary.open} Open`;
-            badgeColor = 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
-          }
-
-          if (isCompact) {
             return (
               <div key={mod.id} className="relative group flex items-center justify-center w-full">
                 <button
@@ -171,55 +161,83 @@ export default function Sidebar({
                   <Icon className="w-4 h-4 flex-shrink-0" />
                 </button>
 
-                {/* Floating Tooltip */}
                 <div className="absolute left-full ml-2 px-2.5 py-1 bg-slate-900/95 backdrop-blur-md text-white text-xs font-semibold rounded-lg shadow-2xl border border-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50 flex items-center gap-1.5">
                   <span>{mod.label}</span>
                   {badgeText && (
-                    <span className={`px-1 py-0.2 rounded text-[9px] font-bold ${badgeColor}`}>
+                    <span className={`px-1 py-0.5 rounded text-[9px] font-bold ${badgeColor}`}>
                       {badgeText}
                     </span>
                   )}
                 </div>
               </div>
             );
-          }
+          })
+        ) : (
+          // Expanded View: Structured Business Workflow Groups
+          MODULE_SECTIONS.map((section) => (
+            <div key={section.title} className="space-y-0.5">
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-2 pt-1 pb-0.5 select-none">
+                {section.title}
+              </div>
+              <div className="space-y-0.5">
+                {section.modules.map((mod) => {
+                  const Icon = mod.icon;
+                  const isActive = currentModule === mod.id;
 
-          return (
-            <button
-              key={mod.id}
-              onClick={() => onModuleSelect(mod.id)}
-              className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group ${
-                isActive
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30 shadow-sm'
-                  : 'text-slate-300 hover:bg-slate-800/80 hover:text-white border border-transparent'
-              }`}
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-                <span className="truncate">{mod.label}</span>
+                  let badgeText = mod.badge;
+                  let badgeColor = 'bg-slate-800/80 text-slate-400 border border-slate-700/50';
+
+                  if (mod.id === 'inventory' && stats?.low_stock_items_count > 0) {
+                    badgeText = `${stats.low_stock_items_count} Low`;
+                    badgeColor = 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+                  }
+                  if (mod.id === 'helpdesk' && stats?.tickets_summary?.open > 0) {
+                    badgeText = `${stats.tickets_summary.open} Open`;
+                    badgeColor = 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
+                  }
+
+                  return (
+                    <button
+                      key={mod.id}
+                      onClick={() => onModuleSelect(mod.id)}
+                      className={`sidebar-nav-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group ${
+                        isActive
+                          ? 'active bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/30 shadow-sm'
+                          : 'text-slate-300 hover:bg-slate-800/50 hover:text-white border border-transparent'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Icon className={`w-3.5 h-3.5 flex-shrink-0 transition-colors ${
+                          isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-amber-400'
+                        }`} />
+                        <span className="truncate">{mod.label}</span>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        {mod.id === 'public-website' && (
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(`${window.location.origin}${window.location.pathname}?view=public`, '_blank');
+                            }}
+                            title="Open standalone public website in new tab"
+                            className="p-0.5 rounded hover:bg-slate-700/80 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                          </span>
+                        )}
+                        {badgeText && (
+                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold whitespace-nowrap ${badgeColor}`}>
+                            {badgeText}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="flex items-center gap-1 flex-shrink-0">
-                {mod.id === 'public-website' && (
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(`${window.location.origin}${window.location.pathname}?view=public`, '_blank');
-                    }}
-                    title="Open standalone public website in new tab"
-                    className="p-0.5 rounded hover:bg-slate-700/80 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                  </span>
-                )}
-                {badgeText && (
-                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-semibold whitespace-nowrap ${badgeColor}`}>
-                    {badgeText}
-                  </span>
-                )}
-              </div>
-            </button>
-          );
-        })}
+            </div>
+          ))
+        )}
       </nav>
 
       {/* User Profile & Persona Switcher at Bottom */}
