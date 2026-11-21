@@ -58,10 +58,96 @@ export const MODULE_SECTIONS = [
 
 export const MODULES = MODULE_SECTIONS.flatMap(s => s.modules);
 
+export const ROLE_CONFIG = {
+  ADMIN: {
+    portalTitle: 'Full Enterprise ERP',
+    badge: '13 Modules',
+    roleLabel: 'Director / Admin',
+    allowedModules: [
+      'analytics',
+      'customers',
+      'site-survey',
+      'quotations',
+      'orders',
+      'inventory',
+      'dispatch',
+      'installations',
+      'warranty',
+      'helpdesk',
+      'employees',
+      'auth',
+      'public-website'
+    ],
+    defaultModule: 'analytics'
+  },
+  SALES: {
+    portalTitle: 'Sales & Customer Portal',
+    badge: 'Sales Scope',
+    roleLabel: 'Sales & Survey Lead',
+    allowedModules: [
+      'customers',
+      'site-survey',
+      'quotations',
+      'orders',
+      'public-website'
+    ],
+    defaultModule: 'customers'
+  },
+  SUPPORT: {
+    portalTitle: 'Customer Support Portal',
+    badge: 'Support Scope',
+    roleLabel: 'Support / Helpdesk Lead',
+    allowedModules: [
+      'helpdesk',
+      'warranty',
+      'customers',
+      'public-website'
+    ],
+    defaultModule: 'helpdesk'
+  },
+  TECHNICIAN: {
+    portalTitle: 'Field Technician Portal',
+    badge: 'Field Ops',
+    roleLabel: 'Certified Field Technician',
+    allowedModules: [
+      'installations',
+      'site-survey',
+      'employees',
+      'dispatch',
+      'helpdesk'
+    ],
+    defaultModule: 'installations'
+  },
+  WAREHOUSE: {
+    portalTitle: 'Warehouse & Supply Portal',
+    badge: 'Supply Chain',
+    roleLabel: 'Warehouse & Dispatch Officer',
+    allowedModules: [
+      'inventory',
+      'dispatch',
+      'orders',
+      'warranty'
+    ],
+    defaultModule: 'inventory'
+  },
+  CUSTOMER: {
+    portalTitle: 'Homeowner Solar Portal',
+    badge: 'Consumer Portal',
+    roleLabel: 'Solar Beneficiary / Customer',
+    allowedModules: [
+      'public-website',
+      'quotations',
+      'warranty',
+      'helpdesk'
+    ],
+    defaultModule: 'public-website'
+  }
+};
+
 export default function Sidebar({ 
   currentModule, 
   onModuleSelect, 
-  currentRole, 
+  currentRole = 'ADMIN', 
   currentUser,
   onRoleChange,
   onLogout,
@@ -71,6 +157,16 @@ export default function Sidebar({
   onToggle,
   onClose
 }) {
+  const roleCfg = ROLE_CONFIG[currentRole] || ROLE_CONFIG.ADMIN;
+  const allowedIds = roleCfg.allowedModules;
+
+  // Filter sections and modules based on role
+  const filteredSections = MODULE_SECTIONS.map((section) => ({
+    ...section,
+    modules: section.modules.filter((mod) => allowedIds.includes(mod.id))
+  })).filter((section) => section.modules.length > 0);
+
+  const filteredModules = filteredSections.flatMap((s) => s.modules);
   return (
     <aside 
       className={`bg-slate-900 border-r border-slate-800 flex flex-col h-screen select-none transition-all duration-300 ease-in-out z-50 flex-shrink-0 overflow-hidden
@@ -126,11 +222,23 @@ export default function Sidebar({
         )}
       </div>
 
-      {/* Nav List - Elegantly Grouped Modules, No Ugly Numbered Clutter */}
+      {/* Role Scope Header */}
+      {!isCompact && (
+        <div className="px-3 pt-2.5 pb-1 flex-shrink-0 flex items-center justify-between border-b border-slate-800/60 bg-slate-950/40">
+          <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider truncate">
+            {roleCfg.portalTitle}
+          </div>
+          <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 whitespace-nowrap">
+            {roleCfg.badge}
+          </span>
+        </div>
+      )}
+
+      {/* Nav List - Dynamically Filtered to Authorized Role Scope */}
       <nav className={`flex-1 py-1.5 overflow-y-auto space-y-2.5 ${isCompact ? 'px-1 space-y-1 items-center' : 'px-2'}`}>
         {isCompact ? (
           // Compact Rail View: Centered Icons with Hover Tooltips
-          MODULES.map((mod) => {
+          filteredModules.map((mod) => {
             const Icon = mod.icon;
             const isActive = currentModule === mod.id;
 
@@ -173,8 +281,8 @@ export default function Sidebar({
             );
           })
         ) : (
-          // Expanded View: Structured Business Workflow Groups
-          MODULE_SECTIONS.map((section) => (
+          // Expanded View: Structured Business Workflow Groups for Active Role
+          filteredSections.map((section) => (
             <div key={section.title} className="space-y-0.5">
               <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-2 pt-1 pb-0.5 select-none">
                 {section.title}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Menu } from 'lucide-react';
-import Sidebar, { MODULES } from './components/Sidebar';
+import Sidebar, { MODULES, ROLE_CONFIG } from './components/Sidebar';
 import { api } from './api';
 
 // Views
@@ -213,9 +213,12 @@ export default function App() {
     refreshAllData();
   }, []);
 
-  // When role changes, optionally route to the most relevant module
+  // When role changes, switch user context and route to the role's primary module
   const handleRoleChange = (newRole) => {
     setCurrentRole(newRole);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sunpower_role', newRole);
+    }
     const nameMap = {
       ADMIN: 'Vikram Malhotra',
       SALES: 'Pooja Sharma',
@@ -238,28 +241,17 @@ export default function App() {
       email: emailMap[newRole] || 'admin@sunpower.in'
     });
 
-    switch (newRole) {
-      case 'CUSTOMER':
-        setCurrentModule('customers');
-        break;
-      case 'SALES':
-        setCurrentModule('site-survey');
-        break;
-      case 'WAREHOUSE':
-        setCurrentModule('dispatch');
-        break;
-      case 'TECHNICIAN':
-        setCurrentModule('installations');
-        break;
-      case 'SUPPORT':
-        setCurrentModule('helpdesk');
-        break;
-      case 'ADMIN':
-      default:
-        setCurrentModule('analytics');
-        break;
-    }
+    const defaultMod = ROLE_CONFIG[newRole]?.defaultModule || 'analytics';
+    setCurrentModule(defaultMod);
   };
+
+  // Enforce role-based module restriction (if user tries accessing module outside their scope)
+  useEffect(() => {
+    const roleCfg = ROLE_CONFIG[currentRole] || ROLE_CONFIG.ADMIN;
+    if (roleCfg.allowedModules && !roleCfg.allowedModules.includes(currentModule)) {
+      setCurrentModule(roleCfg.defaultModule);
+    }
+  }, [currentRole, currentModule]);
 
   // Detect if standalone public website mode is requested via URL search or hash
   const [isStandalonePublic, setIsStandalonePublic] = useState(() => {
@@ -545,28 +537,9 @@ export default function App() {
           }
 
           // Route to relevant initial view based on role
+          const defaultMod = ROLE_CONFIG[role]?.defaultModule || 'analytics';
+          setCurrentModule(defaultMod);
           refreshAllData();
-          switch (role) {
-            case 'CUSTOMER':
-              setCurrentModule('public-website');
-              break;
-            case 'SALES':
-              setCurrentModule('site-survey');
-              break;
-            case 'WAREHOUSE':
-              setCurrentModule('dispatch');
-              break;
-            case 'TECHNICIAN':
-              setCurrentModule('installations');
-              break;
-            case 'SUPPORT':
-              setCurrentModule('helpdesk');
-              break;
-            case 'ADMIN':
-            default:
-              setCurrentModule('analytics');
-              break;
-          }
         }}
         onExplorePublic={() => {
           setCurrentRole('CUSTOMER');
@@ -652,7 +625,9 @@ export default function App() {
 
             {/* Active Module Indicator / Breadcrumb */}
             <div className="flex items-center gap-2 text-xs text-slate-400 truncate pl-2 sm:pl-4 sm:border-l sm:border-slate-800">
-              <span className="text-slate-500 hidden md:inline">Module:</span>
+              <span className="text-slate-400 font-semibold hidden md:inline">
+                {ROLE_CONFIG[currentRole]?.portalTitle || 'SunPower ERP'}:
+              </span>
               <span className="font-semibold text-amber-500 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/25 truncate text-xs shadow-sm">
                 {MODULES.find(m => m.id === currentModule)?.label || currentModule}
               </span>
