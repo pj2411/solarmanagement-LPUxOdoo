@@ -1,5 +1,11 @@
+import sys
 import os
 import shutil
+
+_BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+if _BACKEND_DIR not in sys.path:
+    sys.path.insert(0, _BACKEND_DIR)
+
 from fastapi import APIRouter, Depends, HTTPException, status, Query, UploadFile, File, Form, Header
 from sqlalchemy.orm import Session
 from datetime import date, datetime, timedelta, timezone

@@ -348,3 +348,29 @@ class ServiceTicketOut(BaseModel):
     assigned_technician: Optional[UserOut] = None
     class Config:
         from_attributes = True
+
+# Public Calculator & Website Enquiry
+class PublicEnquirySchema(BaseModel):
+    customer_name: Optional[str] = None
+    full_name: Optional[str] = None
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    monthly_bill: Optional[float] = None
+    monthly_bill_inr: Optional[float] = None
+    roof_area_sqft: Optional[float] = None
+    roof_sqft: Optional[float] = None
+    capacity_kw: Optional[float] = None
+    recommended_kw: Optional[float] = None
+    system_type: Optional[str] = "ON_GRID"
+    subsidy_requested: Optional[bool] = True
+    apply_subsidy: Optional[bool] = True
+
+class CalculatorEvaluateSchema(BaseModel):
+    monthly_bill: Optional[float] = 3500.0
+    monthly_bill_inr: Optional[float] = None
+    roof_area_sqft: Optional[float] = 400.0
+    roof_sqft: Optional[float] = None
+    system_type: Optional[str] = "ON_GRID"
