@@ -160,7 +160,7 @@ export default function AnalyticsView({ analyticsData }) {
               <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
               <YAxis stroke="#94a3b8" fontSize={11} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
               <Tooltip 
-                contentStyle={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-strong)', borderRadius: '8px', fontSize: '12px', color: 'var(--text-heading)' }}
+                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '12px', color: '#f8fafc' }}
                 formatter={(value) => `₹${Number(value).toLocaleString('en-IN')}`}
               />
               <Bar dataKey="Revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
