@@ -93,46 +93,108 @@ html, body, #root {
   color: #080d1a !important; /* High-contrast text on amber CTAs */
 }
 
-/* Text white on light surfaces becomes Deep Navy */
+/* Text white on light surfaces becomes Deep Navy by default */
 .text-white {
   color: #0f172a !important;
 }
 
-/* Solar Amber in Light Theme: warm & rich amber for high legibility */
-.text-amber-400 {
-  color: #d97706 !important; /* Amber-600 for high contrast on light canvas */
+/* Status Colors in Light Theme: rich tones for high contrast against light badges & canvas */
+.text-amber-400,
+.text-amber-500 {
+  color: #b45309 !important; /* Amber-700 for high contrast on light canvas */
+}
+.text-amber-300 {
+  color: #92400e !important; /* Amber-800 for high contrast */
 }
 .fill-amber-400 {
   fill: #f59e0b !important;
 }
 
+.text-emerald-400,
+.text-emerald-500 {
+  color: #047857 !important; /* Emerald-700 for crisp legibility */
+}
+.text-rose-400,
+.text-rose-500,
+.text-red-400,
+.text-red-500 {
+  color: #b91c1c !important; /* Red-700 for crisp legibility */
+}
+.text-blue-400,
+.text-blue-500 {
+  color: #1d4ed8 !important; /* Blue-700 for crisp legibility */
+}
+
 /* ========================================================
-   PRESERVE WHITE TEXT ON SOLID COLORED BUTTONS & BADGES
+   SOLID COLORED BUTTONS & BADGES (High-Contrast White Text)
    ======================================================== */
-[class*="bg-emerald-600"] *,
-[class*="bg-emerald-500"] *,
-[class*="bg-blue-600"] *,
-[class*="bg-blue-500"] *,
-[class*="bg-rose-600"] *,
-[class*="bg-rose-500"] *,
-[class*="bg-red-600"] *,
-[class*="bg-red-500"] *,
-[class*="bg-indigo-600"] *,
-[class*="bg-indigo-500"] *,
-[class*="bg-purple-600"] *,
-[class*="bg-gradient-to"] *,
-[class*="bg-emerald-600"],
-[class*="bg-emerald-500"],
-[class*="bg-blue-600"],
-[class*="bg-blue-500"],
-[class*="bg-rose-600"],
-[class*="bg-rose-500"],
-[class*="bg-red-600"],
-[class*="bg-red-500"],
-[class*="bg-indigo-600"],
-[class*="bg-indigo-500"],
-[class*="bg-purple-600"],
-[class*="bg-gradient-to"] {
+button.bg-emerald-600,
+button.bg-emerald-500,
+button.bg-blue-600,
+button.bg-blue-500,
+button.bg-rose-600,
+button.bg-rose-500,
+button.bg-red-600,
+button.bg-red-500,
+button.bg-indigo-600,
+button.bg-indigo-500,
+button.bg-purple-600,
+a.bg-emerald-600,
+a.bg-emerald-500,
+a.bg-blue-600,
+a.bg-blue-500,
+a.bg-rose-600,
+a.bg-rose-500,
+a.bg-red-600,
+a.bg-red-500,
+a.bg-indigo-600,
+a.bg-indigo-500,
+a.bg-purple-600,
+.bg-emerald-600,
+.bg-blue-600,
+.bg-rose-600,
+.bg-red-600,
+.bg-indigo-600,
+.bg-purple-600 {
+  color: #ffffff !important;
+}
+
+button.bg-emerald-600 *,
+button.bg-emerald-500 *,
+button.bg-blue-600 *,
+button.bg-blue-500 *,
+button.bg-rose-600 *,
+button.bg-rose-500 *,
+button.bg-red-600 *,
+button.bg-red-500 *,
+button.bg-indigo-600 *,
+button.bg-indigo-500 *,
+button.bg-purple-600 *,
+a.bg-emerald-600 *,
+a.bg-emerald-500 *,
+a.bg-blue-600 *,
+a.bg-blue-500 *,
+a.bg-rose-600 *,
+a.bg-rose-500 *,
+a.bg-red-600 *,
+a.bg-red-500 *,
+a.bg-indigo-600 *,
+a.bg-indigo-500 *,
+a.bg-purple-600 *,
+.bg-emerald-600 *,
+.bg-blue-600 *,
+.bg-rose-600 *,
+.bg-red-600 *,
+.bg-indigo-600 *,
+.bg-purple-600 * {
+  color: #ffffff !important;
+}
+
+/* Explicit text-white class on buttons and action pills */
+button.text-white,
+button .text-white,
+a.text-white,
+a .text-white {
   color: #ffffff !important;
 }
 
@@ -142,6 +204,22 @@ button.bg-amber-400,
 a.bg-amber-500,
 a.bg-amber-400 {
   color: #080d1a !important;
+}
+button.bg-amber-500 *,
+button.bg-amber-400 *,
+a.bg-amber-500 *,
+a.bg-amber-400 * {
+  color: #080d1a !important;
+}
+
+/* Exclude translucent / tinted badges and buttons from forced white text */
+[class*="/10"],
+[class*="/10"] *,
+[class*="/15"],
+[class*="/15"] *,
+[class*="/20"],
+[class*="/20"] * {
+  color: inherit;
 }
 
 /* ========================================================
