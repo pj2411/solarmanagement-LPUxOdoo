@@ -296,16 +296,11 @@ export default function App() {
       <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
         {/* Sleek Standalone Public Header */}
         <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 lg:px-8 py-3.5 flex items-center justify-between shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shadow-md shadow-amber-500/20 flex-shrink-0">
-              <Sun className="w-5 h-5 fill-current" />
-            </div>
-            <div>
+          <div className="flex items-center gap-2.5">
+            <Sun className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0" />
+            <div className="min-w-0">
               <div className="text-sm font-bold tracking-tight text-white leading-none">
                 SunPower Solutions
-              </div>
-              <div className="text-[10px] uppercase tracking-wider text-amber-400 font-medium mt-1 leading-none">
-                India Rooftop Solar EPC
               </div>
             </div>
           </div>
