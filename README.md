@@ -11,25 +11,6 @@ Designed and built for the **LPU x Odoo Solar Management Challenge**, replacing 
 
 ---
 
-## 🏗️ 6-Stage Engineering Workflow Architecture
-
-The application was built following a strict 6-stage engineering lifecycle:
-
-```text
-┌─────────────┐      ┌─────────────────────────┐      ┌─────────────────────────┐
-│ 1. GRAPHIFY │ ───► │ 2. CE-PLAN + BRAINSTORM │ ───► │ 3. HALLMARK / MODERN WEB│
-│             │      │      (Superpowers)      │      │        / 21st UI        │
-└─────────────┘      └─────────────────────────┘      └─────────────────────────┘
-                                                                   │
-                                                                   ▼
-┌─────────────┐      ┌─────────────────────────┐      ┌─────────────────────────┐
-│ 6. COMPOUND │ ◄─── │  5. PLAYWRIGHT + VERIFY │ ◄─── │    4. PONYTAIL + TDD    │
-│             │      │      (Superpowers)      │      │      (Superpowers)      │
-└─────────────┘      └─────────────────────────┘      └─────────────────────────┘
-```
-
----
-
 ## ⚡ The 5 Mandatory Backend Automation Rules
 
 Inside `backend/main.py`, FastAPI enforces five non-negotiable business rules backed by foreign keys:
@@ -49,7 +30,7 @@ Inside `backend/main.py`, FastAPI enforces five non-negotiable business rules ba
 The UI organizes all enterprise operations into a streamlined sidebar with real-time badge counters:
 
 1. **Public Website & Solar Savings Calculator**
-   - Consumer landing hero, On-Grid vs. Off-Grid technical comparison, central solar subsidy details.
+   - Consumer landing hero, On-Grid vs. Off-Grid technical comparison, government solar subsidy details.
    - Interactive monthly bill slider (₹1,000 to ₹25,000/mo) calculating recommended system capacity, monthly savings, net investment after subsidy, and estimated payback period in years.
    - Lead capture form that automatically queues a site survey.
 2. **Authentication & 1-Click Persona Switcher**
