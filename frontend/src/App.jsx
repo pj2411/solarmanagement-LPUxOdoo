@@ -659,13 +659,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right Section: Persona Selector, DB Status */}
+          {/* Right Section: Persona Selector */}
           <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="hidden sm:flex items-center gap-2 text-xs">
-              <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-slate-400 font-mono text-[11px]">Relational SQLite Active</span>
-            </div>
-
             <div className="flex items-center gap-2 bg-slate-950/60 border border-slate-800 rounded-xl px-2.5 py-1">
               <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center border border-amber-500/30">
                 {currentUser?.name ? currentUser.name[0].toUpperCase() : 'V'}
