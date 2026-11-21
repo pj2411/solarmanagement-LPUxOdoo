@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import RoleSwitcher from './components/RoleSwitcher';
 import Sidebar from './components/Sidebar';
 import { api } from './api';
 
@@ -20,6 +19,11 @@ import AnalyticsView from './views/AnalyticsView';
 
 export default function App() {
   const [currentRole, setCurrentRole] = useState('ADMIN');
+  const [currentUser, setCurrentUser] = useState({
+    name: 'Vikram Malhotra',
+    email: 'admin@sunpower.in',
+    role: 'ADMIN'
+  });
   const [currentModule, setCurrentModule] = useState('public-website');
 
   // Shared Data States
@@ -90,6 +94,28 @@ export default function App() {
   // When role changes, optionally route to the most relevant module
   const handleRoleChange = (newRole) => {
     setCurrentRole(newRole);
+    const nameMap = {
+      ADMIN: 'Vikram Malhotra',
+      SALES: 'Pooja Sharma',
+      TECHNICIAN: 'Ramesh Sharma',
+      WAREHOUSE: 'Gaurav Singhal',
+      SUPPORT: 'Neha Kapoor',
+      CUSTOMER: 'Arvind Sharma'
+    };
+    const emailMap = {
+      ADMIN: 'admin@sunpower.in',
+      SALES: 'sales@sunpower.in',
+      TECHNICIAN: 'tech.ramesh.sharma@sunpower.in',
+      WAREHOUSE: 'warehouse@sunpower.in',
+      SUPPORT: 'support@sunpower.in',
+      CUSTOMER: 'arvind.sharma@gmail.com'
+    };
+    setCurrentUser({
+      role: newRole,
+      name: nameMap[newRole] || 'Vikram Malhotra',
+      email: emailMap[newRole] || 'admin@sunpower.in'
+    });
+
     switch (newRole) {
       case 'CUSTOMER':
         setCurrentModule('customers');
@@ -107,32 +133,31 @@ export default function App() {
         setCurrentModule('helpdesk');
         break;
       case 'ADMIN':
-        setCurrentModule('analytics');
-        break;
       default:
+        setCurrentModule('analytics');
         break;
     }
   };
 
+  const handleLogout = () => {
+    setCurrentModule('auth');
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* 1-Click Role Switcher Top Bar */}
-      <RoleSwitcher 
-        currentRole={currentRole} 
-        onRoleChange={handleRoleChange} 
+    <div className="h-screen bg-slate-950 text-slate-100 flex overflow-hidden font-sans">
+      {/* Left Sidebar */}
+      <Sidebar 
+        currentModule={currentModule}
+        onModuleSelect={setCurrentModule}
+        currentRole={currentRole}
+        currentUser={currentUser}
+        onRoleChange={handleRoleChange}
+        onLogout={handleLogout}
+        stats={analytics}
       />
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar */}
-        <Sidebar 
-          currentModule={currentModule}
-          onModuleSelect={setCurrentModule}
-          currentRole={currentRole}
-          stats={analytics}
-        />
-
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-slate-950">
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-slate-950">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-slate-400 text-xs">
               <div className="flex items-center gap-2">
@@ -235,7 +260,6 @@ export default function App() {
             </>
           )}
         </main>
-      </div>
     </div>
   );
 }

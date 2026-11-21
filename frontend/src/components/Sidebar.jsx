@@ -13,7 +13,8 @@ import {
   Headphones,
   UserCheck,
   BarChart3,
-  AlertCircle
+  Sun,
+  LogOut
 } from 'lucide-react';
 
 export const MODULES = [
@@ -32,18 +33,40 @@ export const MODULES = [
   { id: 'analytics', label: '13. Admin & Dynamic P&L', icon: BarChart3, badge: 'Live P&L' },
 ];
 
-export default function Sidebar({ currentModule, onModuleSelect, currentRole, stats }) {
+export default function Sidebar({ 
+  currentModule, 
+  onModuleSelect, 
+  currentRole, 
+  currentUser,
+  onRoleChange,
+  onLogout,
+  stats 
+}) {
   return (
-    <aside className="w-64 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col h-[calc(100vh-65px)]">
-      {/* Search or Quick Filter */}
-      <div className="p-3 border-b border-slate-800">
-        <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2 py-1">
-          13 Standalone Modules
+    <aside className="w-64 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col h-screen select-none">
+      {/* Brand Header */}
+      <div className="p-4 border-b border-slate-800 flex items-center gap-2.5 flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shadow-md shadow-amber-500/20 flex-shrink-0">
+          <Sun className="w-4 h-4 fill-current" />
+        </div>
+        <div className="min-w-0">
+          <div className="text-sm font-bold tracking-tight text-white truncate leading-none">
+            SunPower ERP
+          </div>
+          <div className="text-[10px] uppercase tracking-wider text-amber-400/90 font-medium mt-1 leading-none">
+            Solar Operations
+          </div>
         </div>
       </div>
 
       {/* Module Navigation List */}
-      <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+      <div className="px-3 pt-3 pb-1 flex-shrink-0">
+        <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider px-2 py-0.5">
+          13 Standalone Modules
+        </div>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto px-2 py-1 space-y-1 scrollbar-thin">
         {MODULES.map((mod) => {
           const Icon = mod.icon;
           const isActive = currentModule === mod.id;
@@ -85,15 +108,52 @@ export default function Sidebar({ currentModule, onModuleSelect, currentRole, st
         })}
       </nav>
 
-      {/* Footer Info Box */}
-      <div className="p-3 border-t border-slate-800 bg-slate-950/40">
-        <div className="flex items-center gap-2 text-[11px] text-slate-400">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>SQLite Relational Engine Active</span>
+      {/* User Profile & Persona Switcher at Bottom */}
+      <div className="p-3 border-t border-slate-800 bg-slate-950/80 flex-shrink-0">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center border border-amber-500/30 flex-shrink-0">
+              {currentUser?.name ? currentUser.name[0].toUpperCase() : 'V'}
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-white truncate">
+                {currentUser?.name || 'Vikram Malhotra'}
+              </div>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                {onRoleChange ? (
+                  <select
+                    value={currentRole || 'ADMIN'}
+                    onChange={(e) => onRoleChange(e.target.value)}
+                    className="text-[9px] bg-slate-800 text-amber-400 font-semibold rounded px-1.5 py-0.5 border border-slate-700 cursor-pointer focus:outline-none focus:border-amber-500"
+                    title="Switch Persona"
+                  >
+                    <option value="ADMIN">Admin</option>
+                    <option value="SALES">Sales</option>
+                    <option value="WAREHOUSE">Warehouse</option>
+                    <option value="TECHNICIAN">Technician</option>
+                    <option value="SUPPORT">Support</option>
+                    <option value="CUSTOMER">Customer</option>
+                  </select>
+                ) : (
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold tracking-wider">
+                    {currentRole || 'ADMIN'}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              type="button"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors flex-shrink-0"
+              title="Sign out of ERP session"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
         </div>
-        <p className="text-[10px] text-slate-500 mt-1">
-          40 Projects/Mo | 15 Technicians
-        </p>
       </div>
     </aside>
   );
