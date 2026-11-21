@@ -150,10 +150,11 @@ export default function HelpdeskView({ tickets = [], leads = [], serialUnits = [
               onChange={(e) => setSelectedSerial(e.target.value)}
               className="w-full mt-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono"
             >
-              <option value="INV-2025-0518">INV-2025-0518 (Arvind Sharma Inverter - In Warranty)</option>
-              <option value="BAT-2023-0104">BAT-2023-0104 (Old Battery - Expired Warranty Test)</option>
-              <option value="INV-2026-9021">INV-2026-9021 (Sunita Rao Inverter - Active)</option>
-              <option value="PNL-2025-0911">PNL-2025-0911 (20-Year Mono Panel - Active)</option>
+              {activeSerialUnits.map(u => (
+                <option key={u.serial_number} value={u.serial_number}>
+                  {u.serial_number} ({u.component_type || 'Unit'} - {u.warranty_expiry_date >= todayStr ? 'In Warranty' : 'Expired'})
+                </option>
+              ))}
             </select>
           </div>
 
@@ -190,7 +191,7 @@ export default function HelpdeskView({ tickets = [], leads = [], serialUnits = [
               onChange={(e) => setAssignedTechId(Number(e.target.value))}
               className="w-full mt-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white"
             >
-              {employees.map(emp => (
+              {activeEmployees.map(emp => (
                 <option key={emp.id} value={emp.id}>{emp.name} ({emp.attendance_status})</option>
               ))}
             </select>
