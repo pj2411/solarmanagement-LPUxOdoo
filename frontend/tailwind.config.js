@@ -7,22 +7,36 @@ export default {
   theme: {
     extend: {
       colors: {
-        solar: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
+        canvas: 'var(--bg-canvas)',
+        surface: 'var(--bg-surface)',
+        elevated: 'var(--bg-elevated)',
+        muted: 'var(--bg-muted)',
+        heading: 'var(--text-heading)',
+        body: 'var(--text-body)',
+        subtle: 'var(--text-subtle)',
+        stocksense: {
+          50: '#FDF2F2',
+          100: '#FDE8E8',
+          200: '#FBD5D5',
+          300: '#F8B4B4',
+          400: '#F98080',
+          500: '#C53B3B', // StockSense Crimson Red
+          600: '#B33434',
+          700: '#9B2C2C',
+          800: '#7B2424',
+          900: '#5F1D1D',
         },
-        slate: {
-          850: '#151f32',
-          900: '#0f172a',
-          950: '#080d1a',
+        solar: {
+          50: '#fdf2f2',
+          100: '#fde8e8',
+          200: '#fbd5d5',
+          300: '#f8b4b4',
+          400: '#f98080',
+          500: '#c53b3b',
+          600: '#b33434',
+          700: '#9b2c2c',
+          800: '#7b2424',
+          900: '#5f1d1d',
         }
       }
     },

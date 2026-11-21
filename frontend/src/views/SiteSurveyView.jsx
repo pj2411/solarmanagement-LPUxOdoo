@@ -48,7 +48,7 @@ export default function SiteSurveyView({ surveys, employees, onRefresh, onNaviga
         <div className="text-xs space-y-1">
           <div className="font-bold text-amber-300">FastAPI Gatekeeper Rule #1 Enforced:</div>
           <p className="text-slate-300">
-            Backend will return <span className="font-mono text-amber-400 font-bold">HTTP 400 Bad Request</span> if a quotation is attempted for any lead without an approved survey. Click <span className="font-bold text-white">"Approve Survey"</span> below to unlock quotation generation.
+            Backend returns <span className="text-amber-400 font-bold">HTTP <span className="font-mono">400</span> Bad Request</span> if a quotation is attempted for any lead without an approved survey. Click <span className="font-bold text-white">Approve Survey</span> below to enable quotation generation.
           </p>
         </div>
       </div>
@@ -63,21 +63,21 @@ export default function SiteSurveyView({ surveys, employees, onRefresh, onNaviga
           return (
             <div 
               key={survey.id} 
-              className={`rounded-xl bg-slate-900 border transition-all p-5 space-y-4 shadow-lg ${
+              className={`rounded-xl bg-slate-900 border transition-colors p-5 space-y-4 shadow-lg ${
                 isApproved ? 'border-emerald-500/40' : 'border-amber-500/40 bg-slate-900/90'
               }`}
             >
               {/* Card Header */}
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-[10px] font-mono text-slate-400 uppercase">Survey #{survey.id}</span>
+                  <span className="text-[10px] text-slate-400">Survey #{survey.id}</span>
                   <h3 className="font-bold text-base text-white">{lead?.customer_name || 'Customer'}</h3>
                   <p className="text-xs text-slate-400">{lead?.address}</p>
                 </div>
                 <span className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 border ${
                   isApproved 
                     ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
-                    : 'bg-amber-500/10 text-amber-400 border-amber-500/30 animate-pulse'
+                    : 'bg-amber-500/10 text-amber-400 border-amber-500/30 motion-safe:animate-pulse'
                 }`}>
                   {isApproved ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
                   {isApproved ? 'Survey Approved' : 'Pending Approval'}
@@ -87,26 +87,26 @@ export default function SiteSurveyView({ surveys, employees, onRefresh, onNaviga
               {/* Technical Specifications */}
               <div className="grid grid-cols-2 gap-2 p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-500 uppercase">Roof Direction</span>
+                  <span className="text-[10px] text-slate-500">Roof Direction</span>
                   <p className="font-semibold text-white">{survey.roof_direction}</p>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 uppercase">Tilt Angle</span>
+                  <span className="text-[10px] text-slate-500">Tilt Angle</span>
                   <p className="font-semibold text-amber-400 font-mono">{survey.tilt_angle_deg}°</p>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 uppercase">Shadow-Free Area</span>
+                  <span className="text-[10px] text-slate-500">Shadow-Free Area</span>
                   <p className="font-semibold text-white font-mono">{survey.shadow_free_area_sqft} sq.ft</p>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 uppercase">Cable Run</span>
-                  <p className="font-semibold text-white font-mono">{survey.cable_distance_m} meters</p>
+                  <span className="text-[10px] text-slate-500">Cable Run</span>
+                  <p className="font-semibold text-white"><span className="font-mono">{survey.cable_distance_m}</span> meters</p>
                 </div>
               </div>
 
               {/* Technician Notes */}
               <div className="text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded border border-slate-800/80">
-                <span className="text-[10px] text-slate-500 font-semibold block uppercase">Technician Notes:</span>
+                <span className="text-[10px] text-slate-500 font-semibold block">Technician Notes:</span>
                 {survey.notes || 'No remarks recorded.'}
               </div>
 
@@ -128,17 +128,17 @@ export default function SiteSurveyView({ surveys, employees, onRefresh, onNaviga
                   <button
                     onClick={() => handleApprove(survey.id)}
                     disabled={approvingId === survey.id}
-                    className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-600/20 disabled:opacity-50"
+                    className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    {approvingId === survey.id ? 'Approving...' : 'Approve Survey & Unlock Quoting'}
+                    {approvingId === survey.id ? 'Approving...' : 'Approve survey for quoting'}
                   </button>
                 ) : (
                   <button
                     onClick={() => onNavigate('quotations')}
-                    className="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold text-xs border border-slate-700 flex items-center justify-center gap-1.5 transition-all"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold text-xs border border-slate-700 flex items-center justify-center gap-1.5 transition-colors"
                   >
-                    Proceed to Generate Quote <ArrowRight className="w-3.5 h-3.5" />
+                    Create formal quote <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>

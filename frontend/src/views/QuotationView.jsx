@@ -126,16 +126,17 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
               {isSurveyApproved ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
               <span>
                 {isSurveyApproved
-                  ? 'Roof Survey Approved — Quoting Unlocked'
-                  : 'Roof Survey Pending — Quoting Locked (Rule 1)'}
+                  ? 'Roof survey approved: quoting ready'
+                  : 'Roof survey pending: quoting locked'}
               </span>
             </div>
             {!isSurveyApproved && (
               <button
+                type="button"
                 onClick={() => onNavigate('site-survey')}
                 className="text-[11px] font-bold underline hover:text-white"
               >
-                Go to Surveys →
+                Open site surveys
               </button>
             )}
           </div>
@@ -149,7 +150,7 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
                   key={kw}
                   type="button"
                   onClick={() => setCapacityKw(kw)}
-                  className={`py-2 text-xs font-bold rounded-lg border transition-all ${
+                  className={`py-2 text-xs font-bold rounded-lg border transition-colors ${
                     capacityKw === kw
                       ? 'bg-amber-500 text-slate-950 border-amber-500 shadow'
                       : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
@@ -163,29 +164,29 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
 
           {/* System Type Selector */}
           <div>
-            <label className="text-[11px] text-slate-300 font-medium">System Architecture</label>
+            <label className="text-xs text-slate-300 font-medium">System architecture</label>
             <div className="grid grid-cols-2 gap-2 mt-1">
               <button
                 type="button"
                 onClick={() => setSystemType('ON_GRID')}
-                className={`py-2 px-3 text-xs font-semibold rounded-lg border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2 px-3 text-xs font-semibold rounded-lg border flex items-center justify-center gap-1.5 transition-colors ${
                   systemType === 'ON_GRID'
                     ? 'bg-amber-500/20 text-amber-400 border-amber-500/50'
                     : 'bg-slate-950 text-slate-400 border-slate-800'
                 }`}
               >
-                <Zap className="w-3.5 h-3.5" /> On-Grid (Net Metering)
+                <Zap className="w-3.5 h-3.5" /> On-grid (net metering)
               </button>
               <button
                 type="button"
                 onClick={() => setSystemType('OFF_GRID')}
-                className={`py-2 px-3 text-xs font-semibold rounded-lg border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2 px-3 text-xs font-semibold rounded-lg border flex items-center justify-center gap-1.5 transition-colors ${
                   systemType === 'OFF_GRID'
-                    ? 'bg-sky-500/20 text-sky-400 border-sky-500/50'
+                    ? 'bg-amber-500/20 text-amber-400 border-amber-500/50'
                     : 'bg-slate-950 text-slate-400 border-slate-800'
                 }`}
               >
-                <BatteryCharging className="w-3.5 h-3.5" /> Off-Grid (Battery Bank)
+                <BatteryCharging className="w-3.5 h-3.5" /> Off-grid (battery bank)
               </button>
             </div>
           </div>
@@ -199,9 +200,10 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
 
           {/* Generate Button with Gatekeeper enforcement */}
           <button
+            type="button"
             onClick={handleCreateQuotation}
             disabled={creatingQuote || !isSurveyApproved}
-            className={`w-full py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg ${
+            className={`w-full py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-lg whitespace-nowrap ${
               isSurveyApproved
                 ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20 cursor-pointer'
                 : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
@@ -210,7 +212,7 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
             {isSurveyApproved ? (
               <>
                 <FileText className="w-4 h-4" />
-                {creatingQuote ? 'Generating...' : `Generate & Dispatch ${capacityKw}kW Quotation`}
+                {creatingQuote ? 'Generating…' : `Generate & Dispatch ${capacityKw}kW Quotation`}
               </>
             ) : (
               <>
@@ -228,7 +230,7 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
               <h3 className="font-bold text-sm text-white">Deterministic Bill of Materials (BoM) Calculation</h3>
               <p className="text-[11px] text-slate-400">Auto-configured for {capacityKw} kW {systemType}</p>
             </div>
-            {loadingBom && <span className="text-xs text-amber-400 animate-pulse">Calculating...</span>}
+            {loadingBom && <span className="text-xs text-amber-400 animate-pulse">Calculating…</span>}
           </div>
 
           {bomBreakdown && (
@@ -239,8 +241,8 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
                   <div key={idx} className="flex justify-between items-center text-xs p-2 rounded bg-slate-900 border border-slate-800">
                     <div>
                       <span className="font-medium text-white">{item.name}</span>
-                      <span className="text-[10px] text-slate-500 block font-mono">
-                        SKU: {item.sku} | Qty: {item.quantity} | Available Stock: {item.stock_qty}
+                      <span className="text-[10px] text-slate-500 block">
+                        SKU: <span className="font-mono">{item.sku}</span> | Qty: <span className="font-mono">{item.quantity}</span> | Available Stock: <span className="font-mono">{item.stock_qty}</span>
                       </span>
                     </div>
                     <div className="text-right font-mono">
@@ -279,7 +281,7 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
         <h3 className="font-bold text-sm text-white">Issued Quotations Registry</h3>
         <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shadow-lg">
           <table className="w-full text-xs text-left">
-            <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <thead className="bg-slate-950 text-slate-400 text-[11px] border-b border-slate-800">
               <tr>
                 <th className="p-3">Quote #</th>
                 <th className="p-3">Customer</th>
@@ -294,7 +296,7 @@ export default function QuotationView({ quotations, leads, surveys, onRefresh, o
             <tbody className="divide-y divide-slate-800">
               {quotations.map((q) => (
                 <tr key={q.id} className="hover:bg-slate-850/50">
-                  <td className="p-3 font-mono text-slate-400">#SPQ-{q.id}</td>
+                  <td className="p-3 text-slate-400">#SPQ-<span className="font-mono">{q.id}</span></td>
                   <td className="p-3 font-medium text-white">{q.lead?.customer_name || 'Customer'}</td>
                   <td className="p-3 font-mono text-amber-400">{q.capacity_kw} kW {q.system_type}</td>
                   <td className="p-3 font-mono text-slate-300">₹{(q.hardware_total_inr + q.installation_charge_inr).toLocaleString('en-IN')}</td>

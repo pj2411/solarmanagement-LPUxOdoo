@@ -1,4 +1,9 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from datetime import date, timedelta
 from fastapi.testclient import TestClient
 from database import SessionLocal
@@ -22,6 +27,10 @@ class TestSolarERPRules(unittest.TestCase):
         self.assertIsNotNone(lead3)
         survey3 = self.db.query(models.SiteSurvey).filter(models.SiteSurvey.lead_id == lead3.id).first()
         self.assertIsNotNone(survey3)
+        # Ensure idempotent initial state for test run
+        survey3.is_approved = False
+        self.db.commit()
+        self.db.refresh(survey3)
         self.assertFalse(survey3.is_approved)
 
         # Attempt to create quote without survey approval -> MUST FAIL with 400
@@ -144,6 +153,133 @@ class TestSolarERPRules(unittest.TestCase):
 
             self.assertAlmostEqual(total_cost, bom_cost + labor_cost, delta=1.0)
             self.assertAlmostEqual(profit, rev - total_cost, delta=1.0)
+
+    def test_06_inventory_restock(self):
+        """Rule 6: Warehouse restocking increases stock_qty and validates inputs."""
+        item = self.db.query(models.InventoryItem).first()
+        self.assertIsNotNone(item)
+        old_qty = item.stock_qty
+
+        # Valid restock
+        res = client.post(f"/api/inventory/{item.id}/restock", json={"quantity": 25})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["stock_qty"], old_qty + 25)
+
+        # 404 for invalid item
+        res404 = client.post("/api/inventory/999999/restock", json={"quantity": 10})
+        self.assertEqual(res404.status_code, 404)
+
+    def test_07_employee_jobs_inspection(self):
+        """Rule 7: Technician jobs endpoint returns live survey and installation assignments."""
+        tech = self.db.query(models.User).filter(models.User.role == "TECHNICIAN").first()
+        self.assertIsNotNone(tech)
+
+        res = client.get(f"/api/employees/{tech.id}/jobs")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("surveys_count", data)
+        self.assertIn("installations_count", data)
+        self.assertIn("surveys", data)
+        self.assertIn("installations", data)
+
+    def test_08_installation_progress_and_completion(self):
+        """Rule 8: Updating installation checklist and logging hours updates progress."""
+        inst = self.db.query(models.Installation).first()
+        self.assertIsNotNone(inst)
+
+        res = client.put(f"/api/installations/{inst.id}", json={
+            "progress_pct": 100,
+            "is_completed": True,
+            "checklist": {
+                "structure_mounted": True,
+                "panels_clamped": True,
+                "inverter_wired": True,
+                "earthing_tested": True,
+                "net_metering_applied": True
+            },
+            "hours_logged": 16.0
+        })
+        self.assertEqual(res.status_code, 200)
+        updated = res.json()
+        self.assertEqual(updated["progress_pct"], 100)
+        self.assertTrue(updated["is_completed"])
+        self.assertEqual(updated["hours_logged"], 16.0)
+
+    def test_09_v1_auth_flow(self):
+        """Rule 9: v1 Auth provides standard response envelopes with JWT access and refresh tokens."""
+        # 1. Backoffice email login
+        res = client.post("/api/v1/auth/login", json={"email": "admin@sunpower.in", "password": "password123"})
+        self.assertEqual(res.status_code, 200)
+        body = res.json()
+        self.assertTrue(body["success"])
+        self.assertIn("access_token", body["data"])
+        self.assertIn("refresh_token", body["data"])
+        self.assertEqual(body["data"]["token_type"], "Bearer")
+        refresh_token = body["data"]["refresh_token"]
+
+        # 2. Refresh token flow
+        ref_res = client.post("/api/v1/auth/refresh", json={"refresh_token": refresh_token})
+        self.assertEqual(ref_res.status_code, 200)
+        ref_body = ref_res.json()
+        self.assertTrue(ref_body["success"])
+        self.assertIn("access_token", ref_body["data"])
+
+        # 3. Mobile OTP request & verify
+        otp_req = client.post("/api/v1/auth/request-otp", json={"phone": "+919876543210"})
+        self.assertEqual(otp_req.status_code, 200)
+        otp_data = otp_req.json()
+        self.assertTrue(otp_data["success"])
+        otp_code = otp_data["data"]["otp"]
+
+        otp_ver = client.post("/api/v1/auth/verify-otp", json={"phone": "+919876543210", "otp": otp_code})
+        self.assertEqual(otp_ver.status_code, 200)
+        ver_data = otp_ver.json()
+        self.assertTrue(ver_data["success"])
+        self.assertIn("access_token", ver_data["data"])
+
+    def test_10_v1_technician_sync_and_handover(self):
+        """Rule 10: v1 Technician PWA offline sync and digital signature handover with Earth Resistance < 5Ω check."""
+        inst = self.db.query(models.Installation).first()
+        self.assertIsNotNone(inst)
+
+        # 1. Offline Sync
+        sync_res = client.post(f"/api/v1/installations/{inst.id}/sync", json={
+            "progress_pct": 90,
+            "hours_logged": 12.0,
+            "voc_voltage": 412.5,
+            "isc_current": 10.8,
+            "earth_resistance_ohms": 2.4,
+            "system_tested_ok": True,
+            "notes": "Offline roof sync"
+        })
+        self.assertEqual(sync_res.status_code, 200)
+        sync_data = sync_res.json()
+        self.assertTrue(sync_data["success"])
+        self.assertEqual(sync_data["data"]["voc_voltage"], 412.5)
+
+        # 2. Handover with Earth Resistance >= 5.0 ohms MUST FAIL
+        fail_res = client.post(f"/api/v1/installations/{inst.id}/handover", json={
+            "customer_signature_base64": "data:image/png;base64,iVBORw0KGgo...",
+            "earth_resistance_ohms": 7.5,
+            "voc_voltage": 415.0,
+            "isc_current": 11.0
+        })
+        self.assertEqual(fail_res.status_code, 400)
+        self.assertFalse(fail_res.json()["success"])
+        self.assertIn("Earth Resistance", fail_res.json()["error"]["message"])
+
+        # 3. Handover with Earth Resistance < 5.0 ohms MUST SUCCEED
+        ok_res = client.post(f"/api/v1/installations/{inst.id}/handover", json={
+            "customer_signature_base64": "data:image/png;base64,iVBORw0KGgo...",
+            "earth_resistance_ohms": 3.2,
+            "voc_voltage": 415.0,
+            "isc_current": 11.0,
+            "completion_notes": "Handover accepted"
+        })
+        self.assertEqual(ok_res.status_code, 200)
+        ok_data = ok_res.json()
+        self.assertTrue(ok_data["success"])
+        self.assertTrue(ok_data["data"]["is_completed"])
 
 if __name__ == "__main__":
     unittest.main()

@@ -156,8 +156,8 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
                 type="text"
                 placeholder="e.g. INV-2026-8841"
                 value={serialNumber}
-                onChange={(e) => setSerialNumber(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-lg text-white font-mono uppercase"
+                onChange={(e) => setSerialNumber(e.target.value.toUpperCase())}
+                className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded-lg text-white font-mono"
               />
               <button
                 type="button"
@@ -174,7 +174,7 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
             <button
               type="submit"
               disabled={dispatching}
-              className="py-2.5 px-6 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-amber-500/20 disabled:opacity-50"
+              className="py-2.5 px-6 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-sm disabled:opacity-50"
             >
               {dispatching ? 'Registering...' : 'Dispatch & Map Serial to Order'}
             </button>
@@ -188,7 +188,7 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
               <span className="font-semibold text-white flex items-center gap-2">
                 <QrCode className="w-4 h-4 text-amber-400" /> Point camera at QR Code or 1D Barcode
               </span>
-              <button onClick={() => setShowScanner(false)} className="text-slate-400 hover:text-white">✕ Close</button>
+              <button type="button" onClick={() => setShowScanner(false)} className="text-slate-400 hover:text-white">✕ Close</button>
             </div>
             <div id="qr-reader" className="w-full max-w-sm mx-auto overflow-hidden rounded-lg bg-black"></div>
           </div>
@@ -198,15 +198,15 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
       {/* Dispatched Serials Registry */}
       <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shadow-lg">
         <table className="w-full text-xs text-left">
-          <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+          <thead className="bg-slate-950 text-slate-400 text-[11px] border-b border-slate-800">
             <tr>
-              <th className="p-3">Serial Number</th>
-              <th className="p-3">Component Type</th>
-              <th className="p-3">Assigned Customer</th>
-              <th className="p-3">Dispatched Date</th>
-              <th className="p-3">Delivery Status</th>
-              <th className="p-3">Warranty Expiry</th>
-              <th className="p-3 text-right">Rule 3 Automation</th>
+              <th className="p-3">Serial number</th>
+              <th className="p-3">Component type</th>
+              <th className="p-3">Assigned customer</th>
+              <th className="p-3">Dispatched date</th>
+              <th className="p-3">Delivery status</th>
+              <th className="p-3">Warranty expiry</th>
+              <th className="p-3 text-right">Warranty automation</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
@@ -228,9 +228,9 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
                     <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
                       isDelivered
                         ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                        : 'bg-amber-500/10 text-amber-400 border-amber-500/30 animate-pulse'
+                        : 'bg-amber-500/10 text-amber-400 border-amber-500/30 motion-safe:animate-pulse'
                     }`}>
-                      {isDelivered ? '✓ Delivered' : 'In Transit'}
+                      {isDelivered ? 'Delivered' : 'In Transit'}
                     </span>
                   </td>
                   <td className="p-3 font-mono text-slate-300">
@@ -239,12 +239,13 @@ export default function DispatchView({ serialUnits, orders, inventory, onRefresh
                   <td className="p-3 text-right">
                     {!isDelivered ? (
                       <button
+                        type="button"
                         onClick={() => handleConfirmDelivery(u.serial_number)}
                         disabled={confirmingSerial === u.serial_number}
-                        className="px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] inline-flex items-center gap-1 shadow-sm disabled:opacity-50"
+                        className="px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] inline-flex items-center gap-1 shadow-sm transition-colors disabled:opacity-50"
                       >
                         <ShieldCheck className="w-3.5 h-3.5" />
-                        {confirmingSerial === u.serial_number ? 'Computing...' : 'Confirm Delivery & Start Warranty'}
+                        {confirmingSerial === u.serial_number ? 'Computing...' : 'Confirm Delivery'}
                       </button>
                     ) : (
                       <span className="text-[11px] text-emerald-400 font-mono font-medium flex items-center justify-end gap-1">

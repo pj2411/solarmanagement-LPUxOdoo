@@ -69,16 +69,18 @@ export default function CustomerManagementView({ leads, onRefresh, onNavigate })
 
         <div className="flex bg-slate-900 border border-slate-800 rounded-lg p-1">
           <button
+            type="button"
             onClick={() => setActiveTab('LEADS')}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
               activeTab === 'LEADS' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             Leads Pipeline Directory
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('PORTAL')}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors whitespace-nowrap ${
               activeTab === 'PORTAL' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -124,7 +126,7 @@ export default function CustomerManagementView({ leads, onRefresh, onNavigate })
           <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shadow-lg">
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+                <thead className="bg-slate-950 text-slate-400 text-[11px] border-b border-slate-800">
                   <tr>
                     <th className="p-3">Customer & Contact</th>
                     <th className="p-3">Target System</th>
@@ -198,7 +200,7 @@ export default function CustomerManagementView({ leads, onRefresh, onNavigate })
         <div className="space-y-6">
           <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center">
             <div>
-              <span className="text-[10px] font-semibold uppercase text-amber-400">Viewing Homeowner Portal as:</span>
+              <p className="text-xs text-amber-400 font-medium">Viewing Homeowner Portal as:</p>
               <h3 className="text-base font-bold text-white">{selectedLead?.customer_name} ({selectedLead?.phone})</h3>
               <p className="text-xs text-slate-400">{selectedLead?.address}</p>
             </div>
@@ -242,32 +244,36 @@ export default function CustomerManagementView({ leads, onRefresh, onNavigate })
               <h4 className="font-bold text-sm text-white">Homeowner Self-Service Actions</h4>
               <div className="grid sm:grid-cols-2 gap-3">
                 <button
+                  type="button"
                   onClick={() => onNavigate('quotations')}
-                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-500 text-left transition-all space-y-1 group"
+                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-500 text-left transition-colors space-y-1 group"
                 >
                   <FileText className="w-5 h-5 text-amber-400" />
                   <div className="font-bold text-xs text-white group-hover:text-amber-400">Review Quotation & BOM</div>
                   <div className="text-[11px] text-slate-400">View component breakdowns and approve estimate</div>
                 </button>
                 <button
+                  type="button"
                   onClick={() => onNavigate('warranty')}
-                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-emerald-500 text-left transition-all space-y-1 group"
+                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-emerald-500 text-left transition-colors space-y-1 group"
                 >
                   <ShieldCheck className="w-5 h-5 text-emerald-400" />
                   <div className="font-bold text-xs text-white group-hover:text-emerald-400">View Active Warranties</div>
                   <div className="text-[11px] text-slate-400">Check inverter (2-Yr) & panel (20-Yr) certificates</div>
                 </button>
                 <button
+                  type="button"
                   onClick={() => onNavigate('orders')}
-                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-sky-500 text-left transition-all space-y-1 group"
+                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-sky-500 text-left transition-colors space-y-1 group"
                 >
                   <ExternalLink className="w-5 h-5 text-sky-400" />
                   <div className="font-bold text-xs text-white group-hover:text-sky-400">Download Tax Invoice</div>
                   <div className="text-[11px] text-slate-400">Download official GST invoice and payment receipts</div>
                 </button>
                 <button
+                  type="button"
                   onClick={() => onNavigate('helpdesk')}
-                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-rose-500 text-left transition-all space-y-1 group"
+                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-rose-500 text-left transition-colors space-y-1 group"
                 >
                   <Phone className="w-5 h-5 text-rose-400" />
                   <div className="font-bold text-xs text-white group-hover:text-rose-400">Raise Support Ticket</div>

@@ -83,7 +83,7 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
         </h3>
 
         {/* Live Zero-Click Warranty Banner */}
-        <div className={`p-4 rounded-xl border flex items-center justify-between transition-all ${
+        <div className={`p-4 rounded-xl border flex items-center justify-between transition-colors ${
           isUnderWarranty
             ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300'
             : 'bg-rose-500/15 border-rose-500/40 text-rose-300'
@@ -99,19 +99,19 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
               </div>
             )}
             <div>
-              <div className="text-sm font-extrabold tracking-wide uppercase">
+              <div className="text-sm font-bold text-slate-100">
                 {isUnderWarranty
-                  ? 'UNDER ACTIVE WARRANTY — ₹0 FREE COMPONENT REPAIR / REPLACEMENT'
-                  : 'WARRANTY EXPIRED — AUTO-BILLED CUSTOMER INVOICE'}
+                  ? 'Active warranty coverage: ₹0 free component repair / replacement'
+                  : 'Warranty expired: auto-billed customer invoice'}
               </div>
-              <p className="text-xs opacity-90">
-                Serial: <span className="font-mono font-bold">{selectedSerial}</span> ({matchedUnit?.component_type || 'Unknown'}) | Expiry Date: {matchedUnit?.warranty_expiry_date || 'Expired'}
+              <p className="text-xs opacity-90 text-slate-300">
+                Serial: <span className="font-mono font-bold text-amber-400">{selectedSerial}</span> ({matchedUnit?.component_type || 'Unknown'}) | Expiry Date: {matchedUnit?.warranty_expiry_date || 'Expired'}
               </p>
             </div>
           </div>
           <div className="text-right font-mono">
-            <span className="text-[10px] uppercase opacity-75 block">Billed to Customer</span>
-            <span className="text-xl font-extrabold">
+            <span className="text-[10px] text-slate-400 block">Billed to customer</span>
+            <span className="text-xl font-extrabold text-white">
               {isUnderWarranty ? '₹0' : `₹${(Number(partsCost) + Number(laborCost)).toLocaleString('en-IN')}`}
             </span>
           </div>
@@ -209,7 +209,7 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
             <button
               type="submit"
               disabled={submitting}
-              className="py-2.5 px-6 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-amber-500/20 disabled:opacity-50"
+              className="py-2.5 px-6 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-sm disabled:opacity-50"
             >
               {submitting ? 'Creating...' : 'Log Ticket & Execute Triage'}
             </button>
@@ -222,7 +222,7 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
         <h3 className="font-bold text-sm text-white">Active Service Tickets Queue</h3>
         <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shadow-lg">
           <table className="w-full text-xs text-left">
-            <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <thead className="bg-slate-950 text-slate-400 text-[11px] border-b border-slate-800">
               <tr>
                 <th className="p-3">Ticket #</th>
                 <th className="p-3">Customer</th>
@@ -238,7 +238,7 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
             <tbody className="divide-y divide-slate-800">
               {tickets.map((t) => (
                 <tr key={t.id} className="hover:bg-slate-850/50">
-                  <td className="p-3 font-mono text-slate-400">#TCK-{t.id}</td>
+                  <td className="p-3 text-slate-400">#TCK-<span className="font-mono">{t.id}</span></td>
                   <td className="p-3 font-semibold text-white">{t.lead?.customer_name}</td>
                   <td className="p-3 font-mono text-amber-400">{t.serial_number || 'N/A'}</td>
                   <td className="p-3 font-mono text-slate-300">{t.fault_code}</td>
@@ -248,7 +248,7 @@ export default function HelpdeskView({ tickets, leads, serialUnits, employees, o
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                         : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
                     }`}>
-                      {t.is_under_warranty ? '✓ UNDER WARRANTY' : '✕ EXPIRED'}
+                      {t.is_under_warranty ? 'Under warranty' : 'Expired'}
                     </span>
                   </td>
                   <td className="p-3 font-mono font-bold text-slate-200">

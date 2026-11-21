@@ -19,6 +19,68 @@ class UserOut(UserBase):
     class Config:
         from_attributes = True
 
+# Auth Requests & Responses
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class RegisterRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str = "CUSTOMER"
+    phone: Optional[str] = None
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    email: str
+    otp: str
+    new_password: str
+
+class AuthResponse(BaseModel):
+    token: str
+    user: UserOut
+    role: str
+    message: str
+
+class OTPRequest(BaseModel):
+    phone: str
+
+class OTPVerifyRequest(BaseModel):
+    phone: str
+    otp: str
+
+class TokenRefreshRequest(BaseModel):
+    refresh_token: str
+
+class TokenPairOut(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "Bearer"
+    expires_in: int = 1800
+    user: Optional[UserOut] = None
+
+class OfflineSyncRequest(BaseModel):
+    offline_timestamp: Optional[str] = None
+    progress_pct: Optional[int] = None
+    hours_logged: Optional[float] = None
+    voc_voltage: Optional[float] = None
+    isc_current: Optional[float] = None
+    earth_resistance_ohms: Optional[float] = None
+    system_tested_ok: Optional[bool] = None
+    notes: Optional[str] = None
+    checklist: Optional[dict] = None
+    staged_photos: Optional[List[str]] = None
+
+class HandoverRequest(BaseModel):
+    customer_signature_base64: str
+    completion_notes: Optional[str] = ""
+    voc_voltage: Optional[float] = None
+    isc_current: Optional[float] = None
+    earth_resistance_ohms: Optional[float] = None
+
 # Lead
 class LeadCreate(BaseModel):
     customer_name: str
@@ -115,6 +177,9 @@ class InventoryItemOut(InventoryItemBase):
     id: int
     class Config:
         from_attributes = True
+
+class InventoryRestock(BaseModel):
+    quantity: int
 
 # BOM
 class BOMItemOut(BaseModel):
@@ -214,6 +279,9 @@ class InstallationUpdate(BaseModel):
     progress_pct: Optional[int] = None
     verified_kw: Optional[float] = None
     system_tested_ok: Optional[bool] = None
+    voc_voltage: Optional[float] = None
+    isc_current: Optional[float] = None
+    earth_resistance_ohms: Optional[float] = None
     install_photo_url: Optional[str] = None
     customer_signature_base64: Optional[str] = None
     is_completed: Optional[bool] = None
@@ -230,6 +298,9 @@ class InstallationOut(BaseModel):
     progress_pct: int
     verified_kw: float
     system_tested_ok: bool
+    voc_voltage: Optional[float] = 0.0
+    isc_current: Optional[float] = 0.0
+    earth_resistance_ohms: Optional[float] = 0.0
     install_photo_url: Optional[str]
     customer_signature_base64: Optional[str]
     is_completed: bool

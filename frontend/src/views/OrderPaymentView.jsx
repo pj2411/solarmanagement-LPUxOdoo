@@ -85,7 +85,7 @@ export default function OrderPaymentView({ orders, onRefresh, onNavigate }) {
       {/* Orders Table */}
       <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shadow-lg">
         <table className="w-full text-xs text-left">
-          <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+          <thead className="bg-slate-950 text-slate-400 text-[11px] border-b border-slate-800">
             <tr>
               <th className="p-3">Order #</th>
               <th className="p-3">Customer & System</th>
@@ -107,7 +107,7 @@ export default function OrderPaymentView({ orders, onRefresh, onNavigate }) {
 
               return (
                 <tr key={o.id} className="hover:bg-slate-850/50">
-                  <td className="p-3 font-mono text-slate-400">#ORD-{o.id}</td>
+                  <td className="p-3 text-slate-400">#ORD-<span className="font-mono">{o.id}</span></td>
                   <td className="p-3">
                     <div className="font-semibold text-white">{lead?.customer_name || 'Customer'}</div>
                     <div className="text-[10px] text-amber-400 font-mono">
@@ -157,15 +157,17 @@ export default function OrderPaymentView({ orders, onRefresh, onNavigate }) {
                   </td>
                   <td className="p-3 text-right space-x-2">
                     <button
+                      type="button"
                       onClick={() => generateInvoicePDF(o)}
-                      className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 inline-flex items-center gap-1 font-medium"
+                      className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 inline-flex items-center gap-1 font-medium transition-colors"
                     >
                       <Download className="w-3 h-3 text-amber-400" /> Invoice
                     </button>
                     {!isPaid && (
                       <button
+                        type="button"
                         onClick={() => { setPayingOrderId(o.id); setPayAmount(o.balance_due_inr > 50000 ? 50000 : o.balance_due_inr); }}
-                        className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold inline-flex items-center gap-1 shadow-sm"
+                        className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold inline-flex items-center gap-1 shadow-sm transition-colors"
                       >
                         <CreditCard className="w-3 h-3" /> Record Payment
                       </button>
@@ -200,15 +202,17 @@ export default function OrderPaymentView({ orders, onRefresh, onNavigate }) {
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button
+                type="button"
                 onClick={() => setPayingOrderId(null)}
-                className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700"
+                className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700 transition-colors"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={() => handlePay(payingOrderId)}
                 disabled={processing}
-                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all disabled:opacity-50"
+                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors disabled:opacity-50"
               >
                 {processing ? 'Processing BoM...' : 'Confirm Payment & Deduct BoM'}
               </button>

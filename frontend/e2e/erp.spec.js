@@ -10,7 +10,7 @@ test.describe('SunPower Solar ERP End-to-End Test Suite', () => {
     await expect(page.locator('h1').first()).toContainText('SunPower ERP');
 
     // Verify calculator exists and default values calculate
-    const slider = page.locator('input[type="range"]');
+    const slider = page.locator('input[type="range"]').first();
     await expect(slider).toBeVisible();
 
     // Change slider value
@@ -62,7 +62,7 @@ test.describe('SunPower Solar ERP End-to-End Test Suite', () => {
 
   test('04. Site Survey & Gatekeeper Protocol', async ({ page }) => {
     await page.goto('/');
-    await page.click('button:has-text("4. Site Surveys")');
+    await page.click('button:has-text("4. Site Survey")');
 
     await expect(page.locator('text=Rooftop Site Survey Management')).toBeVisible();
     await expect(page.locator('text=FastAPI Gatekeeper Rule #1 Enforced')).toBeVisible();
@@ -74,7 +74,7 @@ test.describe('SunPower Solar ERP End-to-End Test Suite', () => {
 
   test('05. Quotation Engine & Turnkey BoM Calculation', async ({ page }) => {
     await page.goto('/');
-    await page.click('button:has-text("5. Quotations")');
+    await page.click('button:has-text("5. Quotation")');
 
     await expect(page.locator('text=Quotation & Turnkey Pricing Engine')).toBeVisible();
     // Verify BoM breakdown is computed
@@ -87,7 +87,7 @@ test.describe('SunPower Solar ERP End-to-End Test Suite', () => {
 
   test('06. Inventory Stock Ledger & Reorder Alerts', async ({ page }) => {
     await page.goto('/');
-    await page.click('button:has-text("7. Inventory & BoM")');
+    await page.click('button:has-text("7. Inventory")');
 
     await expect(page.locator('text=Live Hardware Inventory')).toBeVisible();
     await expect(page.locator('text=PNL-MONO-540W')).toBeVisible();
@@ -101,24 +101,24 @@ test.describe('SunPower Solar ERP End-to-End Test Suite', () => {
 
   test('07. Zero-Click Warranty Triage in Service Helpdesk (Rule 4)', async ({ page }) => {
     await page.goto('/');
-    await page.click('button:has-text("11. Service Helpdesk")');
+    await page.click('button:has-text("11. Service")');
 
     await expect(page.locator('text=Service, Maintenance & Helpdesk')).toBeVisible();
 
     // Verify Active Inverter Serial shows Green ₹0 Free Repair Banner
     const serialSelect = page.locator('select').nth(1);
     await serialSelect.selectOption('INV-2025-0518');
-    await expect(page.locator('text=UNDER ACTIVE WARRANTY — ₹0 FREE COMPONENT REPAIR / REPLACEMENT')).toBeVisible();
+    await expect(page.locator('text=Active warranty coverage: ₹0 free component repair / replacement')).toBeVisible();
     await expect(page.locator('text=₹0').first()).toBeVisible();
 
     // Verify Expired Battery Serial shows Red Auto-Billed Invoice Banner
     await serialSelect.selectOption('BAT-2023-0104');
-    await expect(page.locator('text=WARRANTY EXPIRED — AUTO-BILLED CUSTOMER INVOICE')).toBeVisible();
+    await expect(page.locator('text=Warranty expired: auto-billed customer invoice')).toBeVisible();
   });
 
   test('08. Executive Financial Analytics & Dynamic Project P&L (Rule 5)', async ({ page }) => {
     await page.goto('/');
-    await page.click('button:has-text("13. Admin & Dynamic P&L")');
+    await page.click('button:has-text("13. Admin")');
 
     await expect(page.locator('text=Executive Financial & Dynamic Job P&L Analytics')).toBeVisible();
     await expect(page.locator('text=Total Collected Revenue')).toBeVisible();
@@ -131,6 +131,53 @@ test.describe('SunPower Solar ERP End-to-End Test Suite', () => {
     // Verify CSV export button exists
     const exportBtn = page.locator('button:has-text("Export P&L Report (CSV)")');
     await expect(exportBtn).toBeVisible();
+  });
+
+  test('09. Inbound Inventory Restock Flow', async ({ page }) => {
+    await page.goto('/');
+    await page.click('button:has-text("7. Inventory")');
+
+    await expect(page.locator('text=Live Hardware Inventory')).toBeVisible();
+
+    // Click quick restock on first item
+    const restockBtn = page.locator('button:has-text("Restock")').first();
+    await expect(restockBtn).toBeVisible();
+    await restockBtn.click();
+
+    // Check modal appears
+    await expect(page.locator('text=Receive Inbound Inventory Shipment')).toBeVisible();
+    await expect(page.locator('text=Confirm Restock')).toBeVisible();
+
+    // Click +25 preset
+    await page.click('button:has-text("+25")');
+
+    // Submit restock
+    await page.click('button:has-text("Confirm Restock")');
+
+    // Verify success banner appears
+    await expect(page.locator('text=Successfully restocked')).toBeVisible();
+  });
+
+  test('10. Technician Roster & Job Workload Inspection', async ({ page }) => {
+    await page.goto('/');
+    await page.click('button:has-text("12. Employee")');
+
+    await expect(page.locator('text=Field Crew & Technician Roster')).toBeVisible();
+    await expect(page.locator('text=Certified Solar Crew')).toBeVisible();
+
+    // Click Assigned Jobs on first technician
+    const jobsBtn = page.locator('button:has-text("Assigned Jobs")').first();
+    await expect(jobsBtn).toBeVisible();
+    await jobsBtn.click();
+
+    // Verify workload modal opens
+    await expect(page.locator('text=Field Workload:')).toBeVisible();
+    await expect(page.locator('text=Assigned Site Surveys')).toBeVisible();
+    await expect(page.locator('text=Assigned Installations')).toBeVisible();
+
+    // Close modal
+    await page.click('button:has-text("Close Inspector")');
+    await expect(page.locator('text=Field Workload:')).not.toBeVisible();
   });
 
 });

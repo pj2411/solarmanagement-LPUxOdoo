@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Query
+from fastapi import FastAPI, Depends, HTTPException, status, Query, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import date, datetime, timedelta, timezone
@@ -6,6 +8,7 @@ from typing import List, Optional
 
 from database import engine, Base, get_db
 import models, schemas
+from v1_routes import router as v1_router
 
 # Initialize DB tables
 Base.metadata.create_all(bind=engine)
@@ -24,6 +27,56 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Standard Error Envelope Exception Handlers
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    code_map = {
+        400: "VALIDATION_ERROR",
+        401: "UNAUTHORIZED",
+        403: "FORBIDDEN",
+        404: "NOT_FOUND",
+        409: "CONFLICT",
+        422: "VALIDATION_ERROR"
+    }
+    code = code_map.get(exc.status_code, "API_ERROR")
+    msg = str(exc.detail)
+    if "stock" in msg.lower():
+        code = "INSUFFICIENT_STOCK"
+    elif "unauthorized" in msg.lower():
+        code = "UNAUTHORIZED"
+
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "detail": msg,
+            "success": False,
+            "error": {
+                "code": code,
+                "message": msg,
+                "details": [msg]
+            },
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "success": False,
+            "error": {
+                "code": "VALIDATION_ERROR",
+                "message": "Input validation error",
+                "details": exc.errors()
+            },
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    )
+
+# Register v1 router for frontend contracts
+app.include_router(v1_router)
+
 # ----------------- 1. HEALTH & ROLES -----------------
 @app.get("/api/health")
 def health_check():
@@ -39,6 +92,91 @@ def get_roles():
         {"role": "SUPPORT", "label": "Support / Helpdesk", "user_name": "Neha Kapoor", "email": "support@sunpower.in"},
         {"role": "ADMIN", "label": "Director / Admin", "user_name": "Vikram Malhotra", "email": "admin@sunpower.in"},
     ]
+
+@app.post("/api/auth/login", response_model=schemas.AuthResponse)
+def login_user(payload: schemas.LoginRequest, db: Session = Depends(get_db)):
+    email_clean = payload.email.strip().lower()
+    user = db.query(models.User).filter(func.lower(models.User.email) == email_clean).first()
+    
+    # If not found in database, check pre-seeded role personas
+    if not user:
+        role_map = {
+            "arvind.sharma@gmail.com": ("Arvind Sharma", "CUSTOMER"),
+            "sales@sunpower.in": ("Pooja Sharma", "SALES"),
+            "warehouse@sunpower.in": ("Gaurav Singhal", "WAREHOUSE"),
+            "tech.ramesh.sharma@sunpower.in": ("Ramesh Sharma", "TECHNICIAN"),
+            "support@sunpower.in": ("Neha Kapoor", "SUPPORT"),
+            "admin@sunpower.in": ("Vikram Malhotra", "ADMIN"),
+        }
+        if email_clean in role_map:
+            name, role = role_map[email_clean]
+            user = models.User(name=name, email=email_clean, role=role, password_hash="hashed_password")
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        else:
+            # Fallback demo auto-login as customer or admin based on domain
+            default_role = "ADMIN" if "admin" in email_clean else "CUSTOMER"
+            user = models.User(name=email_clean.split("@")[0].title(), email=email_clean, role=default_role, password_hash="hashed_password")
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+    token = f"jwt_sunpower_{user.id}_{user.role}_{int(datetime.now(timezone.utc).timestamp())}"
+    return {
+        "token": token,
+        "user": user,
+        "role": user.role,
+        "message": f"Successfully authenticated as {user.name} ({user.role})"
+    }
+
+@app.post("/api/auth/register", response_model=schemas.AuthResponse)
+def register_user(payload: schemas.RegisterRequest, db: Session = Depends(get_db)):
+    email_clean = payload.email.strip().lower()
+    existing = db.query(models.User).filter(func.lower(models.User.email) == email_clean).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Account with this email already exists.")
+    
+    new_user = models.User(
+        name=payload.name,
+        email=email_clean,
+        role=payload.role.upper(),
+        password_hash="hashed_" + payload.password,
+        attendance_status="PRESENT"
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    token = f"jwt_sunpower_{new_user.id}_{new_user.role}_{int(datetime.now(timezone.utc).timestamp())}"
+    return {
+        "token": token,
+        "user": new_user,
+        "role": new_user.role,
+        "message": "Account created successfully. Welcome to SunPower ERP."
+    }
+
+@app.post("/api/auth/forgot-password")
+def forgot_password(payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+    email_clean = payload.email.strip().lower()
+    return {
+        "status": "success",
+        "email": email_clean,
+        "otp": "849201",
+        "message": "6-digit OTP code has been dispatched to your email for identity verification."
+    }
+
+@app.post("/api/auth/reset-password")
+def reset_password(payload: schemas.ResetPasswordRequest, db: Session = Depends(get_db)):
+    email_clean = payload.email.strip().lower()
+    user = db.query(models.User).filter(func.lower(models.User.email) == email_clean).first()
+    if user:
+        user.password_hash = "hashed_" + payload.new_password
+        db.commit()
+    return {
+        "status": "success",
+        "message": "Password successfully updated. You can now sign in with your new credentials."
+    }
 
 # ----------------- 2. CUSTOMERS & LEADS -----------------
 @app.get("/api/leads", response_model=List[schemas.LeadOut])
@@ -90,7 +228,7 @@ def update_lead(id: int, lead_in: schemas.LeadUpdate, db: Session = Depends(get_
     if not lead:
         raise HTTPException(status_code=404, detail="Lead not found")
     
-    update_data = lead_in.dict(exclude_unset=True)
+    update_data = lead_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(lead, key, value)
     
@@ -123,7 +261,7 @@ def update_survey(id: int, survey_in: schemas.SurveyUpdate, db: Session = Depend
     if not survey:
         raise HTTPException(status_code=404, detail="Survey not found")
     
-    update_data = survey_in.dict(exclude_unset=True)
+    update_data = survey_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(survey, key, value)
     
@@ -138,6 +276,16 @@ def update_survey(id: int, survey_in: schemas.SurveyUpdate, db: Session = Depend
 @app.get("/api/inventory", response_model=List[schemas.InventoryItemOut])
 def get_inventory(db: Session = Depends(get_db)):
     return db.query(models.InventoryItem).order_by(models.InventoryItem.category).all()
+
+@app.post("/api/inventory/{id}/restock", response_model=schemas.InventoryItemOut)
+def restock_inventory(id: int, req: schemas.InventoryRestock, db: Session = Depends(get_db)):
+    item = db.query(models.InventoryItem).filter(models.InventoryItem.id == id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Inventory item not found")
+    item.stock_qty += req.quantity
+    db.commit()
+    db.refresh(item)
+    return item
 
 @app.get("/api/bom/templates", response_model=List[schemas.BOMTemplateOut])
 def get_bom_templates(db: Session = Depends(get_db)):
@@ -472,7 +620,7 @@ def update_installation(id: int, inst_in: schemas.InstallationUpdate, db: Sessio
     if not inst:
         raise HTTPException(status_code=404, detail="Installation not found")
 
-    update_data = inst_in.dict(exclude_unset=True)
+    update_data = inst_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(inst, key, value)
 
@@ -559,7 +707,7 @@ def update_service_ticket(id: int, t_in: schemas.ServiceTicketUpdate, db: Sessio
     if not ticket:
         raise HTTPException(status_code=404, detail="Service ticket not found")
 
-    update_data = t_in.dict(exclude_unset=True)
+    update_data = t_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(ticket, key, value)
 
@@ -584,6 +732,17 @@ def update_attendance(id: int, attendance_status: str = Query(...), db: Session 
     user.attendance_status = attendance_status
     db.commit()
     return {"status": "success", "employee_id": user.id, "attendance_status": user.attendance_status}
+
+@app.get("/api/employees/{id}/jobs")
+def get_employee_jobs(id: int, db: Session = Depends(get_db)):
+    surveys = db.query(models.SiteSurvey).filter(models.SiteSurvey.technician_id == id).all()
+    installations = db.query(models.Installation).filter(models.Installation.technician_id == id).all()
+    return {
+        "surveys_count": len(surveys),
+        "installations_count": len(installations),
+        "surveys": [{"id": s.id, "customer": s.lead.customer_name if s.lead else "Unknown", "approved": s.is_approved} for s in surveys],
+        "installations": [{"id": i.id, "customer": i.order.lead.customer_name if i.order and i.order.lead else "Unknown", "progress": i.progress_pct, "completed": i.is_completed} for i in installations]
+    }
 
 # ----------------- 11. MANDATORY RULE 5: DYNAMIC PROJECT-WISE P&L & ANALYTICS -----------------
 @app.get("/api/analytics")

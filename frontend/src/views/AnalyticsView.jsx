@@ -26,7 +26,7 @@ export default function AnalyticsView({ analyticsData }) {
   if (!analyticsData) {
     return (
       <div className="p-8 text-center text-slate-400 text-xs animate-pulse">
-        Computing real-time relational analytics from SQLite...
+        Computing real-time relational analytics from SQLite…
       </div>
     );
   }
@@ -80,8 +80,9 @@ export default function AnalyticsView({ analyticsData }) {
         </div>
 
         <button
+          type="button"
           onClick={exportCSV}
-          className="px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-amber-500/20"
+          className="px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
         >
           <Download className="w-4 h-4" /> Export P&L Report (CSV)
         </button>
@@ -133,13 +134,13 @@ export default function AnalyticsView({ analyticsData }) {
       </div>
 
       {/* Recharts Financial Comparison Bar Chart */}
-      <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 space-y-4 shadow-xl">
+      <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
         <div className="flex justify-between items-center">
           <div>
             <h3 className="font-bold text-sm text-white">Project-Wise Revenue, Hardware Cost, Labor & Net Profit</h3>
             <p className="text-xs text-slate-400">Dynamically generated from foreign-key relational models</p>
           </div>
-          <div className="flex items-center gap-4 text-xs font-mono">
+          <div className="flex items-center gap-4 text-xs font-medium">
             <span className="flex items-center gap-1.5 text-emerald-400">
               <span className="w-2.5 h-2.5 rounded bg-emerald-500"></span> Revenue
             </span>
@@ -159,7 +160,7 @@ export default function AnalyticsView({ analyticsData }) {
               <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
               <YAxis stroke="#94a3b8" fontSize={11} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }}
+                contentStyle={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-strong)', borderRadius: '8px', fontSize: '12px', color: 'var(--text-heading)' }}
                 formatter={(value) => `₹${Number(value).toLocaleString('en-IN')}`}
               />
               <Bar dataKey="Revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
@@ -175,7 +176,7 @@ export default function AnalyticsView({ analyticsData }) {
         <h3 className="font-bold text-sm text-white">Itemized Project Job-Costing Ledger</h3>
         <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shadow-lg">
           <table className="w-full text-xs text-left">
-            <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <thead className="bg-slate-950 text-slate-400 text-[11px] border-b border-slate-800">
               <tr>
                 <th className="p-3">Project & Client</th>
                 <th className="p-3">Collected Revenue</th>
@@ -194,7 +195,7 @@ export default function AnalyticsView({ analyticsData }) {
                   <tr key={p.order_id} className="hover:bg-slate-850/50">
                     <td className="p-3">
                       <div className="font-semibold text-white">{p.customer_name}</div>
-                      <div className="text-[10px] text-amber-400 font-mono">
+                      <div className="text-[10px] text-amber-400 font-medium">
                         {p.capacity_kw} kW {p.system_type} | Order #{p.order_id}
                       </div>
                     </td>
@@ -204,8 +205,8 @@ export default function AnalyticsView({ analyticsData }) {
                     <td className="p-3 font-mono text-slate-300">
                       ₹{p.bom_hardware_cost_inr.toLocaleString('en-IN')}
                     </td>
-                    <td className="p-3 font-mono text-slate-400">
-                      {p.installation_hours}h @ ₹{p.technician_hourly_rate}/h
+                    <td className="p-3 text-slate-400">
+                      <span className="font-mono">{p.installation_hours}</span>h @ ₹<span className="font-mono">{p.technician_hourly_rate}</span>/h
                     </td>
                     <td className="p-3 font-mono text-slate-300">
                       ₹{p.labor_cost_inr.toLocaleString('en-IN')}
@@ -245,19 +246,19 @@ export default function AnalyticsView({ analyticsData }) {
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
           <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase">Not Applied</span>
+            <span className="text-[10px] text-slate-400">Not applied</span>
             <p className="text-base font-bold text-slate-400 font-mono">{subsidy_tracking.NOT_APPLIED || 0} Orders</p>
           </div>
           <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase">Application Submitted</span>
+            <span className="text-[10px] text-slate-400">Application submitted</span>
             <p className="text-base font-bold text-amber-400 font-mono">{subsidy_tracking.APPLIED || 0} Orders</p>
           </div>
           <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase">DISCOM Inspected</span>
+            <span className="text-[10px] text-slate-400">DISCOM inspected</span>
             <p className="text-base font-bold text-sky-400 font-mono">{subsidy_tracking.INSPECTED || 0} Orders</p>
           </div>
           <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase">DBT Direct Disbursed</span>
+            <span className="text-[10px] text-slate-400">DBT direct disbursed</span>
             <p className="text-base font-bold text-emerald-400 font-mono">{subsidy_tracking.DISBURSED || 0} Orders</p>
           </div>
         </div>

@@ -7,12 +7,19 @@ import {
   CheckCircle, 
   XCircle, 
   Calendar,
-  AlertCircle
+  AlertCircle,
+  Briefcase,
+  X,
+  Wrench,
+  CheckCircle2
 } from 'lucide-react';
 import { api } from '../api';
 
 export default function EmployeeView({ employees, onRefresh }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [inspectingEmployee, setInspectingEmployee] = useState(null);
+  const [employeeJobs, setEmployeeJobs] = useState(null);
+  const [loadingJobs, setLoadingJobs] = useState(false);
 
   const filteredEmployees = employees.filter(emp => 
     emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -26,6 +33,19 @@ export default function EmployeeView({ employees, onRefresh }) {
       onRefresh();
     } catch (err) {
       alert('Error updating attendance: ' + err.message);
+    }
+  };
+
+  const handleInspectJobs = async (emp) => {
+    setInspectingEmployee(emp);
+    setLoadingJobs(true);
+    try {
+      const jobs = await api.getEmployeeJobs(emp.id);
+      setEmployeeJobs(jobs);
+    } catch (err) {
+      alert('Error fetching employee jobs: ' + err.message);
+    } finally {
+      setLoadingJobs(false);
     }
   };
 
@@ -89,47 +109,168 @@ export default function EmployeeView({ employees, onRefresh }) {
           const isLeave = emp.attendance_status === 'ON_LEAVE';
 
           return (
-            <div key={emp.id} className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 shadow-lg">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="font-bold text-sm text-white">{emp.name}</h4>
-                  <p className="text-[11px] text-slate-400 font-mono">{emp.email}</p>
+            <div key={emp.id} className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 shadow-lg flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="font-bold text-sm text-white">{emp.name}</h4>
+                    <p className="text-[11px] text-slate-400 font-mono">{emp.email}</p>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                    isPresent
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                      : isLeave
+                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                      : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                  }`}>
+                    {emp.attendance_status}
+                  </span>
                 </div>
-                <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                  isPresent
-                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                    : isLeave
-                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                    : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
-                }`}>
-                  {emp.attendance_status}
-                </span>
+
+                <div className="grid grid-cols-2 gap-2 p-2.5 rounded bg-slate-950 border border-slate-800 text-xs">
+                  <div>
+                    <span className="text-[10px] text-slate-500 block">Hourly Pay Rate</span>
+                    <span className="font-bold text-amber-400">₹<span className="font-mono">{emp.hourly_rate}</span>/hr</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 block">Estimated Monthly</span>
+                    <span className="font-bold text-slate-200">₹<span className="font-mono">{(emp.hourly_rate * 160).toLocaleString('en-IN')}</span></span>
+                  </div>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 p-2.5 rounded bg-slate-950 border border-slate-800 text-xs">
-                <div>
-                  <span className="text-[10px] text-slate-500 block uppercase">Hourly Pay Rate</span>
-                  <span className="font-bold text-amber-400 font-mono">₹{emp.hourly_rate}/hr</span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-500 block uppercase">Estimated Monthly</span>
-                  <span className="font-bold text-slate-200 font-mono">₹{(emp.hourly_rate * 160).toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-
-              <div className="pt-1 flex items-center justify-between text-xs">
-                <span className="text-slate-400 text-[11px]">Toggle Status:</span>
+              <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2 text-xs">
                 <button
-                  onClick={() => handleToggleAttendance(emp.id, emp.attendance_status)}
-                  className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] border border-slate-700 transition-all"
+                  type="button"
+                  onClick={() => handleInspectJobs(emp)}
+                  className="px-2.5 py-1 rounded bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 text-[11px] font-semibold border border-amber-500/30 transition-colors flex items-center gap-1.5"
                 >
-                  Change Status →
+                  <Briefcase className="w-3.5 h-3.5" />
+                  Assigned Jobs
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleAttendance(emp.id, emp.attendance_status)}
+                  className="px-2.5 py-1 rounded bg-slate-850 hover:bg-slate-750 text-slate-300 text-[11px] border border-slate-700 transition-colors"
+                >
+                  Status: {emp.attendance_status} ↻
                 </button>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Inspect Jobs Modal */}
+      {inspectingEmployee && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/95 animate-fadeIn">
+          <div className="w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Wrench className="w-5 h-5 text-amber-400" />
+                  Field Workload: {inspectingEmployee.name}
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Assigned rooftop surveys and turn-key installation jobs.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setInspectingEmployee(null);
+                  setEmployeeJobs(null);
+                }}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {loadingJobs ? (
+              <div className="py-8 text-center text-xs text-slate-400">Loading assignments…</div>
+            ) : employeeJobs ? (
+              <div className="space-y-4">
+                {/* Summary counts */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                    <span className="text-[10px] text-slate-400 font-semibold">Assigned Site Surveys</span>
+                    <p className="text-lg font-bold text-amber-400 font-mono mt-1">{employeeJobs.surveys_count}</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                    <span className="text-[10px] text-slate-400 font-semibold">Assigned Installations</span>
+                    <p className="text-lg font-bold text-emerald-400 font-mono mt-1">{employeeJobs.installations_count}</p>
+                  </div>
+                </div>
+
+                {/* Surveys List */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-slate-300">Site Surveys:</h4>
+                  {employeeJobs.surveys.length === 0 ? (
+                    <p className="text-xs text-slate-500 italic p-2 bg-slate-950 rounded">No site surveys currently assigned.</p>
+                  ) : (
+                    <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                      {employeeJobs.surveys.map((s) => (
+                        <div key={s.id} className="p-2.5 rounded bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+                          <div>
+                            <span className="text-white font-semibold">{s.customer}</span>
+                            <span className="text-[10px] text-slate-400 block">Survey #<span className="font-mono">{s.id}</span></span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                            s.approved
+                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                              : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                          }`}>
+                            {s.approved ? 'Approved' : 'Pending Review'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Installations List */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-slate-300">Installations:</h4>
+                  {employeeJobs.installations.length === 0 ? (
+                    <p className="text-xs text-slate-500 italic p-2 bg-slate-950 rounded">No installations currently assigned.</p>
+                  ) : (
+                    <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                      {employeeJobs.installations.map((i) => (
+                        <div key={i.id} className="p-2.5 rounded bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+                          <div>
+                            <span className="text-white font-semibold">{i.customer}</span>
+                            <span className="text-[10px] text-slate-400 block">Job #<span className="font-mono">{i.id}</span>, Progress: <span className="font-mono">{i.progress}%</span></span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                            i.completed
+                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                              : 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                          }`}>
+                            {i.completed ? 'Completed' : `${i.progress}% In-Flight`}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setInspectingEmployee(null);
+                  setEmployeeJobs(null);
+                }}
+                className="w-full py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"
+              >
+                Close Inspector
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

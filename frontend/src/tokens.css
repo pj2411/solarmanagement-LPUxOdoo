@@ -1,0 +1,73 @@
+/* Hallmark · genre: modern-minimal · theme: SunPower Red & White · posture: restrained */
+:root {
+  /* Typography Tokens */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Red & White Minimal Surfaces (Crisp White with Warm Red Tinted Canvas) */
+  --bg-canvas: #FAF8F8;
+  --bg-surface: #FFFDFD;
+  --bg-elevated: #FFF7F7;
+  --bg-muted: #F5EFEF;
+  --bg-highlight: #EDE5E5;
+
+  /* Red & Neutral Clean Subtle Borders */
+  --border-subtle: #E8DDDD;
+  --border-strong: #D4C4C4;
+  --border-focus: #DC2626;
+
+  /* High-Contrast Typography */
+  --text-heading: #111827;
+  --text-body: #374151;
+  --text-subtle: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-inverse: #FFFDFD;
+
+  /* Brand & Accent: Vivid Solar Crimson Red */
+  --accent-primary: #DC2626;
+  --accent-hover: #B91C1C;
+  --accent-text: #991B1B;
+  --accent-surface: #FEF2F2;
+  --accent-border: #FECACA;
+  --accent-glow: #FCA5A5;
+
+  /* Status Tokens */
+  --status-success: #059669;
+  --status-success-surface: #ECFDF5;
+  --status-success-border: #A7F3D0;
+
+  --status-warning: #D97706;
+  --status-warning-surface: #FFFBEB;
+  --status-warning-border: #FDE68A;
+
+  --status-danger: #DC2626;
+  --status-danger-surface: #FEF2F2;
+  --status-danger-border: #FECACA;
+
+  --status-info: #0284C7;
+  --status-info-surface: #F0F9FF;
+  --status-info-border: #BAE6FD;
+}
+
+html, body {
+  overflow-x: clip;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) var(--bg-canvas);
+  background-color: var(--bg-canvas);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-primary) !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

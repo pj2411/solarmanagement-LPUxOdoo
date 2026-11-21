@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import RoleSwitcher from './components/RoleSwitcher';
 import Sidebar from './components/Sidebar';
+import RoleSwitcher from './components/RoleSwitcher';
 import { api } from './api';
 
 // Views
+import LoginView from './views/LoginView';
 import PublicWebsiteView from './views/PublicWebsiteView';
 import AuthView from './views/AuthView';
 import CustomerManagementView from './views/CustomerManagementView';
@@ -19,7 +20,14 @@ import EmployeeView from './views/EmployeeView';
 import AnalyticsView from './views/AnalyticsView';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [viewingPublicOnly, setViewingPublicOnly] = useState(false);
   const [currentRole, setCurrentRole] = useState('ADMIN');
+  const [currentUser, setCurrentUser] = useState({
+    name: 'Vikram Malhotra',
+    email: 'admin@sunpower.in',
+    role: 'ADMIN'
+  });
   const [currentModule, setCurrentModule] = useState('public-website');
 
   // Shared Data States
@@ -87,9 +95,53 @@ export default function App() {
     refreshAllData();
   }, []);
 
-  // When role changes, optionally route to the most relevant module
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    setCurrentRole(user.role || 'ADMIN');
+    setIsAuthenticated(true);
+    setViewingPublicOnly(false);
+
+    // Route to most relevant module for persona
+    switch (user.role) {
+      case 'CUSTOMER':
+        setCurrentModule('customers');
+        break;
+      case 'SALES':
+        setCurrentModule('site-survey');
+        break;
+      case 'WAREHOUSE':
+        setCurrentModule('dispatch');
+        break;
+      case 'TECHNICIAN':
+        setCurrentModule('installations');
+        break;
+      case 'SUPPORT':
+        setCurrentModule('helpdesk');
+        break;
+      case 'ADMIN':
+      default:
+        setCurrentModule('analytics');
+        break;
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setViewingPublicOnly(false);
+  };
+
   const handleRoleChange = (newRole) => {
     setCurrentRole(newRole);
+    setCurrentUser(prev => ({
+      ...prev,
+      role: newRole,
+      name: newRole === 'ADMIN' ? 'Vikram Malhotra' :
+            newRole === 'SALES' ? 'Pooja Sharma' :
+            newRole === 'TECHNICIAN' ? 'Ramesh Sharma' :
+            newRole === 'WAREHOUSE' ? 'Gaurav Singhal' :
+            newRole === 'SUPPORT' ? 'Neha Kapoor' : 'Arvind Sharma'
+    }));
+
     switch (newRole) {
       case 'CUSTOMER':
         setCurrentModule('customers');
@@ -107,13 +159,40 @@ export default function App() {
         setCurrentModule('helpdesk');
         break;
       case 'ADMIN':
-        setCurrentModule('analytics');
-        break;
       default:
+        setCurrentModule('analytics');
         break;
     }
   };
 
+  // If user is not authenticated and hasn't clicked "Explore Public Site", display the full Login Gateway
+  if (!isAuthenticated && !viewingPublicOnly) {
+    return (
+      <LoginView 
+        onLogin={handleLogin}
+        onExplorePublic={() => setViewingPublicOnly(true)}
+      />
+    );
+  }
+
+  // If unauthenticated user chose to explore public website
+  if (!isAuthenticated && viewingPublicOnly) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans p-4 sm:p-6 lg:p-8">
+        <PublicWebsiteView 
+          onNavigate={(mod) => {
+            if (mod === 'quotations' || mod === 'customers') {
+              setViewingPublicOnly(false); // prompt login
+            }
+          }}
+          onLeadCreated={refreshAllData}
+          onSignInClick={() => setViewingPublicOnly(false)}
+        />
+      </div>
+    );
+  }
+
+  // Authenticated ERP Workspace
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* 1-Click Role Switcher Top Bar */}
@@ -122,22 +201,23 @@ export default function App() {
         onRoleChange={handleRoleChange} 
       />
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar */}
+      <div className="flex-1 flex overflow-hidden h-[calc(100vh-65px)]">
+        {/* Left Sidebar with 13 Modules */}
         <Sidebar 
           currentModule={currentModule}
           onModuleSelect={setCurrentModule}
-          currentRole={currentRole}
+          currentUser={currentUser}
+          onLogout={handleLogout}
           stats={analytics}
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-slate-950">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-950">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-slate-400 text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-amber-500 animate-ping" />
-                Connecting to SQLite Relational Backend...
+                <div className="w-3 h-3 rounded-full bg-amber-500 motion-safe:animate-ping motion-reduce:opacity-75" />
+                <span>Connecting to SQLite database</span>
               </div>
             </div>
           ) : (
@@ -146,12 +226,15 @@ export default function App() {
                 <PublicWebsiteView 
                   onNavigate={setCurrentModule} 
                   onLeadCreated={refreshAllData} 
+                  onSignInClick={() => setCurrentModule('auth')}
                 />
               )}
               {currentModule === 'auth' && (
                 <AuthView 
                   currentRole={currentRole} 
                   onRoleChange={handleRoleChange} 
+                  currentUser={currentUser}
+                  onLoginSuccess={handleLogin}
                 />
               )}
               {currentModule === 'customers' && (

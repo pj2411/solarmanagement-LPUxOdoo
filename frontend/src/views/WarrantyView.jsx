@@ -72,15 +72,15 @@ export default function WarrantyView({ serialUnits }) {
       {/* Registry Table */}
       <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shadow-lg">
         <table className="w-full text-xs text-left">
-          <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+          <thead className="bg-slate-950 text-slate-400 text-[11px] border-b border-slate-800">
             <tr>
-              <th className="p-3">Hardware Serial #</th>
-              <th className="p-3">Component Type</th>
+              <th className="p-3">Hardware serial #</th>
+              <th className="p-3">Component type</th>
               <th className="p-3">Homeowner / Client</th>
-              <th className="p-3">Warranty Term</th>
-              <th className="p-3">Commissioned Date</th>
-              <th className="p-3">Expiry Date</th>
-              <th className="p-3">Warranty Status</th>
+              <th className="p-3">Warranty term</th>
+              <th className="p-3">Commissioned date</th>
+              <th className="p-3">Expiry date</th>
+              <th className="p-3">Warranty status</th>
               <th className="p-3 text-right">Certificate</th>
             </tr>
           </thead>
@@ -98,7 +98,7 @@ export default function WarrantyView({ serialUnits }) {
                     </span>
                   </td>
                   <td className="p-3 font-medium text-white">{u.lead?.customer_name || 'Customer'}</td>
-                  <td className="p-3 font-mono text-slate-300">{u.warranty_years} Years</td>
+                  <td className="p-3 text-slate-300"><span className="font-mono">{u.warranty_years}</span> years</td>
                   <td className="p-3 font-mono text-[11px] text-slate-400">
                     {u.warranty_start_date || 'Pending Dispatch'}
                   </td>
@@ -112,7 +112,7 @@ export default function WarrantyView({ serialUnits }) {
                           ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
                           : 'bg-rose-500/20 text-rose-400 border-rose-500/30'
                       }`}>
-                        {!isExpired ? '✓ ACTIVE' : '✕ EXPIRED'}
+                        {!isExpired ? 'Active' : 'Expired'}
                       </span>
                     ) : (
                       <span className="text-[10px] text-slate-500">Uncommissioned</span>
@@ -120,8 +120,9 @@ export default function WarrantyView({ serialUnits }) {
                   </td>
                   <td className="p-3 text-right">
                     <button
+                      type="button"
                       onClick={() => setSelectedUnit(u)}
-                      className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 text-[11px] border border-slate-700 inline-flex items-center gap-1 font-medium"
+                      className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 text-[11px] border border-slate-700 inline-flex items-center gap-1 font-medium transition-colors"
                     >
                       <Award className="w-3 h-3" /> View Certificate
                     </button>
@@ -138,8 +139,7 @@ export default function WarrantyView({ serialUnits }) {
         <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
             <div className="text-center space-y-1 border-b border-slate-800 pb-4">
-              <span className="text-amber-400 text-[10px] font-bold uppercase tracking-widest">Official Document</span>
-              <h3 className="text-lg font-extrabold text-white">SOLAR HARDWARE WARRANTY CERTIFICATE</h3>
+              <h3 className="text-lg font-bold text-white">Solar Hardware Warranty Certificate</h3>
               <p className="text-xs text-slate-400">SunPower Solutions Turnkey Quality Guarantee</p>
             </div>
 
@@ -162,7 +162,7 @@ export default function WarrantyView({ serialUnits }) {
               </div>
               <div className="flex justify-between border-t border-slate-800 pt-2">
                 <span className="text-slate-400">Warranty Coverage Term:</span>
-                <span className="font-mono text-emerald-400 font-bold">{selectedUnit.warranty_years} Full Calendar Years</span>
+                <span className="text-emerald-400 font-bold"><span className="font-mono">{selectedUnit.warranty_years}</span> Full Calendar Years</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Commencement Date:</span>
