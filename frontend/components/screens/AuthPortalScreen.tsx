@@ -289,8 +289,14 @@ export function AuthPortalScreen({
   };
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] w-full bg-transparent flex flex-col justify-center items-center px-4 py-10">
-      <div className="w-full max-w-xl mx-auto flex flex-col items-center">
+    <div
+      className="min-h-[calc(100vh-5rem)] w-full bg-transparent flex flex-col justify-center items-center px-4 py-10"
+      suppressHydrationWarning
+    >
+      <div
+        className="w-full max-w-xl mx-auto flex flex-col items-center"
+        suppressHydrationWarning
+      >
         {/* Brand Header */}
         <div className="text-center mb-8 space-y-2">
           <p className="text-xs font-semibold tracking-wider uppercase text-[#0e7a66]">

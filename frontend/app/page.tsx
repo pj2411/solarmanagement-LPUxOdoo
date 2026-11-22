@@ -1,4 +1,4 @@
-import { SunPowerApp } from '@/components/SunPowerApp';
+import { ClientApp } from '@/components/ClientApp';
 import type { ScreenId } from '@/lib/solar-data';
 
 const VALID_SCREENS: ScreenId[] = [
@@ -22,5 +22,5 @@ export default async function HomePage({
       ? candidate
       : 'portal-dashboard';
 
-  return <SunPowerApp initialScreen={initialScreen} />;
+  return <ClientApp initialScreen={initialScreen} />;
 }
