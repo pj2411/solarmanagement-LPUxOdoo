@@ -1,339 +1,495 @@
-# ☀️ SunPower Solar Installation Management System (Standalone ERP)
+# SunPower SIMS
 
-<div align="center">
+![SunPower SIMS Hero](web/hero-transparent-preview.png)
 
-![FastAPI](https://img.shields.io/badge/Backend-FastAPI%200.115+-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![React 18](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind%20CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![SQLite](https://img.shields.io/badge/Database-SQLite%20Relational-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
-![Python 3.13](https://img.shields.io/badge/Python-3.13+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![SunPower SIMS CRM](web/crm-leaf-glass-preview.png)
 
-<p align="center">
-  <b>A production-grade, standalone turnkey ERP for rooftop solar EPC enterprises.</b><br>
-  Built for companies completing <b>~40 rooftop projects/month with a 15-technician crew</b>.<br>
-  Engineered with strict foreign-key dependencies, deterministic BoM inventory deductions, live QR scanning, digital canvas signatures, and real-time job costing.
-</p>
+SunPower SIMS (Solar Installation Management System) is an enterprise-grade solar EPC and operations management platform designed for residential and commercial rooftop solar installations in India. It provides an end-to-end operational workspace spanning lead intake, irradiance savings calculators, engineering site surveys, turnkey dynamic Bill of Materials (BoM) quotations, PM Surya Ghar central subsidy workflows, milestone payments with automated GST invoicing, warehouse serial number tracking, commissioning QA with customer e-signatures, 20-to-25-year statutory warranty registries, and zero-click service helpdesk ticketing.
 
-</div>
+The repository is structured into two core layers:
 
----
+- `frontend`: React / Tailwind CSS single-page application with responsive operator consoles and public solar calculator
+- `backend` (and `app`): Asynchronous FastAPI (Python 3.13) service, SQLAlchemy 2.0 Async ORM with `asyncpg`, Alembic migrations, Redis cache, and PostgreSQL schema
 
-## 📑 Table of Contents
-- [Executive Overview](#-executive-overview)
-- [System Architecture & Lifecycle Pipeline](#-system-architecture--lifecycle-pipeline)
-- [The 5 Mandatory Backend Automation Rules](#-the-5-mandatory-backend-automation-rules)
-- [13 Standalone Modules Directory](#-13-standalone-modules-directory)
-- [Relational Database Schema](#-relational-database-schema)
-- [Interactive UI & Hardware Capabilities](#-interactive-ui--hardware-capabilities)
-- [Pre-Seeded Demo Scenarios](#-pre-seeded-demo-scenarios)
-- [REST API Endpoints Reference](#-rest-api-endpoints-reference)
-- [Directory Structure](#-directory-structure)
-- [Quickstart & Installation](#-quickstart--installation)
-- [Automated Test Suite](#-automated-test-suite)
+## Features
 
----
+- Dual-token JWT authentication (60-minute access token, 7-day refresh token) with Bcrypt password hashing
+- Role-Based Access Control (RBAC) across 6 discrete actors (`SUPER_ADMIN`, `SALES_EXEC`, `SURVEY_TECH`, `INSTALL_TECH`, `WAREHOUSE_MGR`, `SUPPORT_AGENT`, and `CUSTOMER`)
+- Stateless cryptographic OTP generation and verification via AES-256-CBC with HMAC integrity verification
+- PostgreSQL 16 relational data layer with UUID primary keys and 3NF normalization
+- Asynchronous non-blocking database queries with SQLAlchemy 2.0 and asyncpg connection pooling
+- Automated PM Surya Ghar Muft Bijli Yojana subsidy calculator (1kW: ₹30,000, 2kW: ₹60,000, 3–10kW: ₹78,000 ceiling)
+- Finite State Machine (FSM) tracking: Surveys, Quotations, Orders, Installations, and Service Tickets
+- Turnkey dynamic Bill of Materials (BoM) explosion with hardware line pricing and labor cost segregation
+- 3-stage milestone payment engine (10% Advance Booking, 70% Pre-Dispatch, 20% Commissioning)
+- Automated GST tax invoicing (CGST 6.9% + SGST 6.9% on standard 13.8% renewable tariff structure)
+- Razorpay / UPI sandbox payment gateway integration with simulated webhooks
+- Serialized barcode scanning and tracking for solar PV modules and on-grid/hybrid inverters
+- Field commissioning electrical QA verification (VOC, ISC, earth resistance tests) and customer sign-off
+- Digital 20-to-25-year warranty card issuance and public QR-code serial verification
+- Service helpdesk with fault code directory, SLA timers, customer confirmation, and RMA tracking
+- Geo-attendance tracking for rooftop engineering crews with GPS coordinates
+- Executive analytics dashboard computing dynamic project-wise P&L from live order and BoM snapshots
+- Odoo ERP JSON-RPC 2.0 compatibility bridge for bi-directional `crm.lead` synchronization
+- Dual-mode deployment: decoupled with Vite reverse proxy or bundled as an ASGI static monolith
 
-## 🌟 Executive Overview
-
-Most traditional solar management systems rely on disconnected CRUD forms with mock states. **SunPower ERP** connects the entire operational lifecycle through a strict relational database (SQLite + SQLAlchemy 2.0 ORM + FastAPI):
-
-* **No Disconnected Mock Forms**: When a homeowner pays an advance, the backend automatically reserves and deducts exact hardware components (panels, inverters, cables, mounting stands) from live stock.
-* **Gatekeeper Protocol**: Sales personnel cannot create formal customer quotations until a certified field technician completes and approves the roof structural & shadow-angle survey.
-* **Deterministic Warranty Engine**: Dispatched serial numbers are tracked by hardware category; on delivery confirmation, the backend auto-calculates 20-Year (Modules) or 2-Year (Inverters/Batteries) warranties without manual date entry.
-* **Zero-Click Helpdesk Triage**: Customer complaints with serial numbers automatically check live warranty expiration, auto-billing ₹0 for active warranties or generating invoice amounts for expired units.
-* **True Job Costing**: Every project's gross profit is computed dynamically from collected revenues, actual hardware procurement costs, and logged technician labor hours.
-
----
-
-## 🔄 System Architecture & Lifecycle Pipeline
+## Architecture
 
 ```text
- 1. PUBLIC INQUIRY          2. SITE SURVEY              3. SURVEY GATEKEEPER
- ┌───────────────────┐      ┌───────────────────┐      ┌─────────────────────────┐
- │ Savings Calculator│ ───► │ Measure Azimuth,  │ ───► │ Technician Review       │
- │ Lead Capture Form │      │ Tilt & Shade Area │      │ (HTTP 400 Lock Enforced)│
- └───────────────────┘      └───────────────────┘      └─────────────────────────┘
-                                                                    │
-                                                                    ▼
- 6. ORDER & ADVANCE         5. CUSTOMER APPROVAL        4. QUOTATION & BOM
- ┌───────────────────┐      ┌───────────────────┐      ┌─────────────────────────┐
- │ 20% Advance Paid  │ ◄─── │ Homeowner Review  │ ◄─── │ Auto-Calculate 1-5 kW   │
- │ GST Invoice Gen   │      │ Portal Sign-off   │      │ On/Off-Grid Hardware    │
- └───────────────────┘      └───────────────────┘      └─────────────────────────┘
+React / Vite Frontend :5173 / :8000
           │
+          │ REST / JSON / Bearer JWT / JSON-RPC
           ▼
- 7. INVENTORY DEDUCTION     8. WAREHOUSE DISPATCH       9. FIELD INSTALLATION
- ┌───────────────────┐      ┌───────────────────┐      ┌─────────────────────────┐
- │ BoM Explosion     │ ───► │ Camera QR Scanner │ ───► │ Power Gen kW Test       │
- │ Stock Deductions  │      │ Serial Binding    │      │ Canvas Digital Signature│
- └───────────────────┘      └───────────────────┘      └─────────────────────────┘
-                                                                    │
-                                                                    ▼
-12. EXECUTIVE BI           11. SERVICE HELPDESK        10. WARRANTY REGISTRY
- ┌───────────────────┐      ┌───────────────────┐      ┌─────────────────────────┐
- │ Dynamic Project   │ ◄─── │ Zero-Click Triage │ ◄─── │ Auto-Start Today        │
- │ Profit & Loss     │      │ ₹0 vs Auto-Billed │      │ 20-Yr Module / 2-Yr Inv │
- └───────────────────┘      └───────────────────┘      └─────────────────────────┘
+FastAPI ASGI Backend (Python 3.13) :8000
+   ├── Redis 8.x :6379 (Session cache, OTP expiry, token revocations)
+   └── SQLAlchemy 2.0 (asyncpg)
+          ▼
+PostgreSQL 16 :5432 (sims_db)
 ```
 
----
+The frontend never connects directly to the database. All data mutations occur via authenticated RESTful endpoints or the JSON-RPC bridge. Financial ledger updates, stock reservation adjustments, and warranty records are strictly enforced through transactional database operations.
 
-## ⚡ The 5 Mandatory Backend Automation Rules
-
-FastAPI enforces five core business rules backed by foreign-key relational integrity:
-
-### 1. Survey Gatekeeper Rule (`POST /api/quotations`)
-* **Behavior:** Returns `HTTP 400 Bad Request` if `site_surveys.is_approved` is `False` for the requested lead.
-* **Business Value:** Prevents sales representatives from promising system delivery before a technician certifies roof load capacity and shadow obstruction.
-
-### 2. Automatic BoM Explosion & Stock Deduction (`POST /api/orders/{id}/pay`)
-* **Behavior:** When an advance payment is registered, the system resolves the exact `bom_items` for that `capacity_kw` + `system_type`.
-* **Action:** Deducts exact quantities from `inventory_items.stock_qty`, flags red reorder alerts for items at or below `reorder_threshold`, and automatically schedules a field installation task.
-
-### 3. Dispatch-to-Warranty Automation (`POST /api/warehouse/delivery-confirm/{serial}`)
-* **Behavior:** Binds serial numbers to customer orders during warehouse packing.
-* **Action:** Upon delivery confirmation, automatically computes:
-  * **20 Years** linear output warranty for `PANEL` units.
-  * **2 Years** comprehensive warranty for `INVERTER`, `BATTERY`, and `CHARGE_CONTROLLER`.
-
-### 4. Zero-Click Helpdesk Warranty Triage (`POST /api/tickets`)
-* **Behavior:** Instantly evaluates `today <= serial_units.warranty_expiry_date`:
-  * **Active:** Sets `is_under_warranty = True` and auto-bills **₹0** (free component repair/replacement).
-  * **Expired:** Sets `is_under_warranty = False` and auto-bills invoice for `parts_cost_inr + labor_cost_inr`.
-
-### 5. Dynamic Project-Wise P&L Formula (`GET /api/analytics`)
-* **Behavior:** Dynamically computes profitability per project from real relational records:
-  $$\text{Project Profit} = \text{Collected Revenue} - \sum(\text{BoM Component Procurement Costs}) - (\text{Field Hours Logged} \times \text{Technician Hourly Rate})$$
-
----
-
-## 🧭 13 Standalone Modules Directory
-
-| Module | Core Purpose & Technical Highlights | Key Entities |
-|---|---|---|
-| **1. Public Website** | Consumer landing page with On-Grid vs Off-Grid comparison, government subsidy guide, and interactive monthly bill slider calculating recommended kW, savings, and payback period. | `CustomerLead` |
-| **2. Authentication** | JWT-style role claim simulation with persistent top-bar **1-Click Persona Switcher** and full RBAC security matrix. | `User` |
-| **3. Customer CRM & Portal** | Pipeline tracking across 7 stages (`NEW` to `INSTALLED`) + **Homeowner Self-Service Portal** to approve quotes and view active warranties. | `CustomerLead` |
-| **4. Site Survey Management** | Technician measurement of Azimuth, tilt angle, shadow-free area (sq.ft), cable distance (m), roof photos, and survey approval. | `SiteSurvey`, `User` |
-| **5. Quotation Engine** | 1kW to 5kW On-Grid/Off-Grid packages, dynamic BoM calculation, subsidy credit calculation, and downloadable **Quotation PDF**. | `Quotation`, `BOMTemplate` |
-| **6. Order & Payments** | Advance/full payment recording, automatic BoM stock deduction, subsidy status tracking, and **GST Tax Invoice PDF**. | `Order`, `Quotation` |
-| **7. Inventory & BoM** | Real-time stock across 6 hardware categories, reorder threshold alerts, and turnkey BoM kit configurators. | `InventoryItem`, `BOMItem` |
-| **8. Dispatch & Serials** | Camera QR/Barcode scanning (`html5-qrcode`) or manual serial input, customer mapping, and delivery confirmation. | `SerialUnit`, `Order` |
-| **9. Field Installation** | Field technician workbench, kW power test verification, and **HTML5 Canvas Digital Signature Pad** (`react-signature-canvas`). | `Installation`, `User` |
-| **10. Warranty Registry** | Master hardware serial registry with live active vs. expired status pills and official **Warranty Certificate Modal**. | `SerialUnit` |
-| **11. Service Helpdesk** | Instant serial lookup with **Bold Green (₹0)** or **Bold Red (Auto-Billed)** banners, solar fault code catalog, and technician dispatch. | `ServiceTicket` |
-| **12. Field Crew & Attendance** | Roster of 15 certified technicians, hourly rates (₹340 to ₹450/hr), attendance toggles (`PRESENT`, `ABSENT`, `ON_LEAVE`), and payroll estimates. | `User` |
-| **13. Financial BI & Analytics** | Executive dashboard with total revenue, expenses, net profit, pending receivables, stock valuation, Recharts graphs, and **CSV Report Export**. | Real-Time DB Aggregation |
-
----
-
-## 🗄️ Relational Database Schema
-
-All 10 database tables enforce foreign-key cascading and relational integrity:
-
-```
-┌─────────────────────────────────┐
-│              users              │
-├─────────────────────────────────┤
-│ id (PK)                         │
-│ name, email, password_hash      │
-│ role (ADMIN, SALES, TECH, etc.) │
-│ hourly_rate, attendance_status  │
-└────────────────┬────────────────┘
-                 │
-       ┌─────────┴─────────┐───────────────────┐
-       ▼                   ▼                   ▼
-┌──────────────┐   ┌──────────────┐   ┌─────────────────┐
-│ site_surveys │   │installations │   │ service_tickets │
-└──────┬───────┘   └──────┬───────┘   └────────┬────────┘
-       │                  │                    │
-       ▼                  │                    ▼
-┌──────────────────┐      │           ┌─────────────────┐
-│ customers_leads  │◄─────┼───────────┤   serial_units  │
-└──────┬───────────┘      │           │ (serial_number) │
-       │                  │           └────────┬────────┘
-       ▼                  ▼                    ▲
-┌──────────────┐   ┌──────────────┐            │
-│  quotations  ├──►│    orders    ├────────────┘
-└──────────────┘   └──────────────┘
-```
-
----
-
-## 🎨 Interactive UI & Hardware Capabilities
-
-* **1-Click Persona Switcher**: Persistent top bar allows instant evaluation from any role (`Customer`, `Sales`, `Warehouse`, `Technician`, `Support`, `Admin`).
-* **Live Camera QR/Barcode Scanner**: Utilizes `html5-qrcode` to scan product serial barcodes directly from smartphone or webcam video streams.
-* **Canvas Digital Signature**: Homeowners inspect completed installations and sign off directly on an HTML5 canvas pad before handover.
-* **Client-Side PDF Generation**: Generates clean, branded PDF estimates and GST invoices via `jspdf` and `jspdf-autotable`.
-* **Recharts Financial Visualizations**: Visualizes project revenue vs. hardware costs vs. technician labor in real time.
-
----
-
-## 🧪 Pre-Seeded Demo Scenarios
-
-The system auto-seeds realistic Indian solar data on first boot (`backend/seed.py`):
-
-1. **Project 1: Arvind Sharma (Completed 18 Months Ago - Live Warranty Triage Ready)**
-   - 3 kW On-Grid system in Noida.
-   - Fully installed, tested, and commissioned with customer digital signature.
-   - **Inverter (`INV-2025-0518`)**: Active 2-Year warranty (expires in 6 months). Triaging in Helpdesk produces a **₹0 Free Repair Claim**.
-   - **Old Battery (`BAT-2023-0104`)**: Expired 10 months ago. Triaging in Helpdesk produces an **Auto-Billed Customer Invoice**.
-2. **Project 2: Sunita Rao (In Active Field Installation)**
-   - 5 kW On-Grid villa project in Whitefield, Bengaluru.
-   - Survey approved, quote approved, 50% advance recorded, BoM deducted from warehouse.
-   - Field technician currently has job in progress at 60%.
-3. **Project 3: Rajesh Mehta (Sales Pipeline / Survey Gatekeeper Test)**
-   - 3 kW system in Model Town, Jalandhar.
-   - Survey scheduled but **NOT yet approved**.
-   - Attempting to generate a quote triggers the **Survey Gatekeeper Rule (HTTP 400)**. Approving the survey unlocks quoting.
-
----
-
-## 📡 REST API Endpoints Reference
-
-<details>
-<summary><b>Click to expand full API endpoint table</b></summary>
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/health` | System status and UTC timestamp. |
-| `GET` | `/api/roles` | Available persona profiles for 1-click switching. |
-| `GET` | `/api/leads` | Retrieve all customer leads. |
-| `POST` | `/api/leads` | Create lead and auto-schedule site survey. |
-| `PUT` | `/api/leads/{id}` | Update customer lead notes or pipeline stage. |
-| `GET` | `/api/surveys` | List all scheduled rooftop surveys. |
-| `POST` | `/api/surveys/{id}/approve` | Approve survey (unlocks quoting for that lead). |
-| `GET` | `/api/inventory` | Retrieve stock levels across all 6 hardware categories. |
-| `GET` | `/api/bom/calculate` | Compute live BoM cost for a `(kW, system_type)` pair. |
-| `GET` | `/api/quotations` | List issued quotations. |
-| `POST` | `/api/quotations` | Create quotation (**Enforces Rule 1 Gatekeeper**). |
-| `POST` | `/api/quotations/{id}/approve` | Mark quote approved by customer; creates Order. |
-| `GET` | `/api/orders` | Retrieve all orders and payment states. |
-| `POST` | `/api/orders/{id}/pay` | Record payment (**Enforces Rule 2 BoM Explosion**). |
-| `PUT` | `/api/orders/{id}/subsidy` | Update government subsidy DBT stage. |
-| `GET` | `/api/warehouse/serials` | Master registry of hardware serial units. |
-| `POST` | `/api/warehouse/dispatch` | Register and map serial number to customer order. |
-| `POST` | `/api/warehouse/delivery-confirm/{serial}` | Confirm delivery (**Enforces Rule 3 Warranty Auto-Start**). |
-| `GET` | `/api/installations` | List active field installation jobs. |
-| `POST` | `/api/installations/{id}/complete` | Complete installation with canvas signature. |
-| `GET` | `/api/tickets` | List helpdesk maintenance tickets. |
-| `POST` | `/api/tickets` | Create service ticket (**Enforces Rule 4 Zero-Click Triage**). |
-| `PUT` | `/api/tickets/{id}` | Update ticket or mark resolved. |
-| `GET` | `/api/employees` | List 15 certified technicians and attendance logs. |
-| `PUT` | `/api/employees/{id}/attendance` | Toggle attendance status (`PRESENT`, `ABSENT`, `ON_LEAVE`). |
-| `GET` | `/api/analytics` | Executive BI & itemized dynamic project P&L (**Enforces Rule 5**). |
-
-</details>
-
----
-
-## 📁 Directory Structure
+## Repository Layout
 
 ```text
-solarmanagement-LPUxOdoo/
-├── backend/
-│   ├── database.py              # SQLite connection & sessionmaker
-│   ├── main.py                  # FastAPI server & business rule endpoints
-│   ├── models.py                # 10 SQLAlchemy relational ORM models
-│   ├── schemas.py               # Pydantic request/response schemas
-│   ├── seed.py                  # Auto-seeder with Indian solar dataset
-│   └── test_backend.py          # Automated test suite (5 rules verified)
-│
-├── frontend/
+sunpower-solutions/
+├── README.md
+├── app/                           # Root FastAPI application
+│   ├── api/
+│   │   ├── deps.py                # OAuth2 & RBAC dependencies
+│   │   └── v1/                    # API v1 route controllers (14 modules)
+│   ├── core/                      # Config, async database, Redis, security, exceptions
+│   ├── models/                    # Declarative SQLAlchemy 2.0 models
+│   ├── schemas/                   # Pydantic v2 validation contracts
+│   ├── services/                  # Business logic & calculation engines
+│   └── main.py                    # FastAPI ASGI application entrypoint
+├── backend/                       # Decoupled backend mirror
+├── frontend/                      # React 18 + Vite frontend
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── RoleSwitcher.jsx # 1-Click Role Switcher top bar
-│   │   │   └── Sidebar.jsx      # 13-Module navigation sidebar
-│   │   ├── utils/
-│   │   │   └── pdfExport.js     # Quotation & GST Invoice PDF generator
-│   │   ├── views/
-│   │   │   ├── PublicWebsiteView.jsx
-│   │   │   ├── AuthView.jsx
-│   │   │   ├── CustomerManagementView.jsx
-│   │   │   ├── SiteSurveyView.jsx
-│   │   │   ├── QuotationView.jsx
-│   │   │   ├── OrderPaymentView.jsx
-│   │   │   ├── InventoryView.jsx
-│   │   │   ├── DispatchView.jsx
-│   │   │   ├── InstallationView.jsx
-│   │   │   ├── WarrantyView.jsx
-│   │   │   ├── HelpdeskView.jsx
-│   │   │   ├── EmployeeView.jsx
-│   │   │   └── AnalyticsView.jsx
-│   │   ├── App.jsx              # Main state coordinator
-│   │   ├── api.js               # Centralized FastAPI client
-│   │   ├── index.css            # Tailwind & typography styling
-│   │   └── main.jsx             # React entry point
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── vite.config.js
-│
-└── README.md
+│   │   ├── components/            # Sidebar, UI controls, role switcher
+│   │   ├── views/                 # 14 ERP views (CRM, Survey, Quotes, Orders, etc.)
+│   │   ├── utils/                 # Calculations, PDF export, synthetic fallbacks
+│   │   ├── api.js                 # Unified API client & endpoint contracts
+│   │   └── App.jsx                # Application shell & module state
+│   ├── vite.config.js             # Vite proxy configuration
+│   └── package.json
+├── web/                           # React 19 + TypeScript modern UI build & screenshots
+│   ├── src/
+│   ├── dist/                      # Compiled production assets
+│   └── package.json
+├── alembic/                       # Database schema migrations
+├── seed_data.py                   # Idempotent demo database seeder
+├── requirements.txt               # Python package dependencies
+└── .env                           # Root environment configuration
 ```
 
----
+## Requirements
 
-## 🚀 Quickstart & Installation
+- Python 3.13 or newer
+- Node.js 20 or newer
+- npm
+- PostgreSQL 16 or newer (via Homebrew on macOS or Docker)
+- Redis 7 or newer (via Homebrew on macOS or Docker)
 
-### Prerequisites
-* **Python 3.10+**
-* **Node.js 18+ & npm**
+## Local Setup
 
-### 1. Backend Setup (FastAPI)
+### 1. Start PostgreSQL, Redis, and the Backend
+
+Start PostgreSQL and Redis services (using Homebrew on macOS):
+
 ```bash
-# Navigate to backend folder
-cd backend
-
-# Install Python dependencies
-pip install fastapi uvicorn sqlalchemy pydantic python-multipart
-
-# Initialize database & seed demo dataset
-python3 seed.py
-
-# Run unit tests
-python3 test_backend.py
-
-# Start FastAPI server
-python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+brew services start postgresql@16
+brew services start redis
 ```
-* **Swagger API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
-* **API Health Endpoint**: [http://localhost:8000/api/health](http://localhost:8000/api/health)
 
-### 2. Frontend Setup (React 18 + Vite)
+Create the PostgreSQL database and user:
+
 ```bash
-# In a new terminal window, navigate to frontend folder
+psql postgres -c "CREATE DATABASE sims_db;"
+psql postgres -c "CREATE USER postgres WITH PASSWORD 'postgres';"
+psql postgres -c "GRANT ALL PRIVILEGES ON DATABASE sims_db TO postgres;"
+psql postgres -c "ALTER USER postgres WITH SUPERUSER;"
+```
+
+Install backend dependencies and seed the database:
+
+```bash
+cd /Users/priyanshuraj/Downloads/sunpower-solutions
+pip install -r requirements.txt
+python3 -c "import asyncio; from app.core.database import engine, Base; from app.models import *; asyncio.run(engine.begin().then(lambda c: c.run_sync(Base.metadata.create_all)))"
+python3 seed_data.py
+```
+
+Start the FastAPI application:
+
+```bash
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+The API will be available at `http://localhost:8000`, with interactive Swagger documentation at `http://localhost:8000/docs`.
+
+### 2. Start the Frontend
+
+Open a second terminal window:
+
+```bash
+cd /Users/priyanshuraj/Downloads/sunpower-solutions/frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
+Vite automatically proxies all `/api`, `/v1`, and `/health` requests to the backend at `http://127.0.0.1:8000`.
+
+Alternatively, opening `http://localhost:8000/` in your browser directly serves the compiled single-page application from the ASGI backend without needing a separate frontend process.
+
+### 3. Demo Credentials
+
+The database seeder creates default accounts for every role:
+
+| Role | Username / Email | Password | Primary Permissions |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `admin@sims.com` | `Admin@12345` | Universal system access, P&L analytics, user governance |
+| **Sales Executive** | `sales@sims.com` | `Sales@12345` | Leads, CRM, survey reviews, quotation generation |
+| **Lead Installation Tech** | `tech@sims.com` | `Tech@12345` | Assigned surveys, electrical test uploads, customer handover |
+| **Demo Accounts** | `demo.001@sunpower.demo` | `Demo@12345` | Standard field and warehouse operational testing |
+
+## Services and Documentation
+
+| Service | URL |
+| :--- | :--- |
+| Frontend Dev Server | `http://localhost:5173` |
+| Unified Backend & Production UI | `http://localhost:8000` |
+| Swagger UI (OpenAPI Interactive Docs) | `http://localhost:8000/docs` |
+| ReDoc API Documentation | `http://localhost:8000/redoc` |
+| OpenAPI Schema (JSON) | `http://localhost:8000/openapi.json` |
+| System Health Probe | `http://localhost:8000/health` |
+| PostgreSQL Database | `localhost:5432` (`sims_db`) |
+| Redis In-Memory Store | `localhost:6379` |
+
+## API
+
+Base URL:
+
+```text
+http://localhost:8000/api/v1
+```
+
+Protected requests use:
+
+```http
+Authorization: Bearer <accessToken>
+Content-Type: application/json
+```
+
+Successful responses adhere to the standard generic envelope:
+
+```json
+{
+  "success": true,
+  "data": {},
+  "message": "Operation successful",
+  "timestamp": "2026-11-22T04:30:00.000000+00:00"
+}
+```
+
+Error responses adhere to:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Role 'customer' is not authorized to access this resource.",
+    "details": null
+  },
+  "timestamp": "2026-11-22T04:30:00.000000+00:00"
+}
+```
+
+### Authentication & RBAC
+
+| Method | Route | Access | Purpose |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/auth/login` | Public | Authenticate with email/phone & password |
+| `POST` | `/auth/register` | Public | Customer self-registration |
+| `POST` | `/auth/request-otp` | Public | Send 6-digit OTP to mobile |
+| `POST` | `/auth/verify-otp` | Public | Verify OTP and issue JWT session |
+| `POST` | `/auth/google` | Public | Verify Google Identity Services ID token |
+| `GET` | `/auth/google/config` | Public | Fetch client configuration for Google Sign-In |
+| `POST` | `/auth/refresh` | Public | Refresh expired access token |
+| `GET` | `/auth/me` | Required | Retrieve current authenticated user profile |
+| `POST` | `/v1/otp/generate` | Public | Generate stateless AES-256-CBC OTP token |
+| `POST` | `/v1/otp/verify` | Public | Validate stateless offline OTP token |
+
+### Public & Solar Calculator
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `POST` | `/public/calculator/evaluate` | Calculate system sizing, generation, cost, subsidy & 25-yr ROI |
+| `GET` | `/public/subsidy-info` | Fetch PM Surya Ghar Muft Bijli Yojana central subsidy policy brackets |
+| `GET` | `/public/products-showcase` | List curated standard solar packages for public display |
+| `POST` | `/public/enquiry` | Capture homeowner lead intake |
+
+### Customer Management & CRM
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/customers` | List customer accounts and KYC verification status |
+| `GET` | `/customers/:id` | Get customer details (customers restricted to own record) |
+| `POST` | `/customers` | Create new customer account |
+| `PUT` | `/customers/:id` | Update customer address and electricity meter details |
+| `GET` | `/leads` | List sales leads with pipeline status |
+| `PUT` | `/leads/:id` | Update lead qualification or assign sales rep |
+
+### Site Survey & Feasibility
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `POST` | `/surveys/schedule` | Schedule rooftop technical survey |
+| `GET` | `/surveys/assigned` | List surveys assigned to current technician or rep |
+| `POST` | `/surveys/:id/submit-report` | Submit tilt, azimuth, shadow-free area & cable distance measurements |
+| `PUT` | `/surveys/:id/approve` | Engineer approval of structural and electrical feasibility |
+
+### Quotations & Dynamic BoM
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `POST` | `/quotations/generate` | Compute dynamic BoM snapshot, tariff calculations, and turnkey quote |
+| `GET` | `/quotations` | List all quotations (filtered for customer access) |
+| `GET` | `/quotations/:id` | Get quotation details and itemized BoM lines |
+| `POST` | `/quotations/:id/approve` | Customer acceptance / lock quotation for order conversion |
+
+### Orders & Milestone Payments
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `POST` | `/orders/create-from-quote` | Convert approved quotation to sales order and auto-generate 3 milestones |
+| `GET` | `/orders` | List sales orders and balance due |
+| `GET` | `/orders/:id` | Get sales order details |
+| `PUT` | `/orders/:id/status` | Advance order state machine |
+| `GET` | `/payments/order/:order_id/milestones` | Fetch 3 payment milestones (Advance, Pre-Dispatch, Commissioning) |
+| `POST` | `/payments/create-order` | Initialize Razorpay / UPI checkout order for a milestone |
+| `POST` | `/payments/simulate-success/:milestone_id` | Confirm milestone payment, update order balance & issue GST tax invoice |
+| `PUT` | `/payments/milestones/:id` | Update milestone payment percentage or schedule |
+
+### Inventory & Warehouses
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/inventory/products` | List warehouse product catalog and specifications |
+| `POST` | `/inventory/products` | Create SKU (panels, inverters, cables, structures, BOS) |
+| `GET` | `/inventory/products/:id` | Get product details |
+| `PUT` | `/inventory/products/:id` | Update SKU specification or pricing |
+| `DELETE` | `/inventory/products/:id` | Archive SKU |
+| `GET` | `/inventory/low-stock-alerts` | Identify stock balances below safety threshold |
+| `GET` | `/inventory/warehouses` | List operational regional warehouses |
+| `PUT` | `/inventory/:product_id/stock` | Update stock quantity on hand and reserved buffer |
+| `POST` | `/inventory/:product_id/restock` | Record warehouse receiving batch |
+
+### Dispatch & Serial Tracking
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/dispatch/serials` | List serialized components mapped to an order |
+| `POST` | `/dispatch/scan-serial` | Scan barcode to bind panel/inverter serial number to an order |
+| `POST` | `/dispatch/confirm-shipment/:order_id` | Verify all required serials and dispatch shipment |
+
+### Installations & Commissioning
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/installations` | List installation jobs |
+| `GET` | `/installations/assigned` | List jobs assigned to current lead technician |
+| `POST` | `/installations/:id/progress-step` | Update checklist (mounting, panels, inverter wiring, earthing pits) |
+| `POST` | `/installations/:id/test-results` | Record electrical test parameters (VOC, ISC, earth resistance) |
+| `POST` | `/installations/:id/handover` | Capture customer digital signature and commission plant |
+
+### Warranties & Service Helpdesk
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/warranties/my-warranties` | List active digital warranties for current user |
+| `GET` | `/warranties/verify/:serial_number` | Public QR code verification of component warranty status |
+| `GET` | `/maintenance/tickets` | List maintenance and service tickets |
+| `GET` | `/maintenance/fault-codes` | Directory of solar inverter and grid fault codes |
+| `POST` | `/maintenance/tickets` | Open service ticket with priority level and fault categorization |
+| `PUT` | `/maintenance/tickets/:id/resolve` | Technician resolution log, parts replacement, and hours worked |
+| `POST` | `/maintenance/tickets/:id/confirm` | Customer digital sign-off and ticket closure |
+
+### Crew Management & Analytics
+
+| Method | Route | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/employees` | List employee directory, roles, and status |
+| `POST` | `/employees/attendance/check-in` | Geo-tagged check-in with latitude and longitude |
+| `GET` | `/employees/attendance` | Audit crew daily attendance logs |
+| `GET` | `/analytics/dashboard` | Executive P&L, contract revenue, installed kW, and subsidy receivables |
+| `POST` | `/jsonrpc` | Odoo CRM JSON-RPC 2.0 bridge for `crm.lead` ingestion |
+
+## Solar EPC & Safety Rules
+
+- All primary keys are immutable UUIDs.
+- Product SKUs and Serial Barcodes are globally unique.
+- Serialized equipment (solar panels, inverters) requires warehouse barcode scanning prior to dispatch.
+- Milestone payments split net payable contract amount into 10% Advance Booking, 70% Pre-Dispatch, and 20% Commissioning.
+- Pre-dispatch payment milestone must be satisfied before warehouse status transitions to `READY_FOR_DISPATCH`.
+- Commissioning requires electrical test verification (VOC, ISC, and Earth Resistance < 5 Ohms) followed by customer signature.
+- Plant commissioning atomically activates 25-year solar module performance warranties and 5-to-10-year inverter warranties.
+- Validated milestone payments automatically generate legal GST Tax Invoices (`INV-SIMS-XXXXX`) calculating CGST and SGST splits.
+- Financial P&L metrics dynamically compute COGS (quotation hardware baseline + direct labor) against total revenue including subsidy.
+
+## Frontend Screens
+
+The frontend supports navigation across these core modules:
+
+```text
+/#/public          # Public Solar Landing Page & Showcase
+/#/calculator      # Rooftop Sizing & PM Surya Ghar Subsidy Calculator
+/#/enquiry         # Lead Intake & Consultation Booking
+/#/signin          # Dual Login (Email/Password, Mobile OTP, Google Sign-In)
+/#/signup          # Customer Self-Registration
+/#/crm             # Customer CRM & Pipeline Management
+/#/surveys         # Rooftop Engineering Feasibility & Shading Analysis
+/#/quotations      # Dynamic BoM Generation & Turnkey Proposals
+/#/orders          # Orders & 3-Stage Milestone Payment Collection
+/#/inventory       # Warehouse Stock, BoM Templates & Low-Stock Alerts
+/#/dispatch        # Barcode Scanning & Hardware Serial Tracking
+/#/installations   # Field Crew Checklists, Electrical Tests & Commissioning
+/#/warranty        # Digital Warranty Registry & Public QR Verification
+/#/helpdesk        # Service Tickets, Inverter Fault Codes & RMA Dispatch
+/#/employees       # Employee Directory & Geo-Tagged Attendance
+/#/analytics       # Executive Dashboard & Project-Wise Dynamic P&L
+/#/admin           # Super Admin Console (User, Role & System Governance)
+```
+
+## Development Commands
+
+### Backend
+
+```bash
+# Start development server with hot-reload
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Run database table creation
+python3 -c "import asyncio; from app.core.database import engine, Base; from app.models import *; asyncio.run(engine.begin().then(lambda c: c.run_sync(Base.metadata.create_all)))"
+
+# Seed repeatable demo records
+python3 seed_data.py
+
+# Run Alembic migrations
+python3 -m alembic upgrade head
+
+# Run automated tests
+pytest
+```
+
+### Frontend
+
+```bash
 cd frontend
 
-# Install npm packages
+# Install npm dependencies
 npm install
 
 # Start Vite development server
 npm run dev
+
+# Compile production bundle
+npm run build
+
+# Preview production build locally
+npm run preview
 ```
-* **Web Application**: [http://localhost:5173](http://localhost:5173)
 
----
+## Environment Variables
 
-## 🧪 Automated Test Suite
+Backend `.env`:
 
-Run the backend unit test suite to verify the business automation rules:
+```env
+# Server & Environment
+PROJECT_NAME="Solar Installation Management System"
+ENVIRONMENT="development"
+DEBUG=True
+API_V1_STR=/api/v1
+
+# PostgreSQL Database
+POSTGRES_SERVER=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=sims_db
+
+# Redis In-Memory Store
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# JWT Authentication
+SECRET_KEY=sims_super_secret_jwt_key_2026_production_grade_random_seed
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+REFRESH_TOKEN_EXPIRE_DAYS=7
+OTP_MAX_ATTEMPTS=5
+
+# Payment Gateway (Razorpay Sandbox)
+RAZORPAY_KEY_ID=rzp_test_U2zPS64W6PWk5v
+RAZORPAY_KEY_SECRET=RNT24DdAZPKPJi3WgsyktYqa
+
+# Google Identity Services
+GOOGLE_CLIENT_ID=715627477785-j4267gp42b9qr8qusng7h864o6tgjq61.apps.googleusercontent.com
+
+# CORS Allowed Origins
+BACKEND_CORS_ORIGINS=["http://localhost:5173","http://localhost:3000","http://localhost:8000","http://127.0.0.1:5173","http://127.0.0.1:3000","http://127.0.0.1:8000"]
+```
+
+Frontend `.env` (`frontend/.env`):
+
+```env
+VITE_API_BASE_URL=http://localhost:8000
+VITE_API_V1=/api/v1
+VITE_BACKEND_PORT=8000
+VITE_FRONTEND_PORT=5173
+VITE_RAZORPAY_KEY_ID=rzp_test_U2zPS64W6PWk5v
+VITE_GOOGLE_CLIENT_ID=715627477785-j4267gp42b9qr8qusng7h864o6tgjq61.apps.googleusercontent.com
+```
+
+## Troubleshooting
+
+### PostgreSQL connection refused (`ConnectionRefusedError: [Errno 61]`)
+
+Confirm the PostgreSQL service is active on port `5432`:
+
 ```bash
-cd backend
-python3 test_backend.py
+brew services list | grep postgresql
+pg_isready -h localhost -p 5432
 ```
 
-**Expected Output:**
-```text
-.....
-----------------------------------------------------------------------
-Ran 5 tests in 0.059s
+If stopped, restart the service:
 
-OK
+```bash
+brew services restart postgresql@16
 ```
-Tests automatically assert:
-1. `test_01_survey_gatekeeper_rule`: Rejects unapproved surveys with HTTP 400, accepts once approved.
-2. `test_02_bom_explosion_and_stock_reservation_on_payment`: Deducts inventory stock and queues jobs.
-3. `test_03_dispatch_to_warranty_automation`: Confirms automated 20-Year (Panel) and 2-Year (Inverter) dates.
-4. `test_04_zero_click_warranty_triage`: Verifies ₹0 active repair vs auto-billed invoice calculation.
-5. `test_05_dynamic_project_pnl_analytics`: Mathematical verification of project profit formula.
+
+### Missing Python dependencies (`greenlet`, `pydantic-settings`, `email-validator`)
+
+Install all required packages from `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+pip install "pydantic[email]" email-validator greenlet pydantic-settings
+```
+
+### Role authorization error on Analytics page (`Role 'install_tech' is not authorized`)
+
+Ensure your user account has internal staff permissions. The analytics endpoint `/api/v1/analytics/dashboard` allows all staff roles (`SUPER_ADMIN`, `SALES_EXEC`, `INSTALL_TECH`, `SURVEY_TECH`, `WAREHOUSE_MGR`). For full administrator privileges, sign in using `admin@sims.com` / `Admin@12345`.
+
+### Frontend proxy timeout or network errors
+
+Verify both backend and frontend ports:
+- Backend must be listening on port `8000`: `lsof -i :8000`
+- Frontend Vite dev server runs on port `5173`: `lsof -i :5173`
+- Ensure `frontend/vite.config.js` contains the `/api`, `/v1`, and `/health` proxy rules targeting `http://127.0.0.1:8000`.
+
+## License
+
+This project was developed as an enterprise solution for SunPower Solutions.
