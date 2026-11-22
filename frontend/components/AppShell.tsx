@@ -20,37 +20,37 @@ interface AppShellProps {
   children: React.ReactNode;
 }
 
-export function getRoleNavItems(role: UserRole): { id: ScreenId; label: string }[] {
+export function getRoleNavItems(role: UserRole): { id: ScreenId; label: string; shortLabel?: string }[] {
   switch (role) {
     case 'Customer':
       return [
-        { id: 'portal-dashboard', label: 'My Solar' },
-        { id: 'quotation-engine', label: 'My Proposal' },
-        { id: 'billing-payments', label: 'Invoices & Pay' },
-        { id: 'service-warranty', label: 'Warranty & Help' },
+        { id: 'portal-dashboard', label: 'My Solar', shortLabel: 'My Solar' },
+        { id: 'quotation-engine', label: 'My Proposal', shortLabel: 'Proposal' },
+        { id: 'billing-payments', label: 'Invoices & Pay', shortLabel: 'Invoices' },
+        { id: 'service-warranty', label: 'Warranty & Help', shortLabel: 'Warranty' },
       ];
     case 'Engineer':
     case 'Technician':
       return [
-        { id: 'site-survey-engineering', label: 'Site Feasibility' },
-        { id: 'installation-dispatch', label: 'Installations' },
-        { id: 'service-warranty', label: 'Service Tickets' },
+        { id: 'site-survey-engineering', label: 'Site Feasibility', shortLabel: 'Feasibility' },
+        { id: 'installation-dispatch', label: 'Installations', shortLabel: 'Install' },
+        { id: 'service-warranty', label: 'Service Tickets', shortLabel: 'Tickets' },
       ];
     case 'Installer':
       return [
-        { id: 'installation-dispatch', label: 'Dispatch & Install' },
-        { id: 'service-warranty', label: 'Maintenance' },
+        { id: 'installation-dispatch', label: 'Dispatch & Install', shortLabel: 'Dispatch' },
+        { id: 'service-warranty', label: 'Maintenance', shortLabel: 'Service' },
       ];
     case 'Admin':
     default:
       return [
-        { id: 'operations-analytics', label: 'Analytics & Ops' },
-        { id: 'portal-dashboard', label: 'Fleet Overview' },
-        { id: 'quotation-engine', label: 'Quotations' },
-        { id: 'site-survey-engineering', label: 'Site Survey' },
-        { id: 'installation-dispatch', label: 'Dispatch' },
-        { id: 'billing-payments', label: 'Billing & Pay' },
-        { id: 'service-warranty', label: 'Service & SLA' },
+        { id: 'operations-analytics', label: 'Analytics & Ops', shortLabel: 'Analytics' },
+        { id: 'portal-dashboard', label: 'Fleet Overview', shortLabel: 'Fleet' },
+        { id: 'quotation-engine', label: 'Quotations', shortLabel: 'Quotes' },
+        { id: 'site-survey-engineering', label: 'Site Survey', shortLabel: 'Surveys' },
+        { id: 'installation-dispatch', label: 'Dispatch', shortLabel: 'Dispatch' },
+        { id: 'billing-payments', label: 'Billing & Pay', shortLabel: 'Billing' },
+        { id: 'service-warranty', label: 'Service & SLA', shortLabel: 'Service' },
       ];
   }
 }
@@ -122,24 +122,24 @@ export function AppShell({
         suppressHydrationWarning
       >
         <div
-          className="h-20 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4"
+          className="h-20 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 xl:gap-4"
           suppressHydrationWarning
         >
           {/* Left Cluster: Brand Wordmark + Primary Workspace Navigation */}
-          <div className="flex items-center gap-4 xl:gap-8 min-w-0">
+          <div className="flex items-center gap-2 xl:gap-4 min-w-0 flex-1 overflow-hidden">
             {/* Zone 1: Brand Wordmark */}
             <button
               type="button"
               onClick={() =>
                 handleNavClick(isAuthenticated ? 'portal-dashboard' : 'auth')
               }
-              className="flex items-center gap-2 text-left whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#002e03] rounded-lg"
+              className="flex items-center gap-2 text-left whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#002e03] rounded-lg mr-1 xl:mr-2"
             >
-              <span className="w-8 h-8 xl:w-9 xl:h-9 rounded-lg bg-[#002e03] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Sun className="w-4 h-4 xl:w-5 xl:h-5" aria-hidden="true" />
+              <span className="w-8 h-8 rounded-lg bg-[#002e03] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Sun className="w-4 h-4" aria-hidden="true" />
               </span>
-              <span className="font-display text-lg xl:text-2xl tracking-wide uppercase text-[#001601] leading-none whitespace-nowrap">
-                SunPower Solutions
+              <span className="font-display text-lg xl:text-xl tracking-wide uppercase text-[#001601] leading-none whitespace-nowrap">
+                SunPower<span className="hidden xl:inline"> Solutions</span>
               </span>
             </button>
 
@@ -147,7 +147,7 @@ export function AppShell({
             {isAuthenticated ? (
               <nav
                 aria-label="Primary Workspace Navigation"
-                className="hidden lg:flex items-center gap-1 min-w-0"
+                className="hidden lg:flex items-center gap-1 min-w-0 overflow-x-auto no-scrollbar scroll-smooth py-1"
               >
                 {roleNavItems.map((item) => {
                   const isActive = activeScreen === item.id;
@@ -157,13 +157,14 @@ export function AppShell({
                       type="button"
                       onClick={() => handleNavClick(item.id)}
                       aria-current={isActive ? 'page' : undefined}
-                      className={`px-2.5 xl:px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0 ${
+                      className={`px-2 xl:px-2.5 py-1 xl:py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0 ${
                         isActive
                           ? 'bg-[#002e03] text-white font-semibold shadow-xs'
                           : 'text-[#42493f] hover:text-[#1a1c1a] hover:bg-[#e9e8e5]'
                       }`}
                     >
-                      {item.label}
+                      <span className="hidden 2xl:inline">{item.label}</span>
+                      <span className="2xl:hidden">{item.shortLabel || item.label}</span>
                     </button>
                   );
                 })}
@@ -176,12 +177,12 @@ export function AppShell({
           </div>
 
           {/* Zone 3: Role Switcher (Admin Only) + Account + Search + Sign-Out */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-2">
             {isAuthenticated ? (
               <>
                 {isUserAdmin && (
                   <div
-                    className="flex items-center bg-[#ffffff] border border-[#c2c9bc]/60 rounded-xl p-0.5 gap-0.5 shrink-0 shadow-xs mr-1"
+                    className="flex items-center bg-[#f4f3f0] border border-[#c2c9bc]/80 rounded-xl p-0.5 gap-0.5 shrink-0 shadow-xs"
                     role="group"
                     aria-label="Workspace Role View"
                   >
@@ -196,10 +197,10 @@ export function AppShell({
                           key={role}
                           type="button"
                           onClick={() => onRoleChange(role)}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+                          className={`px-2 xl:px-2.5 py-1 rounded-lg text-[11px] xl:text-xs font-medium transition-all whitespace-nowrap shrink-0 ${
                             selected
                               ? 'bg-[#001601] text-white font-semibold shadow-xs'
-                              : 'text-[#1a1c1a] hover:bg-[#e9e8e5]'
+                              : 'text-[#42493f] hover:text-[#1a1c1a] hover:bg-[#e9e8e5]'
                           }`}
                         >
                           {role}
@@ -212,14 +213,15 @@ export function AppShell({
                 <button
                   type="button"
                   onClick={() => handleNavClick('auth')}
-                  className={`flex items-center gap-2 pl-2.5 pr-2 py-1 rounded-xl border transition-colors whitespace-nowrap shrink-0 ${
+                  className={`flex items-center gap-1.5 p-1 2xl:pl-2.5 2xl:pr-2 2xl:py-1 rounded-xl border transition-colors whitespace-nowrap shrink-0 ${
                     activeScreen === 'auth'
                       ? 'bg-[#002e03] text-white border-[#002e03]'
                       : 'bg-[#ffffff] text-[#1a1c1a] border-[#c2c9bc]/70 hover:border-[#0e7a66]'
                   }`}
                   aria-label={`Account portal for ${userName}`}
+                  title={`${userName} (${activeRole})`}
                 >
-                  <span className="hidden xl:flex flex-col text-right leading-tight">
+                  <span className="hidden 2xl:flex flex-col text-right leading-tight">
                     <span className="text-[11px] font-semibold">
                       {userName}
                     </span>
@@ -228,7 +230,7 @@ export function AppShell({
                     </span>
                   </span>
                   <span
-                    className={`w-7 h-7 rounded-full flex items-center justify-center ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
                       activeScreen === 'auth'
                         ? 'bg-white text-[#002e03]'
                         : 'bg-[#001601] text-white'
@@ -244,17 +246,11 @@ export function AppShell({
                   onClick={() => setCommandOpen(true)}
                   aria-label="Search projects, quotations, users, and site surveys (Command+K)"
                   title="Search backend database, orders & invoices (⌘K)"
-                  className="h-9 px-2.5 sm:px-3 rounded-xl bg-[#ffffff] border border-[#c2c9bc]/70 hover:border-[#0e7a66] hover:bg-[#f4f3f0] text-[#001601] flex items-center gap-2 shrink-0 transition-all shadow-xs"
+                  className="h-8 xl:h-9 px-2 xl:px-2.5 rounded-xl bg-[#ffffff] border border-[#c2c9bc]/70 hover:border-[#0e7a66] hover:bg-[#f4f3f0] text-[#001601] flex items-center gap-1.5 shrink-0 transition-all shadow-xs"
                 >
-                  <Search className="w-4 h-4 text-[#0e7a66] shrink-0" aria-hidden="true" />
-                  <span className="hidden xl:inline text-xs text-[#555f52] font-medium">
-                    Search backend & orders...
-                  </span>
-                  <span className="hidden sm:inline xl:hidden text-xs text-[#555f52] font-medium">
-                    Search...
-                  </span>
-                  <span className="hidden 2xl:inline-flex items-center text-[10px] text-[#0e7a66] font-mono-tabular bg-[#0e7a66]/10 px-1.5 py-0.5 rounded font-semibold">
-                    1000+ records
+                  <Search className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-[#0e7a66] shrink-0" aria-hidden="true" />
+                  <span className="hidden 2xl:inline text-xs text-[#555f52] font-medium">
+                    Search backend...
                   </span>
                   <kbd className="hidden sm:inline-flex items-center text-[10px] font-mono-tabular px-1.5 py-0.5 rounded bg-[#efeeeb] border border-[#c2c9bc] text-[#42493f]">
                     Ctrl K
@@ -267,10 +263,10 @@ export function AppShell({
                   onClick={handleSignOutClick}
                   aria-label="Sign out of SunPower Portal"
                   title="Sign Out"
-                  className="h-9 px-2.5 rounded-xl bg-[#ffffff] border border-[#c2c9bc]/70 hover:border-[#ba1a1a] hover:bg-[#ffdad6]/40 text-[#001601] flex items-center gap-1.5 text-xs font-semibold shrink-0 transition-colors whitespace-nowrap"
+                  className="h-8 xl:h-9 px-2 xl:px-2.5 rounded-xl bg-[#ffffff] border border-[#c2c9bc]/70 hover:border-[#ba1a1a] hover:bg-[#ffdad6]/40 text-[#001601] flex items-center gap-1.5 text-xs font-semibold shrink-0 transition-colors whitespace-nowrap"
                 >
                   <LogOut className="w-3.5 h-3.5 text-[#a43c27]" aria-hidden="true" />
-                  <span className="hidden sm:inline">Sign Out</span>
+                  <span className="hidden 2xl:inline">Sign Out</span>
                 </button>
 
                 <button
