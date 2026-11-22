@@ -47,6 +47,7 @@ interface SunPowerAppProps {
 }
 
 export function SunPowerApp({ initialScreen = 'auth' }: SunPowerAppProps) {
+  const [mounted, setMounted] = useState(false);
   // Initial phase MUST be logged-out and show zero operational data
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [activeScreen, setActiveScreen] = useState<ScreenId>(
@@ -65,6 +66,7 @@ export function SunPowerApp({ initialScreen = 'auth' }: SunPowerAppProps) {
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     return () => {
       if (toastTimerRef.current) {
         clearTimeout(toastTimerRef.current);
@@ -217,6 +219,20 @@ export function SunPowerApp({ initialScreen = 'auth' }: SunPowerAppProps) {
   const effectiveScreen: ScreenId = isAuthenticated 
     ? (isScreenAllowed ? activeScreen : defaultScreenForRole)
     : 'auth';
+
+  if (!mounted) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center bg-[#faf9f6]"
+        suppressHydrationWarning
+      >
+        <div
+          className="animate-spin rounded-full h-8 w-8 border-2 border-[#0e7a66] border-t-transparent"
+          suppressHydrationWarning
+        />
+      </div>
+    );
+  }
 
   return (
     <AppShell

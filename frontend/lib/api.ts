@@ -51,12 +51,21 @@ export async function apiRequest<T = any>(
       headers,
     });
 
-    const contentType = res.headers.get('content-type') || '';
+    // Read the stream exactly once as text to prevent "Failed to execute 'text' on 'Response': body stream already read"
+    let responseText = '';
+    try {
+      responseText = await res.text();
+    } catch {
+      responseText = '';
+    }
+
     let data: any = null;
-    if (contentType.includes('application/json')) {
-      data = await res.json();
-    } else {
-      data = await res.text();
+    if (responseText && responseText.trim()) {
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        data = responseText;
+      }
     }
 
     if (!res.ok) {
