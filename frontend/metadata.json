@@ -1,0 +1,6 @@
+{
+  "name": "SunPower Solutions",
+  "description": "End-to-end rooftop solar installation, quotation BOM engine, site survey, dispatch tracking, and 25-year warranty management platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

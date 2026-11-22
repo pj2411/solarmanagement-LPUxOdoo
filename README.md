@@ -1,8 +1,8 @@
 # SunPower SIMS
 
-![SunPower SIMS Hero](web/hero-transparent-preview.png)
+![SunPower ERP Admin & Financial Analytics Dashboard](docs/admin.jpeg)
 
-![SunPower SIMS CRM](web/crm-leaf-glass-preview.png)
+![SunPower ERP Authentication & Role Management Console](docs/login.jpeg)
 
 SunPower SIMS (Solar Installation Management System) is an enterprise-grade solar EPC and operations management platform designed for residential and commercial rooftop solar installations in India. It provides an end-to-end operational workspace spanning lead intake, irradiance savings calculators, engineering site surveys, turnkey dynamic Bill of Materials (BoM) quotations, PM Surya Ghar central subsidy workflows, milestone payments with automated GST invoicing, warehouse serial number tracking, commissioning QA with customer e-signatures, 20-to-25-year statutory warranty registries, and zero-click service helpdesk ticketing.
 
@@ -340,7 +340,7 @@ Error responses adhere to:
 - Validated milestone payments automatically generate legal GST Tax Invoices (`INV-SIMS-XXXXX`) calculating CGST and SGST splits.
 - Financial P&L metrics dynamically compute COGS (quotation hardware baseline + direct labor) against total revenue including subsidy.
 
-## Frontend Screens
+## Frontend Screens & Visual Previews
 
 The frontend supports navigation across these core modules:
 
@@ -364,6 +364,13 @@ The frontend supports navigation across these core modules:
 /#/admin           # Super Admin Console (User, Role & System Governance)
 ```
 
+### Authentication & Role Governance Console
+![Authentication & Role Console](docs/login.jpeg)
+*Secure authentication supporting email/password, OTP recovery, and 1-click persona switching across Customer, Sales, Field Technician, Warehouse, Support, and Admin.*
+
+### Executive Admin & Dynamic P&L Dashboard
+![Admin Dashboard](docs/admin.jpeg)
+*Real-time executive oversight tracking total turnkey revenue, hardware COGS, direct labor expenses, gross margin percentages, and project-wise profitability.*
 ## Development Commands
 
 ### Backend

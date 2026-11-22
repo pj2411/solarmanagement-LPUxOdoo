@@ -10,3 +10,8 @@ dist/
 test-results/
 playwright-report/
 backend/uploads/
+*.tsbuildinfo
+.next/
+.aistudio/
+artifacts/
+
